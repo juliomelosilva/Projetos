@@ -1,0 +1,24 @@
+@charset "UTF-8";
+/*
+    Tudo que em HTML é id= em CSS é #
+    id pode ser usado apenas uma vez o mesmo id dentro do código
+    Tudo que em HTML é class= em CSS é .
+    class é usada para agrupamento de configurações e também é possivel aplicar mais de uma class a um elemento (justamente para evitar o uso de varios id's)
+
+    é possivel usar id e class juntos
+    # - id
+    . - class
+    : - Pseudo class
+    
+    */
+div{
+    display: inline-block;
+    background-color: darkgray;
+    border: 1px solid black;
+    text-align: center;
+    height: 200px;
+    width: 200px;
+} 
+div:hover{
+    background-color: aqua;    
+}
