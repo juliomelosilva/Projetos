@@ -30,6 +30,12 @@ main h1{
     text-align: center;
 }
 
+main img#pequena{
+    max-width: 350px;
+    display: block;
+    margin: auto;
+}
+
 
 footer{
     margin: auto;
