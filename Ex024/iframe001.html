@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iframes</title>
+    <style>
+        /*Por mais que esteja configurado altura e largura do iframe em linha, o css sempre será soberado sobre ele*/
+        iframe{
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Testando o uso de iframe</h1>
+    <p>Acessando o site do 
+        <!--Tamanho padrão do iframe é de 300px de largura e 150px de altura 
+            Parâmetro
+            scrolling="auto" -> Se o conteúdo exceder o tamanho do iframe cria a barra para scroll
+            scrolling="yes" -> Mesmo que o conteúdo não exceda exibe a barra para scroll
+            scrolling="no" -> Não exibe a barra para scroll e fixa o iframe no topo
+        -->
+        <iframe src="https://www.cursoemvideo.com" frameborder="0" scrolling="no">
+            <a href="https://www.cursoemvideo.com" target="_blank">Curso em Vídeo</a> 
+        </iframe>
+    
+    para aprender a programar</p>
+
+
+    <p>o repositório do Guanabara
+
+        <iframe src="https://gustavoguanabara.github.io" frameborder="0">
+            no <a href="https://gustavoguanabara.github.io" target="_blank">GitHub</a> 
+        </iframe>
+    
+    também é muito legal</p>
+</body>
+</html>
