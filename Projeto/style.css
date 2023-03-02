@@ -30,10 +30,13 @@ main h1{
     text-align: center;
 }
 
-main img#pequena{
-    max-width: 350px;
-    display: block;
+#pequena{
+    height: 200px;
+    width: 200px;
+    max-width: 300px;
+    display: flexbox;
     margin: auto;
+    border-radius: 100%;
 }
 
 
