@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Teste</title>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 255, 0.514)
+            , white);
+        }
+
+        table{
+            border-collapse: collapse;
+            margin: auto;
+            position: relative;
+            height: 400px;
+            width: 1000px;
+            background-color: white;
+        }
+        main thead tr th{
+            position: sticky;
+            background-color: blue;
+            color: white;
+        }
+        
+        th, td{
+            border: 2px solid rgba(240, 119, 5, 0.575);
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: lightgray;
+        }
+
+        #container{
+            overflow-x: auto;
+        }
+
+        .img{
+            height: 23px;
+            width: 23px;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover{
+            text-decoration: underline;
+            color: rgba(240, 119, 5, 0.801);
+        }
+
+        nav{
+            padding: 5px;
+
+        }
+        
+        nav > a{
+            color: black;
+            padding: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: .5s;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Site Maroto 2.0</h1>
+        <p>Site Desenvolvido para Testes com Downloads</p>
+    </header>
+    <nav>
+        <a href="paginst.html">Arquivos de Instalação</a>
+        <a href="pagversoes.html">Versões PDV</a>
+        <a href="pagconcen.html">Versões Concentrador</a>
+        <a href="pagimp.html">Arquivos de Impressoras</a>
+        <a href="#">Arquivos Tef</a>
+        <a href="#">Manuais + Pop's</a>
+        <a href="#">Diversos</a>
+    </nav>
+    <main>
+    
+        <div id="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Baixar</th>
+                        <th>Descrição</th>
+                        <th>Versão</th>
+                        <th>Data Lançamento</th>
+    
+                    </tr>
+                </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/icufzg8yidu4you/LiveConcentrador%20-%20v2.0.12.0.zip?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>LiveConcentrador</td>
+                    <td>2.0.12.0</td>
+                    <td>26/08/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/p1ukrwfqtx8mpex/LiveConcentrador%20-%20v2.0.9.0.zip?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>LiveConcentrador</td>
+                    <td>2.0.9.0</td>
+                    <td>28/07/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/tk3tfgj0osjpka0/LiveConcentrador%20-%20v2.0.7.0.zip?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>LiveConcentrador</td>
+                    <td>2.0.7</td>
+                    <td>01/07/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/p779q4n8u8ckgbl/LiveConcentrador%20-%20v2.0.4.0.zip?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>LiveConcentrador</td>
+                    <td>2.0.4.0</td>
+                    <td>22/05/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/w1uay8das72olqw/LiveConcentrador%20-%20v2.0.3.0.zip?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Live Concentrador (2 Casas)</td>
+                    <td>2.0.3.0</td>
+                    <td>15/05/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/t5vzzl0yh3cce2s/COCENTRADOR%20NOVO%20%2B%20DLLS.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Live Concentrador + Dlls + Vr 23</td>
+                    <td>1.5.23.0</td>
+                    <td>07/11/2019</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/hpd8tcm6hyy0peu/Reiniciar%20Concentrador.EXE?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Reinicia Concentrador</td>
+                    <td>1.0.0.0</td>
+                    <td>03/02/2021</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/qasgfoa0d6019et/LIVECONCENTRADOR.FDB?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Banco Concentrador</td>
+                    <td>1.0.0</td>
+                    <td>08/11/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/7ev1lin9eqmzk40/Pasta%20LiveConcentrador%20-%20Vers%C3%A3o%202.0.12.0.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Pasta LiveConcentrador</td>
+                    <td>2.0.12.0</td>
+                    <td>26/08/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/py7umied7dkzu9i/LivePDV%20Pasta%20LivePDV%20NFCe%20-%20Vers%C3%A3o%202.4.36.0.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Pasta LivePDV NFC-e</td>
+                    <td>2.4.36.0</td>
+                    <td>13/10/2022</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/rntht89t16lq70a/Pasta%20LivePV.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Pasta LivePV</td>
+                    <td>1.1.0.5</td>
+                    <td>26/05/2021</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
