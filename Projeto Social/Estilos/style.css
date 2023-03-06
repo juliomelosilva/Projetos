@@ -27,8 +27,8 @@ section#telefone{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -43%);
-    height: 484px;
-    width: 240px;
+    height: 494px;
+    width: 245px;
     background: url('../Imagens/frame-iphone.png') no-repeat;
     background-size: cover;
     
@@ -59,14 +59,14 @@ section#redes-sociais img:hover{
 a{
     text-decoration: none;
     position: relative;
-    top: 1px;
+    top: 15px;
     left: 1px;
 }
 
 iframe#tela{
     position: relative;
-    top: 62px;
-    left: 17px;
-    width: 206px;
-    height: 363px;
+    top: 64px;
+    left: 18px;
+    width: 210px;
+    height: 370px;
 }
