@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html, body{
+    height: 100vh;
+    width: 100vw;
+}
+h1{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 2em;
+    color: black;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -43%);
+}
+
+p{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    text-align: center;
+    color: black;
+    position: absolute;
+    top: 43%;
+    left: 50%;
+    transform: translate(-50%, -43%);
+}
+
+#foto{
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -43%);
+}
+
+section#redes-sociais{
+    text-align: center;
+}
+
+section#redes-sociais img{
+    width: 50px;
+    margin: 3px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.400);
+    box-sizing: border-box;
+}
+
+section a#wpp:hover{
+    background-color: #19d93e;
+    width: 15px;
+    transform: translate(-3px, -3px);
+}
+
+/*
+section#redes-sociais img:hover{
+    border: 2px solid rgba(117, 114, 114, 0.603);
+    transform: translate(-3px, -3px);
+    transition: transform .5s;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.623);
+}
+*/
+
+a{
+    text-decoration: none;
+    position: relative;
+    top: 300px;
+    left: 0px;
+    
+}
