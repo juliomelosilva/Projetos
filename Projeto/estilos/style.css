@@ -108,6 +108,7 @@ section#redes-sociais img:hover{
 }
 
 a{
+    display: inline-block;
     text-decoration: none;
     position: relative;
     top: 220px;
