@@ -22,7 +22,7 @@ html, body{
 #titulo-android{
     position: absolute;
     font-size: 2em;
-    top: 15%;
+    top: 17%;
     left: 0%;
     transform: translate(25%, -350%);
 }
@@ -30,7 +30,7 @@ html, body{
 #titulo-cordel{
     position: absolute;
     font-size: 2em;
-    top: 15%;
+    top: 17%;
     left: 20%;
     transform: translate(0%, -350%);
 }
@@ -38,7 +38,7 @@ html, body{
 #titulo-social{
     position: absolute;
     font-size: 2em;
-    top: 8%;
+    top: 9%;
     left: 26%;
     transform: translate(0%, -350%);
 }
@@ -50,10 +50,9 @@ p#android{
     font-weight: bolder;
     text-align: center;
     color: black;
-    position: absolute;
-    top: 97%;
-    left: 50%;
-    transform: translate(-50%, -1000%);
+    position: relative;
+    top: -5px;
+    left: 0%;
 }
 
 p#cordel{
@@ -61,10 +60,9 @@ p#cordel{
     font-weight: bolder;
     text-align: center;
     color: black;
-    position: absolute;
-    top: -7%;
-    left: 50%;
-    transform: translate(-50%, -43%);
+    position: relative;
+    top: -5px;
+    left: 0%;
 }
 
 p#social{
@@ -72,10 +70,9 @@ p#social{
     font-weight: bolder;
     text-align: center;
     color: black;
-    position: absolute;
-    top: 24%;
-    left: 50%;
-    transform: translate(-50%, -1000%);
+    position: relative;
+    top: -5px;
+    left: 0%;
 }
 
 #foto{
