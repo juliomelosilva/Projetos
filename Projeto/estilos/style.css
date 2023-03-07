@@ -3,6 +3,7 @@
 *{
     margin: 0px;
     padding: 0px;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 ::-webkit-scrollbar{
@@ -15,32 +16,26 @@ html, body{
     height: 100vh;
     width: 100vw;
 }
-h1{
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    font-size: 2em;
-    color: black;
+
+
+
+#titulo-android{
     position: absolute;
-    top: 5%;
+    font-size: 2em;
+    top: 57px;
+    left: 0px;
+    transform: translate(25%, -350%);
+}
+
+#titulo-cordel{
+    position: absolute;
+    font-size: 2em;
+    top: -50%;
     left: 50%;
     transform: translate(-50%, -43%);
 }
 
-h1.projeto-cordel{
-    position: absolute;
-    font-size: 2em;
-    top: 54%;
-    left: 50%;
-    transform: translate(-50%, -43%);
-}
-h1.projeto-android{
-    position: absolute;
-    font-size: 2em;
-    top: 20px;
-    left: 0px;
-    transform: translate(25%, -350%);
-}
-h1.projeto-social{
+#titulo-social{
     position: absolute;
     font-size: 2em;
     top: 20px;
@@ -49,17 +44,6 @@ h1.projeto-social{
 }
 
 
-
-p{
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
-    text-align: center;
-    color: black;
-    position: absolute;
-    top: 38%;
-    left: 50%;
-    transform: translate(-50%, -43%);
-}
 
 p#cordel{
     font-family: Arial, Helvetica, sans-serif;
@@ -93,11 +77,13 @@ p#social{
 }
 
 #foto{
+    border: 1px solid rgba(0, 0, 0, 0.664);
+    padding: 3px;
     height: 150px;
     width: 150px;
     border-radius: 50%;
     position: absolute;
-    top: 19%;
+    top: 16.5%;
     left: 50%;
     transform: translate(-50%, -43%);
 }
@@ -124,19 +110,19 @@ section#redes-sociais img:hover{
 a{
     text-decoration: none;
     position: relative;
-    top: 250px;
+    top: 220px;
     left: 0px;
 }
 
-#frame-cordel{
+#frame-android{
     text-align: center;
     position: absolute;
-    top: 85%;
+    top: 80%;
     left: 50%;
     transform: translate(-50%, -43%);
 }
 
-#frame-android{
+#frame-cordel{
     text-align: center;
     position: absolute;
     top: 145%;
