@@ -1,9 +1,17 @@
 @charset "UTF-8";
 
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+
+:root{
+    --font-padrao: 'Anton', sans-serif;
+    --font-descri: Arial, Helvetica, sans-serif;
+}
+
 *{
     margin: 0px;
     padding: 0px;
-    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
 }
 
 ::-webkit-scrollbar{
@@ -12,81 +20,49 @@
 }
 
 html, body{
-    background-color: lightgray;
+    background: lightgray;
+    background-size: cover;
     height: 100vh;
     width: 100vw;
+    font-family: var(--font-padrao);
 }
 
-
-
-#titulo-android{
-    position: absolute;
-    font-size: 2em;
-    top: 17%;
-    left: 0%;
-    transform: translate(25%, -350%);
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
-
-#titulo-cordel{
-    position: absolute;
-    font-size: 2em;
-    top: 17%;
-    left: 20%;
-    transform: translate(0%, -350%);
-}
-
-#titulo-social{
-    position: absolute;
-    font-size: 2em;
-    top: 9%;
-    left: 26%;
-    transform: translate(0%, -350%);
-}
-
-
-
-p#android{
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
+h1{
+    padding-bottom: 15px;
     text-align: center;
-    color: black;
-    position: relative;
-    top: -5px;
-    left: 0%;
+    letter-spacing: 1px;
 }
 
-p#cordel{
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
+#titulo-android, #titulo-cordel, #titulo-social{
+    padding: 10px;
     text-align: center;
-    color: black;
-    position: relative;
-    top: -5px;
-    left: 0%;
+    letter-spacing: 1px;
 }
 
-p#social{
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
+
+#android, #cordel, #social{
+    padding: 3px;
     text-align: center;
-    color: black;
-    position: relative;
-    top: -5px;
-    left: 0%;
+    font-weight: bold;
+    font-family: var(--font-descri);
 }
+
 
 #foto{
-    border: 1px solid rgba(0, 0, 0, 0.664);
-    padding: 3px;
+    margin: 20px 20px;
+    border: 2px solid rgba(0, 0, 0, 0.664);
+    padding: 4px;
     height: 150px;
     width: 150px;
     border-radius: 50%;
-    position: absolute;
-    top: 16.5%;
-    left: 50%;
-    transform: translate(-50%, -43%);
 }
-
+/**/
 section#redes-sociais{
     text-align: center;
 }
@@ -106,33 +82,5 @@ section#redes-sociais img:hover{
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.623);
 }
 
-a{
-    text-decoration: none;
-    position: relative;
-    top: 245px;
-    left: 0px;
-}
 
-#frame-android{
-    text-align: center;
-    position: absolute;
-    top: 85%;
-    left: 50%;
-    transform: translate(-50%, -43%);
-}
 
-#frame-cordel{
-    text-align: center;
-    position: absolute;
-    top: 152.5%;
-    left: 50%;
-    transform: translate(-50%, -43%);
-}
-
-#frame-social{
-    text-align: center;
-    position: absolute;
-    top: 250%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
