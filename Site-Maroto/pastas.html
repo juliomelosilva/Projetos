@@ -158,17 +158,19 @@
             }    
     </style>
 <script>
-        function calc(){
+    function calc(){
         var d = new Date();
         var hora = d.getHours();
         var ano = d.getFullYear();
         var dia = d.getDate();
         var minuto = d.getMinutes();
         var mes = d.getMonth() + 1;
-        var anoRetaguarda = new Date(ano, mes, dia).toLocaleDateString('en', {year: '2-digit'})
+        var anoRetaguarda = d.getFullYear() % 100
+		
+		
         
         var config = ((ano - 75) + hora + dia + mes);
-        var retaguarda = (dia + mes + parseInt(anoRetaguarda));
+        var retaguarda = dia + mes + anoRetaguarda;
         
         var cbc = ((ano - mes) - dia - hora)
         
