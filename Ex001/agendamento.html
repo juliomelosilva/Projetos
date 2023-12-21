@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia - Agendamento Online</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: black;
+            color: white;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .calendar-container {
+            width: auto;
+            margin: 10px auto;
+            border: 2px solid red;
+            background-color: white;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            width: calc(100% / 7);
+            padding: 5px;
+            border: 1px solid black;
+            cursor: pointer;
+            color: black;
+            opacity: 0;
+            animation: fadeInDay 0.5s ease-out forwards;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td:hover {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            margin-top: 10px;
+            margin-right: 5px;
+            padding: 10px;
+            background-color: #c98e35;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10%;
+        }
+
+        button:hover {
+            background-color: #31b137;
+        }
+
+        /* Estilo para a janela modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 2px solid black;
+            z-index: 1;
+            text-align: left;
+        }
+
+        .horarios-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .horario {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bola {
+            width: 10px;
+            height: 10px;
+            background-color: black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .horario-texto {
+            color: black;
+            cursor: pointer;
+        }
+
+        /* Estilo para a nova tela */
+        .nova-tela,
+        .confirmacao {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .campo {
+            margin: 10px;
+            padding: 5px;
+            width: 80%;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .button-container button {
+            margin-right: 10px;
+        }
+
+        .selected-date {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .selected-time {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInDay {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="fade-in">
+    <div class="container">
+        <h1>Barbearia</h1>
+        <h2>Agendamento Online</h2>
+
+        <div class="calendar-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domingo</th>
+                        <th>Segunda</th>
+                        <th>Terça</th>
+                        <th>Quarta</th>
+                        <th>Quinta</th>
+                        <th>Sexta</th>
+                        <th>Sábado</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body">
+                    <!-- O conteúdo do calendário será inserido aqui usando JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Janela modal para os horários -->
+        <div id="modal" class="modal">
+            <h2>Escolha um horário</h2>
+            <div class="horarios-container">
+                <div class="horario" onclick="selecionarHorario('08:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">08:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('09:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">09:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('10:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">10:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('11:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">11:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('14:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">14:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('15:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">15:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('16:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">16:00</div>
+                </div>
+                <div class="horario" onclick="selecionarHorario('17:00')">
+                    <div class="bola"></div>
+                    <div class="horario-texto">17:00</div>
+                </div>
+            </div>
+            <button onclick="fecharModal()">Fechar</button>
+        </div>
+
+        <!-- Nova tela após a seleção do horário -->
+        <div id="nova-tela" class="nova-tela">
+            <h2>Escolha um serviço</h2>
+            <select id="servico" class="campo">
+                <option value="cabelo">Cabelo</option>
+                <option value="barba">Barba</option>
+                <option value="cabelo-barba">Cabelo + Barba</option>
+            </select>
+            <h2>Escolha a forma de pagamento</h2>
+            <select id="forma-pagamento" class="campo">
+                <option value="dinheiro">Dinheiro</option>
+                <option value="pix">Pix</option>
+                <option value="cartao">Cartão de Crédito/Débito</option>
+            </select>
+            <h2>Preencha os campos abaixo:</h2>
+            <input type="text" id="nome" class="campo" placeholder="Nome">
+            <input type="text" id="numero" class="campo" placeholder="Número (WhatsApp)">
+            <div class="button-container">
+                <button onclick="cancelarAgendamento()">Cancelar</button>
+                <button onclick="prosseguirServico()">Prosseguir</button>
+            </div>
+        </div>
+
+        <!-- Confirmação de agendamento -->
+        <div id="confirmacao" class="confirmacao">
+            <div class="selected-date"></div>
+            <div class="selected-time"></div>
+            <div class="mensagem-confirmacao"></div>
+            <div class="button-container">
+                <button onclick="cancelarAgendamento()">Cancelar</button>
+                <button onclick="confirmarAgendamento()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedHorario = '';
+        let selectedServico = '';
+        let selectedNome = '';
+        let selectedNumero = '';
+        let selectedDay = 0;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarBody = document.getElementById('calendar-body');
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+
+            let dayCount = 1;
+            let calendarHTML = '';
+
+            for (let i = 0; i < 6; i++) {
+                calendarHTML += '<tr>';
+
+                for (let j = 0; j < 7; j++) {
+                    if ((i === 0 && j < firstDayOfWeek) || dayCount > daysInMonth) {
+                        calendarHTML += '<td></td>';
+                    } else {
+                        calendarHTML += `<td onclick="exibirHorarios(${dayCount})">${dayCount}</td>`;
+                        dayCount++;
+                    }
+                }
+
+                calendarHTML += '</tr>';
+            }
+
+            calendarBody.innerHTML = calendarHTML;
+        });
+
+        function exibirHorarios(day) {
+            selectedDay = day; // Atualiza o dia selecionado
+            selectedHorario = ''; // Reseta o horário selecionado ao mudar o dia
+            const modal = document.getElementById('modal');
+            modal.innerHTML = `<h2>Horários para o dia ${day}</h2>`;
+
+            // Adiciona os horários
+            const horarios = ['08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00'];
+            for (let i = 0; i < horarios.length; i++) {
+                modal.innerHTML += `
+                    <div class="horario" onclick="selecionarHorario('${horarios[i]}')">
+                        <div id="bola-${horarios[i]}" class="bola"></div>
+                        <div class="horario-texto">${horarios[i]}</div>
+                    </div>
+                `;
+            }
+
+            modal.innerHTML += '<button onclick="fecharModal()">Fechar</button>';
+            modal.style.display = 'block';
+        }
+
+        function fadeIn() {
+            const body = document.body;
+            body.style.opacity = '1';
+        }
+
+        function selecionarHorario(horario) {
+            selectedHorario = horario;
+            const bolas = document.querySelectorAll('.bola');
+            bolas.forEach(bola => {
+                bola.style.backgroundColor = 'white';
+            });
+            document.getElementById(`bola-${horario}`).style.backgroundColor = 'black';
+
+            // Exibe a nova tela após a seleção do horário
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('nova-tela').style.display = 'flex';
+        }
+
+        function voltarTelaHorarios() {
+            selectedHorario = '';
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('nova-tela').style.display = 'none';
+        }
+
+        function prosseguirServico() {
+            selectedServico = document.getElementById('servico').value;
+            document.getElementById('nova-tela').style.display = 'none';
+            document.getElementById('confirmacao').style.display = 'flex';
+
+            // Atualiza mensagem de confirmação
+            const mensagemConfirmacao = document.querySelector('.mensagem-confirmacao');
+            const selectedDate = document.querySelector('.selected-date');
+            const selectedTime = document.querySelector('.selected-time');
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1; // Os meses são indexados de 0 a 11
+
+            selectedNome = document.getElementById('nome').value;
+            selectedDate.textContent = `Data selecionada: ${selectedDay}/${currentMonth}/${currentYear}`;
+            selectedTime.textContent = `Horário selecionado: ${selectedHorario}`;
+            mensagemConfirmacao.textContent = `Olá, ${selectedNome}! Muito obrigado por escolher a Barbearia! Deseja confirmar o agendamento para o dia e horário acima com o serviço de ${selectedServico} e pagamento ${document.getElementById('forma-pagamento').value}?`;
+        }
+
+        function cancelarAgendamento() {
+            // Limpa campos e volta para a escolha de horário
+            selectedHorario = '';
+            selectedServico = '';
+            selectedNome = '';
+            selectedNumero = '';
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('nova-tela').style.display = 'none';
+            document.getElementById('confirmacao').style.display = 'none';
+        }
+
+        function confirmarAgendamento() {
+            // Aqui você pode adicionar a lógica para enviar os dados para o backend ou tomar a ação desejada
+            alert('Agendamento confirmado!');
+
+            // Limpa campos e volta para a escolha de horário
+            selectedHorario = '';
+            selectedServico = '';
+            selectedNome = '';
+            selectedNumero = '';
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('nova-tela').style.display = 'none';
+            document.getElementById('confirmacao').style.display = 'none';
+        }
+
+
+        function fecharModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
