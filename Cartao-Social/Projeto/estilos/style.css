@@ -1,0 +1,83 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+
+:root{
+    --font-padrao: 'Anton', sans-serif;
+    --font-descri: Arial, Helvetica, sans-serif;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
+}
+
+::-webkit-scrollbar{
+    width: 0px;
+    height: 0px;
+}
+
+html, body{
+    background: lightgray;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    font-family: var(--font-padrao);
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+h1{
+    padding-bottom: 15px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+#titulo-android, #titulo-cordel, #titulo-social{
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+
+#android, #cordel, #social{
+    padding: 3px;
+    text-align: center;
+    font-weight: bold;
+    font-family: var(--font-descri);
+}
+
+
+#foto{
+    margin: 20px 20px;
+    border: 2px solid rgba(0, 0, 0, 0.664);
+    padding: 4px;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+}
+
+section#redes-sociais{
+    text-align: center;
+}
+
+section#redes-sociais img{
+    width: 50px;
+    margin: 3px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.400);
+    box-sizing: border-box;
+}
+
+section#redes-sociais img:hover{
+    border: 2px solid rgba(14, 13, 13, 0.603);
+    transform: translate(-3px, -3px);
+    transition: transform .5s;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.623);
+}
