@@ -1,6 +1,5 @@
 import openai
 
-chave_api = "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"
 
 openai.api_key = chave_api
 
