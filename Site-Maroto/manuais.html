@@ -172,6 +172,10 @@
                 border-radius: 5px;
             }     
         </style>
+        <div id="search-container">
+            <input type="text" id="search-input" onkeyup="searchTable()" placeholder="Pesquisar...">
+        </div>    
+    
         <script>
             function searchTable() {
                 // Obtém o valor da caixa de pesquisa
@@ -230,7 +234,7 @@
                     rows[i].style.display = rowMatchesSearch ? 'table-row' : 'none';
                 }
             }
-        </script> 
+        </script>
 <script>
     function calc(){
         var d = new Date();
