@@ -154,9 +154,151 @@
                 position: relative;
                 top: 60px;
                 left: -470px;
-        }         
-    </style>
-<script>
+            }
+        
+            #search-container{
+                box-sizing: border-box;
+                position: relative;
+                top: 210px;
+                left: 485px;
+                border-radius: 10px;
+                padding: 0px;  
+                }
+            #search-input{
+                box-sizing: border-box;
+                margin: 0px;
+                padding: 0px;
+                border: 2px solid black;
+                border-radius: 5px;
+            }     
+        </style>
+        <div id="search-container">
+            <input type="text" id="search-input" onkeyup="searchTable()" placeholder="Pesquisar...">
+        </div>    
+    
+        <script>
+            function searchTable() {
+                // Obtém o valor da caixa de pesquisa
+                var searchText = document.getElementById('search-input').value.toLowerCase();
+                // Obtém a tabela
+                var table = document.querySelector('table');
+                // Obtém todas as linhas da tabela
+                var rows = table.getElementsByTagName('tr');
+                
+                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
+                for (var i = 1; i < rows.length; i++) {
+                    var shouldShow = false;
+                    // Obtém as células da linha atual
+                    var cells = rows[i].getElementsByTagName('td');
+                    // Itera sobre as células da linha
+                    for (var j = 0; j < cells.length; j++) {
+                        var cellText = cells[j].innerText.toLowerCase();
+                        // Verifica se o texto da célula corresponde ao texto de pesquisa
+                        if (cellText.indexOf(searchText) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+                    // Exibe ou oculta a linha com base no resultado da pesquisa
+                    if (shouldShow) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        </script>
+    
+        <script>
+            function searchTable() {
+                var searchText = document.getElementById('search-input').value.toLowerCase();
+                var table = document.querySelector('table');
+                var rows = table.getElementsByTagName('tr');
+        
+                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
+                for (var i = 1; i < rows.length; i++) {
+                    var cells = rows[i].getElementsByTagName('td');
+                    var rowMatchesSearch = false;
+        
+                    // Itera sobre as células da linha
+                    for (var j = 0; j < cells.length; j++) {
+                        var cellText = cells[j].innerText.toLowerCase();
+                        // Verifica se o texto da célula corresponde à pesquisa
+                        if (cellText.indexOf(searchText) > -1) {
+                            rowMatchesSearch = true;
+                            break;
+                        }
+                    }
+        
+                    // Altera a visibilidade da linha com base no resultado da pesquisa
+                    rows[i].style.display = rowMatchesSearch ? 'table-row' : 'none';
+                }
+            }
+        </script>
+        <div id="search-container">
+            <input type="text" id="search-input" onkeyup="searchTable()" placeholder="Pesquisar...">
+        </div>    
+    
+        <script>
+            function searchTable() {
+                // Obtém o valor da caixa de pesquisa
+                var searchText = document.getElementById('search-input').value.toLowerCase();
+                // Obtém a tabela
+                var table = document.querySelector('table');
+                // Obtém todas as linhas da tabela
+                var rows = table.getElementsByTagName('tr');
+                
+                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
+                for (var i = 1; i < rows.length; i++) {
+                    var shouldShow = false;
+                    // Obtém as células da linha atual
+                    var cells = rows[i].getElementsByTagName('td');
+                    // Itera sobre as células da linha
+                    for (var j = 0; j < cells.length; j++) {
+                        var cellText = cells[j].innerText.toLowerCase();
+                        // Verifica se o texto da célula corresponde ao texto de pesquisa
+                        if (cellText.indexOf(searchText) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+                    // Exibe ou oculta a linha com base no resultado da pesquisa
+                    if (shouldShow) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        </script>
+    
+        <script>
+            function searchTable() {
+                var searchText = document.getElementById('search-input').value.toLowerCase();
+                var table = document.querySelector('table');
+                var rows = table.getElementsByTagName('tr');
+        
+                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
+                for (var i = 1; i < rows.length; i++) {
+                    var cells = rows[i].getElementsByTagName('td');
+                    var rowMatchesSearch = false;
+        
+                    // Itera sobre as células da linha
+                    for (var j = 0; j < cells.length; j++) {
+                        var cellText = cells[j].innerText.toLowerCase();
+                        // Verifica se o texto da célula corresponde à pesquisa
+                        if (cellText.indexOf(searchText) > -1) {
+                            rowMatchesSearch = true;
+                            break;
+                        }
+                    }
+        
+                    // Altera a visibilidade da linha com base no resultado da pesquisa
+                    rows[i].style.display = rowMatchesSearch ? 'table-row' : 'none';
+                }
+            }
+        </script>
+<script>  
     function calc(){
         var d = new Date();
         var hora = d.getHours();
