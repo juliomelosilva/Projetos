@@ -208,33 +208,6 @@
                 }
             }
         </script>
-    
-        <script>
-            function searchTable() {
-                var searchText = document.getElementById('search-input').value.toLowerCase();
-                var table = document.querySelector('table');
-                var rows = table.getElementsByTagName('tr');
-        
-                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
-                for (var i = 1; i < rows.length; i++) {
-                    var cells = rows[i].getElementsByTagName('td');
-                    var rowMatchesSearch = false;
-        
-                    // Itera sobre as células da linha
-                    for (var j = 0; j < cells.length; j++) {
-                        var cellText = cells[j].innerText.toLowerCase();
-                        // Verifica se o texto da célula corresponde à pesquisa
-                        if (cellText.indexOf(searchText) > -1) {
-                            rowMatchesSearch = true;
-                            break;
-                        }
-                    }
-        
-                    // Altera a visibilidade da linha com base no resultado da pesquisa
-                    rows[i].style.display = rowMatchesSearch ? 'table-row' : 'none';
-                }
-            }
-        </script>
 <script>
     function calc(){
         var d = new Date();
