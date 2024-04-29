@@ -52,4 +52,3 @@ while chamados != '':
                 #pyautogui.click(x=654, y=530) #botao enviar
                 time.sleep(8)
                 pyautogui.scroll(50000)
-                break
