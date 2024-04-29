@@ -4,9 +4,9 @@ import os
 import pyautogui
 import webbrowser
 
-workbook = openpyxl.load_workbook("C:\\Users\\jean_\\OneDrive\\Área de Trabalho\\Chamados_Plantao.xlsx")
+workbook = openpyxl.load_workbook("C:\\Users\\jean_\\OneDrive\\Área de Trabalho\\Chamados.xlsx")
 chamados = workbook['Planilha1']
-webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
+#webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
 time.sleep(2)
 for linha in chamados.iter_rows(min_row=2):
     Nome = linha[0].value
