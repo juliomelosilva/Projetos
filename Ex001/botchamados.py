@@ -6,7 +6,11 @@ import webbrowser
 
 workbook = openpyxl.load_workbook("C:\\Users\\jean_\\OneDrive\\Área de Trabalho\\Chamados_Plantao.xlsx")
 chamados = workbook['Planilha1']
-link_chamados = ['https://smliveloja.bitrix24.site/plantao/']
+webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
+time.sleep(2)
+pyautogui.locateCenterOnScreen('C:\\Users\\jean_\\OneDrive\\Área de Trabalho\\Bot\\Tecnico.png')
+pyautogui.click(Tecnico[0], Tecnico[1])
+pyautogui.hotkey('julio')
 
 for linha in chamados.iter_rows(min_row=2):
     Nome = linha[0].value
@@ -15,7 +19,7 @@ for linha in chamados.iter_rows(min_row=2):
     print(Nome)
     print(Descricao)
     print(Resolucao)
+
     
-    webbrowser.open(link_chamados)
 
 
