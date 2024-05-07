@@ -24,7 +24,7 @@ while chamados != '':
                 time.sleep(0.5)
                 #clica na data
                 pyautogui.click(x=514, y=400)
-                pyautogui.click(x=457, y=678) #posição da data
+                pyautogui.click(x=436, y=551) #posição da data
                 time.sleep(0.5)
                 pyautogui.click(x=530, y=477) #posicao nome da empresa
                 pyautogui.write(Nome)
@@ -48,7 +48,7 @@ while chamados != '':
                 pyautogui.moveTo(x=1084, y=610, duration=0.1)
                 pyautogui.scroll(-1000)
                 pyautogui.click(x=498, y=689) #categoria plantao
-                pyautogui.hotkey('f5')
-                #pyautogui.click(x=654, y=530) #botao enviar
-                time.sleep(8)
-                pyautogui.scroll(50000)
+                #pyautogui.hotkey('f5')
+                pyautogui.click(x=658, y=523) #botao enviar
+                time.sleep(5)
+                #pyautogui.scroll(50000)
