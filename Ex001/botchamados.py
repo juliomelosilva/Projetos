@@ -50,5 +50,6 @@ while chamados != '':
                 pyautogui.click(x=498, y=689) #categoria plantao
                 #pyautogui.hotkey('f5')
                 pyautogui.click(x=658, y=523) #botao enviar
+                pyautogui.click(x=658, y=523) #botao enviar 2
                 time.sleep(8)
                 #pyautogui.scroll(50000)
