@@ -24,7 +24,7 @@ while chamados != '':
                 time.sleep(0.5)
                 #clica na data
                 pyautogui.click(x=514, y=400)
-                pyautogui.click(x=436, y=551) #posição da data
+                pyautogui.click(x=479, y=556) #posição da data
                 time.sleep(0.5)
                 pyautogui.click(x=530, y=477) #posicao nome da empresa
                 pyautogui.write(Nome)
