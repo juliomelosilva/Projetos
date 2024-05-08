@@ -16,7 +16,7 @@ while chamados != '':
                 Resolucao = linha[2].value
 
                 pyautogui.PAUSE=0.3
-                time.sleep(2)
+                time.sleep(1)
                 #insere meu nome
                 pyautogui.click(x=495, y=336)
                 pyautogui.write('Julio')
