@@ -119,7 +119,7 @@ entry_quantidade = tk.Entry(root)
 entry_quantidade.grid(row=2, column=1, padx=10, pady=5)
 
 tk.Label(root, text="Incremento:").grid(row=3, column=0, padx=10, pady=5)
-entry_incremento = tk.Entry(root)
+entry_incremento = tk.Entry(root)novo lino 2
 entry_incremento.grid(row=3, column=1, padx=10, pady=5)
 
 btn_pesquisar = tk.Button(root, text="Iniciar Pesquisa", command=iniciar_pesquisa)
