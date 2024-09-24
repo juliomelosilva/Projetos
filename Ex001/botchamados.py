@@ -4,7 +4,7 @@ import os
 import pyautogui
 import webbrowser
 
-workbook = openpyxl.load_workbook("C:\\Users\\jean_\\OneDrive\\Documentos\\DESKTOP\\Júlio\\Códigos\\HTML - CSS (Curso em Vídeo)\\M2\\Projetos\\Ex001\\chamados.xlsx")
+workbook = openpyxl.load_workbook("C:\\Users\\Growth Live\\Documents\\DESKTOP\\Júlio\\Códigos\\HTML - CSS (Curso em Vídeo)\\M2\\Projetos\\Ex001\\chamados.xlsx")
 chamados = workbook['Planilha1']
 webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
 time.sleep(2)
