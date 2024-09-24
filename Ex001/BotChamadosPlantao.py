@@ -3,6 +3,7 @@ import time
 import os
 import pyautogui
 import webbrowser
+import keyboard
 
 # Carrega o arquivo Excel
 workbook = openpyxl.load_workbook("C:\\Users\\Growth Live\\Documents\\DESKTOP\\Júlio\\Códigos\\HTML - CSS (Curso em Vídeo)\\M2\\Projetos\\Ex001\\chamados.xlsx")
@@ -33,19 +34,19 @@ for linha in chamados.iter_rows(min_row=2):
     time.sleep(0.5)
                 #clica na data
     pyautogui.click(x=514, y=400)
-    pyautogui.click(x=458, y=676) #posição da data
+    pyautogui.click(x=458, y=676) #posição do dia da data
     time.sleep(0.5)
     pyautogui.click(x=530, y=477) #posicao nome da empresa
-    pyautogui.write(Nome)
+    keyboard.write(Nome)
     time.sleep(0.5)
     pyautogui.click(x=548, y=528) #posicao titulo
-    pyautogui.write(Descricao)
+    keyboard.write(Descricao)
     pyautogui.click(x=457, y=626) #posicao descricao
-    pyautogui.write(Descricao)
+    keyboard.write(Descricao)
     pyautogui.scroll(-500)
     time.sleep(0.5)
     pyautogui.click(x=448, y=374) #posicao resolucao
-    pyautogui.write(Resolucao)
+    keyboard.write(Resolucao)
     time.sleep(0.5)
     pyautogui.click(x=486, y=453) #posicao prioridade
     pyautogui.click(x=458, y=543) #selecao prioridade media
