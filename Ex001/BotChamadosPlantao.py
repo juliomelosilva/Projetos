@@ -29,12 +29,12 @@ for linha in chamados.iter_rows(min_row=2):
     time.sleep(1)
     # Insere o nome
     pyautogui.click(x=495, y=336)
-    pyautogui.write('Julio')
+    keyboard.write('Júlio')
 
     time.sleep(0.5)
                 #clica na data
     pyautogui.click(x=514, y=400)
-    pyautogui.click(x=458, y=676) #posição do dia da data
+    pyautogui.click(x=496, y=680) #posição do dia da data
     time.sleep(0.5)
     pyautogui.click(x=530, y=477) #posicao nome da empresa
     keyboard.write(Nome)
