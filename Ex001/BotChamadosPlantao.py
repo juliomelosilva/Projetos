@@ -34,7 +34,7 @@ for linha in chamados.iter_rows(min_row=2):
     time.sleep(0.5)
                 #clica na data
     pyautogui.click(x=514, y=400)
-    pyautogui.click(x=585, y=679) #posição do dia da data
+    pyautogui.click(x=625, y=678) #posição do dia da data
     time.sleep(0.5)
     pyautogui.click(x=530, y=477) #posicao nome da empresa
     keyboard.write(Nome)
