@@ -157,86 +157,66 @@
                 top: 60px;
                 left: -470px;
             }
-        
-            #search-container{
+            #senhaez{
                 box-sizing: border-box;
                 position: relative;
-                top: 210px;
-                left: 485px;
-                border-radius: 10px;
-                padding: 0px;  
-                }
-            #search-input{
+                top: 0px;
+                left: -495px;
+                padding: 0px; 
+            }
+            input{
                 box-sizing: border-box;
-                margin: 0px;
-                padding: 0px;
-                border: 2px solid black;
-                border-radius: 5px;
-            }     
-        </style>
-        <div id="search-container">
-            <input type="text" id="search-input" onkeyup="searchTable()" placeholder="Pesquisar...">
-        </div>    
-    
-        <script>
-            function searchTable() {
-                // Obtém o valor da caixa de pesquisa
-                var searchText = document.getElementById('search-input').value.toLowerCase();
-                // Obtém a tabela
-                var table = document.querySelector('table');
-                // Obtém todas as linhas da tabela
-                var rows = table.getElementsByTagName('tr');
+                position: relative;
+                top: 0px;
+                left: -475px;
+                padding: 0px; 
+            }
+            label{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -480px;
+                padding: 0px; 
+
+            }
+            #bsenha{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -480px;
+                padding: 0px; 
                 
-                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
-                for (var i = 1; i < rows.length; i++) {
-                    var shouldShow = false;
-                    // Obtém as células da linha atual
-                    var cells = rows[i].getElementsByTagName('td');
-                    // Itera sobre as células da linha
-                    for (var j = 0; j < cells.length; j++) {
-                        var cellText = cells[j].innerText.toLowerCase();
-                        // Verifica se o texto da célula corresponde ao texto de pesquisa
-                        if (cellText.indexOf(searchText) > -1) {
-                            shouldShow = true;
-                            break;
-                        }
-                    }
-                    // Exibe ou oculta a linha com base no resultado da pesquisa
-                    if (shouldShow) {
-                        rows[i].style.display = '';
-                    } else {
-                        rows[i].style.display = 'none';
-                    }
-                }
             }
-        </script>
-    
-        <script>
-            function searchTable() {
-                var searchText = document.getElementById('search-input').value.toLowerCase();
-                var table = document.querySelector('table');
-                var rows = table.getElementsByTagName('tr');
-        
-                // Itera sobre as linhas da tabela (começa de 1 para pular o cabeçalho)
-                for (var i = 1; i < rows.length; i++) {
-                    var cells = rows[i].getElementsByTagName('td');
-                    var rowMatchesSearch = false;
-        
-                    // Itera sobre as células da linha
-                    for (var j = 0; j < cells.length; j++) {
-                        var cellText = cells[j].innerText.toLowerCase();
-                        // Verifica se o texto da célula corresponde à pesquisa
-                        if (cellText.indexOf(searchText) > -1) {
-                            rowMatchesSearch = true;
-                            break;
-                        }
-                    }
-        
-                    // Altera a visibilidade da linha com base no resultado da pesquisa
-                    rows[i].style.display = rowMatchesSearch ? 'table-row' : 'none';
-                }
+            #resultado{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -495px;
+                padding: 0px; 
+
             }
-        </script>
+
+        </style>
+
+            <div id="senhaez">Senha EzTech</div>
+            <label for="numero">Digite o Número</label>
+            <input type="number" id="numero" step="any">
+            <button id="bsenha" onclick="calcularCosseno()">Calcular</button>
+            <p id="resultado"></p>
+        
+            <script>
+                function calcularCosseno() {
+                    // Obter o valor do input e calcular o cosseno
+                    const numero = parseFloat(document.getElementById("numero").value);
+                    const cosseno = Math.cos(numero * Math.PI / 180); // Convertendo para radianos
+                    
+                    // Formatar o resultado com apenas três casas decimais após a vírgula
+                    const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
+                    
+                    // Exibir o resultado no parágrafo
+                    document.getElementById("resultado").innerText = `Senha: ${resultadoFormatado}`;
+                }
+            </script>
 <script>
     function calc(){
         var d = new Date();
