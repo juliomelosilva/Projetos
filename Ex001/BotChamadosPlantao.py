@@ -1,25 +1,63 @@
 import openpyxl
 import time
-import os
 import pyautogui
 import webbrowser
 import keyboard
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from datetime import datetime
+import json
+import os
 
-# Função para iniciar o processo de automação
+# Caminho do arquivo de configuração para salvar as coordenadas do dia
+config_file = "config_dia.json"
+
+# Função para salvar as coordenadas no arquivo
+def salvar_configuracao(coordenadas):
+    with open(config_file, "w") as file:
+        json.dump(coordenadas, file)
+    print(f"Coordenadas salvas: {coordenadas}")
+
+# Função para carregar as coordenadas do arquivo
+def carregar_configuracao():
+    if os.path.exists(config_file):
+        with open(config_file, "r") as file:
+            return json.load(file)
+    return None
+
+# Função para capturar o dia desejado do calendário
+def configurar_dia():
+    messagebox.showinfo("Configuração do Dia", "Posicione o mouse sobre o dia desejado no calendário.\nAguarde 3 segundos.")
+    time.sleep(3)  # Contagem de 3 segundos
+
+    # Captura as coordenadas atuais do mouse
+    x, y = pyautogui.position()
+    coordenadas = {"x": x, "y": y}
+    salvar_configuracao(coordenadas)
+    messagebox.showinfo("Configuração Salva", f"Dia configurado com sucesso nas coordenadas: ({x}, {y})")
+
+# Função para selecionar o dia com base na configuração salva
+def selecionar_dia():
+    coordenadas = carregar_configuracao()
+    if coordenadas:
+        pyautogui.click(x=coordenadas["x"], y=coordenadas["y"])
+        print(f"Selecionado o dia configurado nas coordenadas: ({coordenadas['x']}, {coordenadas['y']})")
+    else:
+        print("Nenhuma configuração de dia encontrada. Configure o dia primeiro.")
+        messagebox.showerror("Erro", "Nenhuma configuração de dia encontrada.\nPor favor, configure o dia.")
+
+# Função principal para iniciar a automação
 def iniciar_automacao():
     definir_nome = nome_entry.get()
 
     if not definir_nome:
-        messagebox.showerror("Erro", "Por favor, insira o nome a ser preenchido.")
+        messagebox.showerror("Erro", "Por favor, preencha seu nome.")
         return
 
     arquivo_excel = filedialog.askopenfilename(title="Selecione o arquivo Excel", filetypes=[("Arquivos Excel", "*.xlsx")])
 
     if not arquivo_excel:
-        messagebox.showerror("Erro", "Por favor, selecione um arquivo Excel.")
+        messagebox.showerror("Erro", "Por favor, selecione a planilha com os chamados registrados.")
         return
 
     try:
@@ -29,9 +67,24 @@ def iniciar_automacao():
 
         # Abre o site no navegador
         webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
-        time.sleep(2)
+        time.sleep(5)
 
-        # Itera sobre as linhas da planilha, começando pela linha 2
+        # Automação: Preenche o nome
+        pyautogui.click(x=495, y=336)  # Insere o nome do usuário
+        keyboard.write(definir_nome)
+        time.sleep(0.5)
+
+        # Seleção do dia (posicionamento do mouse e captura das coordenadas)
+        pyautogui.click(x=514, y=400)  # Posição para abrir o seletor de data
+        time.sleep(0.5)
+
+        # Configuração do dia
+        configurar_dia()  # Aguarda 5 segundos para o usuário posicionar o mouse sobre o dia desejado
+
+        # Seleciona o dia de acordo com a configuração salva
+        selecionar_dia()
+
+        # Preenche as demais informações
         for linha in chamados.iter_rows(min_row=2):
             Nome = linha[0].value
             Descricao = linha[1].value
@@ -46,35 +99,12 @@ def iniciar_automacao():
             pyautogui.PAUSE = 0.3
             time.sleep(1)
 
-            pyautogui.click(x=495, y=336)  # Insere o nome do usuário
-            keyboard.write(definir_nome)
-
-            time.sleep(0.5)
-
-            # Seleção automática da data
-            dia_atual = datetime.now().day
-
-            pyautogui.click(x=514, y=400)  # Posição para abrir o seletor de data
-            time.sleep(0.5)
-
-            # Calcula a posição relativa do dia no calendário
-            base_x = 500  # Coordenada x base
-            base_y = 600  # Coordenada y base
-            offset_x = 30  # Distância horizontal entre os dias
-            offset_y = 30  # Distância vertical entre as linhas de dias
-
-            linha = (dia_atual - 1) // 7
-            coluna = (dia_atual - 1) % 7
-
-            dia_x = base_x + (coluna * offset_x)
-            dia_y = base_y + (linha * offset_y)
-
-            pyautogui.click(x=dia_x, y=dia_y)
-
-            time.sleep(0.5)
+            # Insere nome da empresa
             pyautogui.click(x=530, y=477)  # Posição nome da empresa
             keyboard.write(Nome)
             time.sleep(0.5)
+
+            # Insere descrição e resolução
             pyautogui.click(x=548, y=528)  # Posição título
             keyboard.write(Descricao)
             pyautogui.click(x=457, y=626)  # Posição descrição
@@ -84,6 +114,8 @@ def iniciar_automacao():
             pyautogui.click(x=448, y=374)  # Posição resolução
             keyboard.write(Resolucao)
             time.sleep(0.5)
+
+            # Preenche prioridade e categoria
             pyautogui.click(x=486, y=453)  # Posição prioridade
             pyautogui.click(x=458, y=543)  # Seleção prioridade média
             time.sleep(0.5)
@@ -98,25 +130,25 @@ def iniciar_automacao():
             pyautogui.click(x=658, y=523)  # Botão enviar 2
             time.sleep(6)
 
-        messagebox.showinfo("Concluído", "Automação concluída com sucesso!")
+        messagebox.showinfo("Concluído", "Chamados Registrados!")
 
     except Exception as e:
         messagebox.showerror("Erro", f"Ocorreu um erro: {e}")
 
 # Configuração da interface gráfica
 app = tk.Tk()
-app.title("Automação de Chamados")
-app.geometry("400x200")
+app.title("Automação de Chamados Plantão")
+app.geometry("250x150")
 
 # Label e campo de entrada para o nome
-nome_label = tk.Label(app, text="Digite o nome a ser preenchido:")
+nome_label = tk.Label(app, text="Nome do Técnico:")
 nome_label.pack(pady=5)
 
 nome_entry = tk.Entry(app, width=30)
 nome_entry.pack(pady=5)
 
 # Botão para iniciar a automação
-iniciar_button = tk.Button(app, text="Iniciar Automação", command=iniciar_automacao, bg="green", fg="white")
+iniciar_button = tk.Button(app, text="Abrir Chamados", command=iniciar_automacao, bg="green", fg="white")
 iniciar_button.pack(pady=20)
 
 # Loop principal
