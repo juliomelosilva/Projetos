@@ -27,8 +27,8 @@ def carregar_configuracao():
 
 # Função para capturar o dia desejado do calendário
 def configurar_dia():
-    messagebox.showinfo("Configuração do Dia", "Posicione o mouse sobre o dia desejado no calendário.\nAguarde 5 segundos.")
-    time.sleep(5)  # Contagem de 5 segundos
+    messagebox.showinfo("Configuração do Dia", "Posicione o mouse sobre o dia desejado no calendário.\nAguarde 3 segundos.")
+    time.sleep(3)  # Contagem de 3 segundos
 
     # Captura as coordenadas atuais do mouse
     x, y = pyautogui.position()
@@ -67,7 +67,7 @@ def iniciar_automacao():
 
         # Abre o site no navegador
         webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
-        time.sleep(2)
+        time.sleep(5)
 
         # Automação: Preenche o nome
         pyautogui.click(x=495, y=336)  # Insere o nome do usuário
