@@ -5,7 +5,6 @@ import webbrowser
 import keyboard
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from datetime import datetime
 import json
 import os
 
@@ -25,6 +24,15 @@ def carregar_configuracao():
             return json.load(file)
     return None
 
+# Função para limpar o arquivo de configuração
+def limpar_configuracao():
+    if os.path.exists(config_file):
+        with open(config_file, "w") as file:
+            json.dump({}, file)  # Escreve um JSON vazio
+        print("Configuração de coordenadas limpa.")
+    else:
+        print("Nenhum arquivo de configuração encontrado para limpar.")
+
 # Função para capturar o dia desejado do calendário
 def configurar_dia():
     messagebox.showinfo("Configuração do Dia", "Posicione o mouse sobre o dia desejado no calendário.\nAguarde 3 segundos.")
@@ -41,6 +49,7 @@ def selecionar_dia():
     coordenadas = carregar_configuracao()
     if coordenadas:
         pyautogui.click(x=coordenadas["x"], y=coordenadas["y"])
+        time.sleep(0.5)
         print(f"Selecionado o dia configurado nas coordenadas: ({coordenadas['x']}, {coordenadas['y']})")
     else:
         print("Nenhuma configuração de dia encontrada. Configure o dia primeiro.")
@@ -53,6 +62,9 @@ def iniciar_automacao():
     if not definir_nome:
         messagebox.showerror("Erro", "Por favor, preencha seu nome.")
         return
+
+    # Limpa a configuração antes de selecionar a planilha
+    limpar_configuracao()
 
     arquivo_excel = filedialog.askopenfilename(title="Selecione o arquivo Excel", filetypes=[("Arquivos Excel", "*.xlsx")])
 
@@ -69,31 +81,30 @@ def iniciar_automacao():
         webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
         time.sleep(5)
 
-        # Automação: Preenche o nome
-        pyautogui.click(x=495, y=336)  # Insere o nome do usuário
-        keyboard.write(definir_nome)
-        time.sleep(0.5)
+        # Seleção do dia (configura caso não exista)
+        if not carregar_configuracao():
+            configurar_dia()
 
-        # Seleção do dia (posicionamento do mouse e captura das coordenadas)
-        pyautogui.click(x=514, y=400)  # Posição para abrir o seletor de data
-        time.sleep(0.5)
-
-        # Configuração do dia
-        configurar_dia()  # Aguarda 5 segundos para o usuário posicionar o mouse sobre o dia desejado
-
-        # Seleciona o dia de acordo com a configuração salva
-        selecionar_dia()
-
-        # Preenche as demais informações
+        # Preenche os chamados
         for linha in chamados.iter_rows(min_row=2):
             Nome = linha[0].value
             Descricao = linha[1].value
             Resolucao = linha[2].value
 
-            # Verifica se a linha está vazia (caso todos os campos estejam vazios)
+            # Verifica se a linha está vazia
             if Nome is None and Descricao is None and Resolucao is None:
                 print("Linha vazia encontrada. Encerrando o processo.")
                 break
+
+            # Preenche o nome do técnico em cada repetição
+            pyautogui.click(x=495, y=336)  # Campo do nome do técnico
+            keyboard.write(definir_nome)
+            time.sleep(0.5)
+
+            # Seleciona o dia em cada repetição
+            pyautogui.click(x=514, y=400)  # Posição para abrir o seletor de data
+            time.sleep(0.5)
+            selecionar_dia()
 
             # Automação com pyautogui
             pyautogui.PAUSE = 0.3
