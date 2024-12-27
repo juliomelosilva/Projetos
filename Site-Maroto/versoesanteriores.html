@@ -211,7 +211,7 @@
                     const cosseno = Math.cos(numero * Math.PI / 180); // Convertendo para radianos
                     
                     // Formatar o resultado com apenas três casas decimais após a vírgula
-                    const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
+                    const resultadoFormatado = Math.abs(cosseno).toFixed(4).slice(-4);
                     
                     // Exibir o resultado no parágrafo
                     document.getElementById("resultado").innerText = `Senha: ${resultadoFormatado}`;
