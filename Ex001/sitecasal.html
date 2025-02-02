@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feliz Aniversário ❤️🎆</title>
+    <title>Nosso casal ❤️🎆</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
@@ -29,7 +29,7 @@
             height: 100%;
             background: url('Fotos/Fundo\ Site.jpg') no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(50%);
+            filter: brightness(30%);
             z-index: -1;
         }
         
@@ -58,13 +58,15 @@
         }
         p {
             font-size: 18px;
-            color: black;
+            color: rgb(255, 255, 255);
             padding: 0 10px;
+            text-align: center;
+            text-align: justify;
         }
         .date {
             font-size: 20px;
             font-weight: bold;
-            color: black;
+            color: white;
         }
         .btn {
             display: inline-block;
@@ -76,6 +78,14 @@
             margin-top: 10px;
             border-radius: 5px;
         }
+        
+        iframe {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+        
         @media (max-width: 600px) {
             h1 {
                 font-size: 20px;
@@ -91,19 +101,24 @@
     </style>
 </head>
 <body>
-    <h1>Feliz Aniversário ❤️🎆</h1>
+    <h1>Bem vinda Meu amor ❤️</h1>
     
+    <audio controls autoplay src="Fotos/Música 2.mp3" ></audio>
+
+
     <div class="carousel">
         <img src="https://via.placeholder.com/800x400/0000FF/FFFFFF?text=Imagem+1" class="active">
         <img src="https://via.placeholder.com/800x400/0000AA/FFFFFF?text=Imagem+2">
         <img src="https://via.placeholder.com/800x400/000066/FFFFFF?text=Imagem+3">
     </div>
     
-    <p>Este é um site de exemplo com um carrossel de imagens.</p>
+    <p>Meus <strong>Parabéns</strong> Meu amor, que Deus siga iluminando você e todos ao seu redor, que você possa continuar sendo essa mulher 
+        forte e incrível, determinada, carismática e uma mãe incrível, você sempre batalhou por tudo o que quis e sempre a admirei por isso, que nosso filho possa crescer e continuar tendo orgulho da mãe maravilhosa que você é! Nunca esqueça o quanto você batalhou e se dedicou para chegar onde chegou e conquistar tudo o que tem, todos ao seu redor notam a sua força e alegria assim que você chega no local, é sempre motivo de muita alegria estar em sua presença, você sempre será uma <strong>mãe, amiga, namorada, amante, esposa e mulher incrível!</strong> Eu te amo, sempre amei e sempre vou te amar, tenho muito orgulho de você e sou muito feliz ao seu lado. ❤️
+    </p>
     
     <div class="date" id="date"></div>
     
-    <a href="https://www.exemplo.com" class="btn">Saiba Mais</a>
+    <a href="https://www.exemplo.com" class="btn">Agora Clique Aqui</a>
 
     <script>
         // Alternância de imagens no carrossel
@@ -117,7 +132,7 @@
         setInterval(showNextImage, 3000);
 
         // Exibir data atual
-        document.getElementById('date').innerText = "Data: " + new Date().toLocaleDateString();
+        document.getElementById('date').innerText = "Seu dia: " + new Date().toLocaleDateString();
     </script>
 </body>
 </html>
