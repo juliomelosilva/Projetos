@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site com Carrossel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: url('Fotos/Fundo\ Site.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .carousel {
+            width: 100%;
+            max-width: 350px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel img {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+        }
+        .carousel img.active {
+            display: block;
+        }
+        p {
+            font-size: 18px;
+            color: black;
+            padding: 0 10px;
+        }
+        .date {
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: navy;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+            .carousel {
+                width: 95%;
+                max-width: 300px;
+            }
+            p, .date, .btn {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1><i class="fas fa-heart"></i> Bem-vindo ao Meu Site <i class="fas fa-fire"></i></h1>
+    
+    <div class="carousel">
+        <img src="https://via.placeholder.com/800x400/0000FF/FFFFFF?text=Imagem+1" class="active">
+        <img src="https://via.placeholder.com/800x400/0000AA/FFFFFF?text=Imagem+2">
+        <img src="https://via.placeholder.com/800x400/000066/FFFFFF?text=Imagem+3">
+    </div>
+    
+    <p>Este é um site de exemplo com um carrossel de imagens.</p>
+    
+    <div class="date" id="date"></div>
+    
+    <a href="https://www.exemplo.com" class="btn">Saiba Mais</a>
+
+    <script>
+        // Alternância de imagens no carrossel
+        let index = 0;
+        function showNextImage() {
+            let images = document.querySelectorAll('.carousel img');
+            images[index].classList.remove('active');
+            index = (index + 1) % images.length;
+            images[index].classList.add('active');
+        }
+        setInterval(showNextImage, 3000);
+
+        // Exibir data atual
+        document.getElementById('date').innerText = "Data: " + new Date().toLocaleDateString();
+    </script>
+</body>
+</html>
