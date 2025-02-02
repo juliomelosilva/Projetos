@@ -78,6 +78,14 @@
             margin-top: 10px;
             border-radius: 5px;
         }
+        
+        iframe {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+        
         @media (max-width: 600px) {
             h1 {
                 font-size: 20px;
@@ -95,9 +103,7 @@
 <body>
     <h1>Feliz Aniversário ❤️🎆 Meu amor</h1>
     
-    <audio id="background-music" autoplay loop>
-        <source src="https://www.youtube.com/watch?v=1m_sWJQm2fs&list=RDMM&index=1" type="audio/mpeg">
-    </audio>
+    <iframe id="music" src="https://www.youtube.com/embed/1m_sWJQm2fs?autoplay=1&loop=1&playlist=1m_sWJQm2fs" allow="autoplay" frameborder="0"></iframe>
     
     <div class="carousel">
         <img src="https://via.placeholder.com/800x400/0000FF/FFFFFF?text=Imagem+1" class="active">
