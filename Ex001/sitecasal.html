@@ -6,6 +6,8 @@
     <title>Nosso casal ❤️🎆</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
         body {
             position: relative;
             font-family: Arial, sans-serif;
@@ -19,7 +21,7 @@
             min-height: 100vh;
             color: white;
         }
-        
+
         body::before {
             content: "";
             position: absolute;
@@ -27,13 +29,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('Fotos/Fundo\ Site.jpg') no-repeat center center fixed;
+            background: url('Fotos/Casal/Fundo.png') no-repeat center center fixed;
             background-size: cover;
             filter: brightness(30%);
             z-index: -1;
         }
-        
+
         h1 {
+            font-family: Montserrat;
             margin-top: 20px;
             font-size: 24px;
             display: flex;
@@ -41,6 +44,8 @@
             justify-content: center;
             gap: 10px;
         }
+
+        /* Estilo do carrossel de imagens */
         .carousel {
             width: 100%;
             max-width: 350px;
@@ -48,53 +53,58 @@
             overflow: hidden;
             position: relative;
         }
+
         .carousel img {
             width: 100%;
             display: none;
             border-radius: 10px;
+            border: var(--border-width, 5px) solid white;  /* Moldura ajustável */
+            box-sizing: border-box; /* Evita que a borda ultrapasse o tamanho da imagem */
         }
+
         .carousel img.active {
             display: block;
         }
+
+        .counter {
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
         p {
+            font-family: Montserrat;
             font-size: 18px;
             color: rgb(255, 255, 255);
             padding: 0 10px;
             text-align: center;
             text-align: justify;
         }
+
         .date {
             font-size: 20px;
             font-weight: bold;
             color: white;
         }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: navy;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            margin-top: 10px;
-            border-radius: 5px;
+
+        /* Estilo do player de áudio */
+        audio {
+            margin-top: 20px;
         }
-        
-        iframe {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-        }
-        
+
+        /* Responsividade para dispositivos móveis */
         @media (max-width: 600px) {
             h1 {
                 font-size: 20px;
             }
+
             .carousel {
                 width: 95%;
                 max-width: 300px;
             }
-            p, .date, .btn {
+
+            p, .date, .counter {
                 font-size: 16px;
             }
         }
@@ -102,22 +112,33 @@
 </head>
 <body>
     <h1>Bem vinda Meu amor ❤️</h1>
-    
-    <audio controls autoplay src="Fotos/Música 2.mp3" ></audio>
 
+    <!-- Player de áudio com controles -->
+    <audio controls autoplay src="Fotos/Música 2.mp3"></audio>
 
+    <!-- Carrossel de imagens -->
     <div class="carousel">
-        <img src="https://via.placeholder.com/800x400/0000FF/FFFFFF?text=Imagem+1" class="active">
-        <img src="https://via.placeholder.com/800x400/0000AA/FFFFFF?text=Imagem+2">
-        <img src="https://via.placeholder.com/800x400/000066/FFFFFF?text=Imagem+3">
+        <img src="Fotos/Casal/0.jpg" class="active">
+        <img src="Fotos/Casal/1.jpg">
+        <img src="Fotos/Casal/2.jpg">
+        <img src="Fotos/Casal/3.jpg">
+        <img src="Fotos/Casal/4.jpg">
+        <img src="Fotos/Casal/5.jpg">
+        <img src="Fotos/Casal/6.jpg">
+        <img src="Fotos/Casal/7.jpg">
+        <img src="Fotos/Casal/8.jpg">   
     </div>
-    
-    <p>Meus <strong>Parabéns</strong> Meu amor, que Deus siga iluminando você e todos ao seu redor, que você possa continuar sendo essa mulher 
-        forte e incrível, determinada, carismática e uma mãe incrível, você sempre batalhou por tudo o que quis e sempre a admirei por isso, que nosso filho possa crescer e continuar tendo orgulho da mãe maravilhosa que você é! Nunca esqueça o quanto você batalhou e se dedicou para chegar onde chegou e conquistar tudo o que tem, todos ao seu redor notam a sua força e alegria assim que você chega no local, é sempre motivo de muita alegria estar em sua presença, você sempre será uma <strong>mãe, amiga, namorada, amante, esposa e mulher incrível!</strong> Eu te amo, sempre amei e sempre vou te amar, tenho muito orgulho de você e sou muito feliz ao seu lado. ❤️
+
+    <!-- Contador de dias, horas, minutos e segundos -->
+    <div class="counter" id="counter"></div>
+
+    <!-- Texto com mensagem -->
+    <p>Oi meu amor, tudo bem? Espero que sim, este pequeno gesto é para demonstrar o quanto eu te amo, já estamos juntos a tanto tempo, foram tantos altos e baixos, tanta coisa já vivemos e seguimos firmes. Quero dizer que como seu marido eu te amo, eu te amo demais e sempre irei fazer todo o possível para honrar você e nosso casamento, casamento este que nasceu do lugar mais improvável e da forma menos direta possível, mas conseguimos, chegamos aqui! E nosso laço cresceu tanto que não coube apenas no nosso peito, com isso de dois corações se fez um, nosso príncipe, nosso filho. Você é e sempre tem sido maravilhosa para mim, seu cuidado, seu carinho e seu amor sempre enchem meu coração de alegria, eu sou muito honrado em ter uma mulher feito você, que é minha amiga, minha namorada, minha amante e minha esposa, tudo em uma só. Você sempre será meu amor, a mulher com quem escolhi viver e morrer ao lado. ❤️  
     </p>
-    
+    <p>"Eu me comprometo a amá-la seriamente, em todas as suas formas. Agora e para sempre. Prometo sempre lembrar que esse é um amor que dura a vida toda. E sempre sabendo na parte mais profunda da minha alma que não importa os desafios que venham a nos separar, sempre encontraremos um caminho de volta para o outro." ❤️</p>
+
+    <!-- Exibição da data atual -->
     <div class="date" id="date"></div>
-    
 
     <script>
         // Alternância de imagens no carrossel
@@ -130,8 +151,23 @@
         }
         setInterval(showNextImage, 3000);
 
-        // Exibir data atual
-        document.getElementById('date').innerText = "Seu dia: " + new Date().toLocaleDateString();
+
+        // Contador de dias, horas, minutos e segundos desde uma data específica
+        const targetDate = new Date("2018-07-25T00:00:00"); // Altere esta data conforme necessário
+        function updateCounter() {
+            const now = new Date();
+            const timeDiff = now - targetDate;  // A diferença em milissegundos
+            
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));  // Convertendo para dias
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  // Horas restantes
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));  // Minutos restantes
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);  // Segundos restantes
+
+            document.getElementById("counter").innerText = `Já se passaram ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos`;
+        }
+
+        // Atualiza o contador a cada segundo
+        setInterval(updateCounter, 1000);
     </script>
 </body>
 </html>
