@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso casal ❤️🎆</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body {
+            position: relative;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('Fotos/Casal/Fundo.png') no-repeat center center fixed;
+            background-size: cover;
+            filter: brightness(30%);
+            z-index: -1;
+        }
+
+        h1 {
+            font-family: Montserrat;
+            margin-top: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Estilo do carrossel de imagens */
+        .carousel {
+            width: 100%;
+            max-width: 350px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel img {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+            border: var(--border-width, 5px) solid white;  /* Moldura ajustável */
+            box-sizing: border-box; /* Evita que a borda ultrapasse o tamanho da imagem */
+        }
+
+        .carousel img.active {
+            display: block;
+        }
+
+        .counter {
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        p {
+            font-family: Montserrat;
+            font-size: 18px;
+            color: rgb(255, 255, 255);
+            padding: 0 10px;
+            text-align: center;
+            text-align: justify;
+        }
+
+        .date {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Estilo do player de áudio */
+        audio {
+            margin-top: 20px;
+        }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            .carousel {
+                width: 95%;
+                max-width: 300px;
+            }
+
+            p, .date, .counter {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem vinda Meu amor ❤️</h1>
+
+    <!-- Player de áudio com controles -->
+    <audio controls autoplay src="fotos/Audio.mp3"></audio>
+
+    <!-- Carrossel de imagens -->
+    <div class="carousel">
+        <img src="fotos/1.jpeg" class="active">
+        <img src="fotos/2.jpeg">
+        <img src="fotos/3.jpeg">
+        <img src="fotos/4.jpeg">
+        <img src="fotos/5.jpeg">
+        <img src="fotos/6.jpeg">
+        <img src="fotos/7.jpeg">
+        <img src="fotos/8.jpeg">
+
+  
+    </div>
+
+    <!-- Contador de dias, horas, minutos e segundos -->
+    <div class="counter" id="counter"></div>
+
+    <!-- Texto com mensagem -->
+    <p>Bem vinda meu amor, espero que goste. Este é um pequeno gesto para te lembrar sempre do quanto eu te amo, você é muito importante para mim! Estamos juntos a tão pouco tempo mas você me faz tão bem que se parecem anos juntos, eu sou muito feliz ao seu lado, eu te amo demais! ❤️ </p>
+
+    <!-- Exibição da data atual -->
+    <div class="date" id="date"></div>
+
+    <script>
+        // Alternância de imagens no carrossel
+        let index = 0;
+        function showNextImage() {
+            let images = document.querySelectorAll('.carousel img');
+            images[index].classList.remove('active');
+            index = (index + 1) % images.length;
+            images[index].classList.add('active');
+        }
+        setInterval(showNextImage, 3000);
+
+
+        // Contador de dias, horas, minutos e segundos desde uma data específica
+        const targetDate = new Date("2024-10-25T00:00:00"); // Altere esta data conforme necessário
+        function updateCounter() {
+            const now = new Date();
+            const timeDiff = now - targetDate;  // A diferença em milissegundos
+            
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));  // Convertendo para dias
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  // Horas restantes
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));  // Minutos restantes
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);  // Segundos restantes
+
+            document.getElementById("counter").innerText = `Desde que nos conhecemos, já se passaram ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos e você continua me fazendo feliz!`;
+        }
+
+        // Atualiza o contador a cada segundo
+        setInterval(updateCounter, 1000);
+    </script>
+</body>
+</html>
