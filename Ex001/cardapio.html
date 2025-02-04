@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon">
     <title>Cardápio Nogueira Doceria</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+        body { font-family: Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
         body { 
             font-family: Montserrat, Arial, sans-serif; 
             text-align: center; 
@@ -28,90 +27,178 @@
             z-index: -1;
         }
         .logo { max-width: 150px; margin: 20px auto; display: block; border-radius: 50%; }
-        .container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-            gap: 10px; 
-            justify-content: center; 
-            padding: 10px;
-        }
-        .card { 
-            border: 1px solid #ddd; 
-            padding: 10px; 
-            border-radius: 10px; 
-            background: #fff;
-            position: relative;
-        }
-        .card img { 
-            width: 100%; 
-            height: auto; 
-            border-radius: 50%; 
-            object-fit: cover;
-        }
-        .card input { width: 50px; }
-        .button { background: #ff69b4; color: white; padding: 10px; text-decoration: none; display: inline-block; margin-top: 10px; border-radius: 20px; cursor: not-allowed; opacity: 0.5; }
-        .button.enabled { cursor: pointer; opacity: 1; }
-        .min-quantity { font-size: 12px; color: red; display: block; }
-        .preco { font-size: 14px; font-weight: bold; color: #333; }
-        .icon-alert { color: red; font-weight: bold; margin-right: 5px; }
-        select {
-            width: 100%;
-            max-width: 180px;
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        h1, p{
-            font-family: Montserrat, Arial, sans-serif;
-        }
+        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 10px; }
+        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fff; position: relative; }
+        .card img { width: 100%; height: auto; border-radius: 50%; }
+        .button { background: #ff69b4; color: white; padding: 10px; text-decoration: none; display: inline-block; margin-top: 10px; border-radius: 20px; cursor: pointer; }
+        .disabled { opacity: 0.5; cursor: not-allowed; }
+        .sacola { margin-top: 20px; padding: 10px; border: 1px solid #ddd; background: #fff; border-radius: 10px; }
+        .sacola button { background: #ff69b4; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
     <img src="Fotos/Cardápio/Logotipo Doceria.png" alt="Logo Marca" class="logo">
     <h1>Cardápio</h1>
-    <div class="container">
-        <script>
-            const salgados = [
-                { nome: "Doces Clássicos", img: "Fotos/Cardápio/Doces Clássicos.png", descricao: "Variedade de brigadeiros. 15g cada", variacoes: ["Brigadeiro Tradicional", "Brigadeiro Branco", "Coco (Beijinho)", "Prestígio", "Cajuzinho"], preco: "R$ 2,00/un", minQuantidade: 25 },
-                { nome: "Doces Gourmet", img: "Fotos/Cardápio/Doces Gourmet.png", descricao: "Doces sofisticados e deliciosos.", variacoes: ["Surpresa de Uva", "Branco crocante", "Confete", "Chocoball", "Amendoim", "Paçoca", "Meio Amargo", "Leite Ninho", "Bicho do Pé"], preco: "R$ 3,00/un", minQuantidade: 25 },
-                { nome: "Salgados Clássicos", img: "Fotos/Cardápio/Salgados.png", descricao: "Opções clássicas de salgados.", variacoes: ["Tortilete", "Salgadinho", "Canudinho", "Empadinha", "Pãozinho da vovó Gô"], preco: "R$ 4,50/un", minQuantidade: 25 },
-                { nome: "Frituras", img: "Fotos/Cardápio/Frituras.png", descricao: "Salgados fritos crocantes e saborosos.", variacoes: ["Coxinha", "Bolinha Mista", "Bolinha de Queijo", "Risole", "Enroladinho"], preco: "R$ 5,00/un", minQuantidade: 25 },
-                { nome: "Tortas", img: "Fotos/Cardápio/Torta.png", descricao: "Tortas salgadas e doces variadas.", variacoes: ["Frango", "Verduras", "Mista (Queijo e Presunto)", "Torta Doce Banana", "Torta Doce Abacaxi"], preco: "R$ 6,50/un" }
-            ];
+    <div class="container" id="menu"></div>
+    <div class="sacola" id="sacola">
+        <h2>Sacola</h2>
+        <ul id="listaSacola"></ul>
+        <p><strong>Total:</strong> <span id="totalSacola">R$ 0,00</span></p>
+        <button onclick="finalizarPedido()">Finalizar Pedido</button>
+        <button onclick="limparSacola()">Limpar Sacola</button>
+    </div>
+    <script>
+        let sacola = [];
+        const produtos = [
+            { 
+                nome: "Doces Clássicos", 
+                img: "Fotos/Cardápio/Doces Clássicos.png", 
+                minQuantidade: 25, 
+                variacoes: {
+                    "Brigadeiro Tradicional": 0.85, 
+                    "Brigadeiro Branco": 0.90, 
+                    "Coco (Beijinho)": 0.80, 
+                    "Prestígio": 1.00, 
+                    "Cajuzinho": 0.75
+                } 
+            },
+            { 
+                nome: "Doces Gourmet", 
+                img: "Fotos/Cardápio/Doces Gourmet.png", 
+                minQuantidade: 25, 
+                variacoes: {
+                    "Surpresa de Uva": 1.00, 
+                    "Branco crocante": 1.20, 
+                    "Confete": 1.10
+                } 
+            },
+            { 
+                nome: "Salgados Clássicos", 
+                img: "Fotos/Cardápio/Salgados.png", 
+                minQuantidade: 25, 
+                variacoes: {
+                    "Brigadeiro Tradicional": 0.85, 
+                    "Brigadeiro Branco": 0.90, 
+                    "Coco (Beijinho)": 0.80, 
+                    "Prestígio": 1.00, 
+                    "Cajuzinho": 0.75
+                } 
+            },
+            { 
+                nome: "Frituras", 
+                img: "Fotos/Cardápio/Frituras.png", 
+                minQuantidade: 25, 
+                variacoes: {
+                    "Brigadeiro Tradicional": 0.85, 
+                    "Brigadeiro Branco": 0.90, 
+                    "Coco (Beijinho)": 0.80, 
+                    "Prestígio": 1.00, 
+                    "Cajuzinho": 0.75
+                } 
+            },
+            { 
+                nome: "Tortas", 
+                img: "Fotos/Cardápio/Torta.png", 
+                minQuantidade: 25, 
+                variacoes: {
+                    "Brigadeiro Tradicional": 0.85, 
+                    "Brigadeiro Branco": 0.90, 
+                    "Coco (Beijinho)": 0.80, 
+                    "Prestígio": 1.00, 
+                    "Cajuzinho": 0.75
+                } 
+            }
+        ];
+        
+        function renderizarMenu() {
+            const container = document.getElementById("menu");
+            container.innerHTML = "";
+            produtos.forEach((produto, index) => {
+                const primeiraVariacao = Object.keys(produto.variacoes)[0];
+                const precoInicial = produto.variacoes[primeiraVariacao].toFixed(2);
 
-            salgados.forEach((salgado, index) => {
-                document.write(`
+                container.innerHTML += `
                     <div class="card">
-                        <img src="${salgado.img}" alt="${salgado.nome}">
-                        <h3>${salgado.nome}</h3>
-                        <p>${salgado.descricao}</p>
-                        <p class="preco"><strong>Preço:</strong> ${salgado.preco}</p>
+                        <img src="${produto.img}" alt="${produto.nome}">
+                        <h3>${produto.nome}</h3>
+                        <p>Preço: R$ <span id="preco${index}">${precoInicial}</span>/un</p>
                         <label>Opção:</label>
-                        <select id="var${index}">
-                            ${salgado.variacoes.map(variedade => `<option value="${variedade}">${variedade}</option>`).join('')}
+                        <select id="var${index}" onchange="atualizarPreco(${index})">
+                            ${Object.keys(produto.variacoes).map(variedade => `<option value="${variedade}">${variedade}</option>`).join('')}
                         </select>
                         <br>
-                        <label>Quantidade: </label>
-                        <input type="number" id="qtd${index}" min="1" value="1" oninput="verificarQuantidade(${index})">
-                        ${salgado.minQuantidade ? `<p class="min-quantity"><span class="icon-alert">⚠️</span> Quantidade mínima: ${salgado.minQuantidade} unidades</p>` : ''}
-                        <a href="#" class="button" id="btn${index}" onclick="comprar(${index})" disabled>Quero Comprar</a>
-                    </div>
-                `);
+                        <input type="number" id="qtd${index}" min="0" value="0">
+                        <button onclick="adicionarCento(${index})">+100</button>
+                        <button id="btn${index}" class="button" onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
+                    </div>`;
             });
-
-            function verificarQuantidade(index) {
-                const quantidade = document.getElementById(`qtd${index}`).value;
-                const minQuantidade = salgados[index].minQuantidade || 1;
-                const botao = document.getElementById(`btn${index}`);
-                if (quantidade >= minQuantidade) {
-                    botao.classList.add("enabled");
-                    botao.removeAttribute("disabled");
-                } else {
-                    botao.classList.remove("enabled");
-                    botao.setAttribute("disabled", "true");
-                }
+        }
+        
+        function atualizarPreco(index) {
+            const select = document.getElementById(`var${index}`);
+            const variacao = select.value;
+            const preco = produtos[index].variacoes[variacao];
+            document.getElementById(`preco${index}`).innerText = preco.toFixed(2);
+        }
+        
+        function adicionarCento(index) {
+            const qtd = document.getElementById(`qtd${index}`);
+            qtd.value = parseInt(qtd.value) + 100;
+        }
+        
+        function adicionarSacola(index) {
+            const qtd = parseInt(document.getElementById(`qtd${index}`).value);
+            if (qtd === 0) {
+                alert("❗ A quantidade deve ser maior que 25!");
+                return;
             }
-        </script>
-    </div>
+            const select = document.getElementById(`var${index}`);
+            const variacao = select.value;
+            const preco = produtos[index].variacoes[variacao];
+            
+            let itemExistente = sacola.find(item => item.nome === produtos[index].nome && item.variacao === variacao);
+            if (itemExistente) {
+                itemExistente.quantidade += qtd;
+                itemExistente.precoTotal += preco * qtd;
+            } else {
+                sacola.push({ nome: produtos[index].nome, variacao, quantidade: qtd, precoTotal: preco * qtd });
+            }
+            atualizarSacola();
+            alert(`✅ ${qtd}x ${variacao} adicionado à sacola!`);
+        }
+        
+        function atualizarSacola() {
+            const lista = document.getElementById("listaSacola");
+            const totalSacola = document.getElementById("totalSacola");
+            lista.innerHTML = "";
+            let total = 0;
+            sacola.forEach(item => {
+                lista.innerHTML += `<li>${item.quantidade}x ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
+                total += item.precoTotal;
+            });
+            totalSacola.innerText = `R$ ${total.toFixed(2)}`;
+        }
+        
+        function finalizarPedido() {
+            if (sacola.length === 0) {
+                alert("Sua sacola está vazia!");
+                return;
+            }
+            let mensagem = "Pedido:%0A";
+            sacola.forEach(item => {
+                mensagem += `${item.quantidade}x ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}%0A`;
+            });
+            mensagem += `%0ATotal: R$ ${document.getElementById("totalSacola").innerText}`;
+            window.open(`https://wa.me/5582920004574?text=${mensagem}`);
+        }
+        
+        function limparSacola() {
+            sacola = [];
+            atualizarSacola();
+            alert("🔴 Sua sacola foi limpa!");
+        }
+
+        renderizarMenu();
+    </script>
 </body>
 </html>
