@@ -196,7 +196,7 @@
             lista.innerHTML = "";
             let total = 0;
             sacola.forEach(item => {
-                lista.innerHTML += `<li>${item.quantidade}x ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
+                lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
                 total += item.precoTotal;
             });
             totalSacola.innerText = `R$ ${total.toFixed(2)}`;
@@ -209,7 +209,7 @@
             }
             let mensagem = "Pedido:%0A";
             sacola.forEach(item => {
-                mensagem += `${item.quantidade}x ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}%0A`;
+                mensagem += `${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}%0A`;
             });
             mensagem += `%0ATotal: R$ ${document.getElementById("totalSacola").innerText}`;
             window.open(`https://wa.me/5582920004574?text=${mensagem}`);
