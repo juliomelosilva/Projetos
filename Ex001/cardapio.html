@@ -213,7 +213,7 @@
         
         function adicionarSacola(index) {
             const qtd = parseInt(document.getElementById(`qtd${index}`).value);
-            if (qtd < produtos[index].minQuantidade) {
+            if (isNaN(qtd) || qtd < produtos[index].minQuantidade) {
                 alert(`❗ A quantidade mínima para este produto é ${produtos[index].minQuantidade} unidades!`);
                 return;
             }
