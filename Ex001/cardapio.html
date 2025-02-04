@@ -149,7 +149,7 @@
         function adicionarSacola(index) {
             const qtd = parseInt(document.getElementById(`qtd${index}`).value);
             if (qtd === 0) {
-                alert("❗ A quantidade deve ser maior que 25!");
+                alert("❗ A quantidade deve ser maior que 0!");
                 return;
             }
             const select = document.getElementById(`var${index}`);
@@ -190,6 +190,11 @@
             });
             mensagem += `%0ATotal: R$ ${document.getElementById("totalSacola").innerText}`;
             window.open(`https://wa.me/5582920004574?text=${mensagem}`);
+            
+            // Limpa a sacola após finalizar o pedido
+            sacola = [];
+            atualizarSacola();
+            alert("✅ Pedido Finalizado! Sua sacola foi limpa.");
         }
         
         function limparSacola() {
