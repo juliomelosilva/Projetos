@@ -7,15 +7,28 @@
     <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
-        body { font-family: Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+
+        @font-face {
+            font-family: 'kiss' ;
+            src: url(Fotos/Cardápio/Kissing\ Season.ttf) format(truetype);
+            font-weight: normal;
+            font-style: normal;
+        }
+        
         body { 
-            font-family: Montserrat, Arial, sans-serif; 
-            text-align: center; 
-            margin: 0; 
-            padding: 0; 
+            font-family:Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
             background: url('Fotos/Cardápio/Fundo.png') no-repeat center center fixed;
             background-size: cover;
             position: relative;
+        }
+        h1, h2 {
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        h1{
+            font-size:  75px;
+        }
+        h2{
+            font-size: 55px;
         }
         body::before {
             content: "";
@@ -36,6 +49,29 @@
         .disabled { opacity: 0.5; cursor: not-allowed; }
         .sacola { margin-top: 20px; padding: 10px; border: 1px solid #ddd; background: #fff; border-radius: 10px; }
         .sacola button { background: #ff69b4; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
+        
+        /* Seletor para IDs dos produtos */
+        #docesClassicos h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #docesGourmet h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #salgadosClassicos h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #frituras h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #tortas h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+
         /* Ajustes de responsividade */
         @media (max-width: 600px) {
             .card select, .card input, .card button {
@@ -68,6 +104,7 @@
         let sacola = [];
         const produtos = [
             { 
+                id: "docesClassicos", 
                 nome: "Doces Clássicos", 
                 img: "Fotos/Cardápio/Doces Clássicos.png", 
                 minQuantidade: 25, 
@@ -80,9 +117,10 @@
                 } 
             },
             { 
+                id: "docesGourmet", 
                 nome: "Doces Gourmet", 
                 img: "Fotos/Cardápio/Doces Gourmet.png", 
-                minQuantidade: 25, 
+                minQuantidade: 25,  // Quantidade mínima agora personalizada
                 variacoes: {
                     "Surpresa de Uva": 1.00, 
                     "Branco crocante": 1.20, 
@@ -96,9 +134,10 @@
                 } 
             },
             { 
+                id: "salgadosClassicos", 
                 nome: "Salgados Clássicos", 
                 img: "Fotos/Cardápio/Salgados.png", 
-                minQuantidade: 25, 
+                minQuantidade: 25, // Quantidade mínima personalizada
                 variacoes: {
                     "Tortilete": 0.85, 
                     "Salgadinho": 0.90, 
@@ -108,9 +147,10 @@
                 } 
             },
             { 
+                id: "frituras", 
                 nome: "Frituras", 
                 img: "Fotos/Cardápio/Frituras.png", 
-                minQuantidade: 25, 
+                minQuantidade: 25, // Quantidade mínima personalizada
                 variacoes: {
                     "Coxinha": 0.85, 
                     "Bolinha Misto": 0.90, 
@@ -120,9 +160,10 @@
                 } 
             },
             { 
+                id: "tortas", 
                 nome: "Tortas", 
                 img: "Fotos/Cardápio/Torta.png", 
-                minQuantidade: 25, 
+                minQuantidade: 1, 
                 variacoes: {
                     "Frango Desfiado": 0.85, 
                     "Verdura": 0.90, 
@@ -141,7 +182,7 @@
                 const precoInicial = produto.variacoes[primeiraVariacao].toFixed(2);
 
                 container.innerHTML += `
-                    <div class="card">
+                    <div class="card" id="${produto.id}">
                         <img src="${produto.img}" alt="${produto.nome}">
                         <h3>${produto.nome}</h3>
                         <p>Preço: R$ <span id="preco${index}">${precoInicial}</span>/un</p>
@@ -150,6 +191,7 @@
                             ${Object.keys(produto.variacoes).map(variedade => `<option value="${variedade}">${variedade}</option>`).join('')}
                         </select>
                         <br>
+                        <label for="qtd${index}">Quantidade:</label>
                         <input type="number" id="qtd${index}" min="0" value="0">
                         <button onclick="adicionarCento(${index})">+100</button>
                         <button id="btn${index}" class="button" onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
@@ -171,8 +213,8 @@
         
         function adicionarSacola(index) {
             const qtd = parseInt(document.getElementById(`qtd${index}`).value);
-            if (qtd === 0) {
-                alert("❗ A quantidade deve ser maior que 0!");
+            if (qtd < produtos[index].minQuantidade) {
+                alert(`❗ A quantidade mínima para este produto é ${produtos[index].minQuantidade} unidades!`);
                 return;
             }
             const select = document.getElementById(`var${index}`);
