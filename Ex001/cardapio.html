@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cardápio Nogueira Doceria</title>
+    <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
         body { font-family: Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
@@ -28,12 +29,28 @@
         }
         .logo { max-width: 150px; margin: 20px auto; display: block; border-radius: 50%; }
         .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 10px; }
-        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fff; position: relative; }
+        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fff; position: relative; display: flex; flex-direction: column; align-items: center; }
         .card img { width: 100%; height: auto; border-radius: 50%; }
-        .button { background: #ff69b4; color: white; padding: 10px; text-decoration: none; display: inline-block; margin-top: 10px; border-radius: 20px; cursor: pointer; }
+        .card select, .card input { width: 100%; max-width: 150px; margin-top: 10px; padding: 5px; }
+        .card button { background: #ff69b4; color: white; padding: 10px; text-decoration: none; display: inline-block; margin-top: 10px; border-radius: 20px; cursor: pointer; }
         .disabled { opacity: 0.5; cursor: not-allowed; }
         .sacola { margin-top: 20px; padding: 10px; border: 1px solid #ddd; background: #fff; border-radius: 10px; }
         .sacola button { background: #ff69b4; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
+        /* Ajustes de responsividade */
+        @media (max-width: 600px) {
+            .card select, .card input, .card button {
+                width: 100%;
+                max-width: none;
+            }
+            .sacola {
+                margin: 10px;
+                padding: 15px;
+            }
+            .sacola button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
