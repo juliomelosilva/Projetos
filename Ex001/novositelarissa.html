@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário ❤️🎆</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body {
+            
+            position: relative;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('Fotos/Fundo\ Site.jpg') no-repeat center center fixed;
+            background-size: cover;
+            filter: brightness(30%);
+            z-index: -1;
+        }
+        
+        h1 {
+            font-family: Montserrat;
+            margin-top: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .carousel {
+            width: 100%;
+            max-width: 350px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel img {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+            border: var(--border-width, 5px) solid white;  /* Moldura ajustável */
+            box-sizing: border-box; /* Evita que a borda ultrapasse o tamanho da imagem */
+        }
+        .carousel img.active {
+            display: block;
+        }
+        p {
+            font-family: Montserrat;
+            font-size: 18px;
+            color: rgb(255, 255, 255);
+            padding: 0 10px;
+            text-align: center;
+            text-align: justify;
+        }
+        .date {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: navy;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        
+        iframe {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+            .carousel {
+                width: 95%;
+                max-width: 300px;
+            }
+            p, .date, .btn {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Feliz Aniversário ❤️🎆 Meu amor</h1>
+    
+    <audio controls autoplay src="Fotos/Música.mp3" ></audio>
+
+
+    <div class="carousel">
+        <img src="Fotos/1.jpg" class="active">
+        <img src="Fotos/2.jpg">
+        <img src="Fotos/3.jpg">
+        <img src="Fotos/4.jpg">
+        <img src="Fotos/5.jpg">
+        <img src="Fotos/6.jpg">
+        <img src="Fotos/7.jpg">
+        <img src="Fotos/8.jpg">
+        <img src="Fotos/8.jpg">
+        <img src="Fotos/9.jpg">
+    </div>
+    
+    <p>Meus <strong>Parabéns</strong> Meu amor, que Deus siga iluminando você e todos ao seu redor, que você possa continuar sendo essa mulher 
+        forte e incrível, determinada, carismática e uma mãe incrível, você sempre batalhou por tudo o que quis e sempre a admirei por isso, que nosso filho possa crescer e continuar tendo orgulho da mãe maravilhosa que você é! Nunca esqueça o quanto você batalhou e se dedicou para chegar onde chegou e conquistar tudo o que tem, todos ao seu redor notam a sua força e alegria assim que você chega no local, é sempre motivo de muita alegria estar em sua presença, você sempre será uma <strong>mãe, amiga, namorada, amante, esposa e mulher incrível!</strong> Eu te amo, sempre amei e sempre vou te amar, tenho muito orgulho de você e sou muito feliz ao seu lado. ❤️
+    </p>
+    
+    <h1>Seu dia: 03/02/2025</h1>
+
+    <a href="https://juliomelosilva.github.io/Projetos/Ex001/sitecasal.html" class="btn" target="_blank">Agora Clique Aqui</a>
+
+    <script>
+        // Alternância de imagens no carrossel
+        let index = 0;
+        function showNextImage() {
+            let images = document.querySelectorAll('.carousel img');
+            images[index].classList.remove('active');
+            index = (index + 1) % images.length;
+            images[index].classList.add('active');
+        }
+        setInterval(showNextImage, 3000);
+
+    </script>
+</body>
+</html>
