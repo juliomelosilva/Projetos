@@ -6,11 +6,10 @@
     <title>Nosso casal ❤️🎆</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
 
         body {
-            position: relative;
-            font-family: Arial, sans-serif;
+            font-family: Montserrat, sans-serif;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -19,44 +18,30 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            color: white;
-        }
-
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             background: url('Fotos/Casal/Fundo.png') no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(30%);
-            z-index: -1;
+            color: white;
         }
 
         h1 {
-            font-family: Montserrat;
             margin-top: 20px;
             font-size: 24px;
         }
-        .counter {
-            position: relative;
-            margin-top: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
+
+        .carousel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
         }
 
         .carousel {
             width: 100%;
-            max-width: 350px;
-            margin: 20px auto;
-            overflow: hidden;
-            position: relative;
             border: 5px solid white;
             border-radius: 10px;
-            padding: 10px;
+            overflow: hidden;
         }
 
         .carousel img {
@@ -73,6 +58,7 @@
         .carousel-controls {
             display: flex;
             justify-content: space-between;
+            width: 100%;
             margin-top: 10px;
         }
 
@@ -80,23 +66,24 @@
             background: none;
             color: white;
             border: 2px solid white;
-            font-size: 20px;
+            font-size: 16px;
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 5px;
         }
 
         .thumbnails {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
             gap: 5px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 10px;
         }
 
         .thumbnails img {
-            width: 40px;
-            height: 40px;
+            width: 100%;
+            height: auto;
             object-fit: cover;
             border-radius: 5px;
             border: 2px solid white;
@@ -109,99 +96,35 @@
             opacity: 1;
             border-color: rgb(15, 94, 26);
         }
-
-        .expanded {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .expanded img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-        }
-        p {
-            font-family: Montserrat;
-            font-size: 18px;
-            color: rgb(255, 255, 255);
-            padding: 0 10px;
-            text-align: center;
-            text-align: justify;
-        }
     </style>
 </head>
 <body>
     <h1>Bem vinda Meu amor ❤️</h1>
     <audio controls autoplay src="Fotos/Música 2.mp3"></audio>
 
-    <div class="carousel">
-        <img src="Fotos/Casal/0.jpg" class="active" onclick="expandImage(this)">
-        <img src="Fotos/Casal/1.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/2.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/3.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/4.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/5.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/6.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/7.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/8.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/9.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/10.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/11.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/12.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/13.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/14.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/15.jpg" onclick="expandImage(this)">
-        <img src="Fotos/Casal/16.jpg" onclick="expandImage(this)">
+    <div class="carousel-container">
+        <div class="carousel">
+            <img src="Fotos/Casal/0.jpg" class="active">
+            <img src="Fotos/Casal/1.jpg">
+            <img src="Fotos/Casal/2.jpg">
+        </div>
+        
+        <div class="carousel-controls">
+            <button onclick="showPrevImage()">&#10094; Anterior</button>
+            <button onclick="showNextImage()">Próxima &#10095;</button>
+        </div>
+
+        <div class="thumbnails">
+            <img src="Fotos/Casal/0.jpg" class="active" onclick="setImage(0)">
+            <img src="Fotos/Casal/1.jpg" onclick="setImage(1)">
+            <img src="Fotos/Casal/2.jpg" onclick="setImage(2)">
+        </div>
     </div>
-
-    <div class="carousel-controls">
-        <button class="prev" onclick="showPrevImage()">&#10094; Anterior</button>
-        <button class="next" onclick="showNextImage()">Próxima &#10095;</button>
-    </div>
-
-    <div class="thumbnails">
-        <img src="Fotos/Casal/0.jpg" class="active" onclick="setImage(0)">
-        <img src="Fotos/Casal/1.jpg" onclick="setImage(1)">
-        <img src="Fotos/Casal/2.jpg" onclick="setImage(2)">
-        <img src="Fotos/Casal/3.jpg" onclick="setImage(3)">
-        <img src="Fotos/Casal/4.jpg" onclick="setImage(4)">
-        <img src="Fotos/Casal/5.jpg" onclick="setImage(5)">
-        <img src="Fotos/Casal/6.jpg" onclick="setImage(6)">
-        <img src="Fotos/Casal/7.jpg" onclick="setImage(7)">
-        <img src="Fotos/Casal/8.jpg" onclick="setImage(8)">
-        <img src="Fotos/Casal/9.jpg" onclick="setImage(9)">
-        <img src="Fotos/Casal/10.jpg" onclick="setImage(10)">
-        <img src="Fotos/Casal/11.jpg" onclick="setImage(11)">
-        <img src="Fotos/Casal/12.jpg" onclick="setImage(12)">
-        <img src="Fotos/Casal/13.jpg" onclick="setImage(13)">
-        <img src="Fotos/Casal/14.jpg" onclick="setImage(14)">
-        <img src="Fotos/Casal/15.jpg" onclick="setImage(15)">
-        <img src="Fotos/Casal/16.jpg" onclick="setImage(16)">
-    </div>
-
-    
-    <div class="counter" id="counter"></div>
-     <!-- Texto com mensagem -->
-     <p>Oi meu amor, tudo bem? Espero que sim, este pequeno gesto é para demonstrar o quanto eu te amo, já estamos juntos a tanto tempo, foram tantos altos e baixos, tanta coisa já vivemos e seguimos firmes. Quero dizer que como seu marido eu te amo, eu te amo demais e sempre irei fazer todo o possível para honrar você e nosso casamento, casamento este que nasceu do lugar mais improvável e da forma menos direta possível, mas conseguimos, chegamos aqui! E nosso laço cresceu tanto que não coube apenas no nosso peito, com isso de dois corações se fez um, nosso príncipe, nosso filho. Você é e sempre tem sido maravilhosa para mim, seu cuidado, seu carinho e seu amor sempre enchem meu coração de alegria, eu sou muito honrado em ter uma mulher feito você, que é minha amiga, minha namorada, minha amante e minha esposa, tudo em uma só. Você sempre será meu amor, a mulher com quem escolhi viver e morrer ao lado. ❤️  
-    </p>
-    <p>"O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha. Não maltrata, não procura interesses, não se ira facilmente, não guarda rancor. O amor não se alegra com a injustiça, mas se alegra com a verdade. <strong>Tudo sofre, tudo crê, Tudo espera e tudo suporta</strong>." 1Co 13:4-7</p>
-    <p>"Eu me comprometo a amá-la seriamente, em todas as suas formas. Agora e para sempre. Prometo sempre lembrar que esse é um amor que dura a vida toda. E sempre sabendo na parte mais profunda da minha alma que não importa os desafios que venham a nos separar, sempre encontraremos um caminho de volta para o outro." ❤️</p>
-
 
     <script>
-        
         let index = 0;
         let images = document.querySelectorAll('.carousel img');
         let thumbnails = document.querySelectorAll('.thumbnails img');
-        let interval;
 
         function updateCarousel() {
             images.forEach(img => img.classList.remove('active'));
@@ -224,48 +147,6 @@
             index = i;
             updateCarousel();
         }
-
-        function expandImage(imgElement) {
-            let expandedView = document.createElement('div');
-            expandedView.classList.add('expanded');
-            expandedView.onclick = () => expandedView.remove();
-            
-            let img = document.createElement('img');
-            img.src = imgElement.src;
-            expandedView.appendChild(img);
-            document.body.appendChild(expandedView);
-        }
-
-        function startAutoplay() {
-            interval = setInterval(showNextImage, 5000);
-        }
-
-        startAutoplay();
-    </script>
-    <script>
-        function updateCounter() {
-            const targetDate = new Date("2018-07-31T00:00:00");
-            const now = new Date();
-            
-            let diff = now - targetDate;
-            let years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-            diff %= (1000 * 60 * 60 * 24 * 365.25);
-            let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44));
-            diff %= (1000 * 60 * 60 * 24 * 30.44);
-            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            diff %= (1000 * 60 * 60 * 24);
-            let hours = Math.floor(diff / (1000 * 60 * 60));
-            diff %= (1000 * 60 * 60);
-            let minutes = Math.floor(diff / (1000 * 60));
-            diff %= (1000 * 60);
-            let seconds = Math.floor(diff / 1000);
-            
-            document.getElementById("counter").innerText = 
-                `Juntos a ${years} anos, ${months} meses, ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos e você continua me fazendo feliz!`;
-        }
-
-        // Atualiza o contador a cada segundo
-        setInterval(updateCounter, 1000);
     </script>
 </body>
 </html>
