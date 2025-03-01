@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário ❤️🎆</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body {
+            position: relative;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('Fotos/Fundo\ Site.jpg') no-repeat center center fixed;
+            background-size: cover;
+            filter: brightness(30%);
+            z-index: -1;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: navy;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            font-family: Montserrat;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        .counter {
+            position: relative;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .carousel {
+            width: 100%;
+            max-width: 350px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+            border: 5px solid white;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .carousel img {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .carousel img.active {
+            display: block;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .carousel-controls button {
+            background: none;
+            color: white;
+            border: 2px solid white;
+            font-size: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 5px;
+        }
+
+        .thumbnails img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid white;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .thumbnails img.active {
+            opacity: 1;
+            border-color: rgb(15, 94, 26);
+        }
+
+        .expanded {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .expanded img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+        p {
+            font-family: Montserrat;
+            font-size: 18px;
+            color: rgb(255, 255, 255);
+            padding: 0 10px;
+            text-align: center;
+            text-align: justify;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Bem vinda Meu amor ❤️</h1>
+    <audio controls autoplay src="Fotos/Música.mp3" ></audio>
+
+    <div class="carousel">
+        <img src="Fotos/1.jpg" class="active" onclick="expandImage(this)">
+        <img src="Fotos/2.jpg" onclick="expandImage(this)">
+        <img src="Fotos/3.jpg" onclick="expandImage(this)">
+        <img src="Fotos/4.jpg" onclick="expandImage(this)">
+        <img src="Fotos/5.jpg" onclick="expandImage(this)">
+        <img src="Fotos/6.jpg" onclick="expandImage(this)">
+        <img src="Fotos/7.jpg" onclick="expandImage(this)">
+        <img src="Fotos/8.jpg" onclick="expandImage(this)">
+        <img src="Fotos/9.jpg" onclick="expandImage(this)">
+    </div>
+
+    <div class="carousel-controls">
+        <button class="prev" onclick="showPrevImage()">&#10094; Anterior</button>
+        <button class="next" onclick="showNextImage()">Próxima &#10095;</button>
+    </div>
+
+    <div class="thumbnails">
+        <img src="Fotos/1.jpg" class="active" onclick="setImage(0)">
+        <img src="Fotos/2.jpg" onclick="setImage(1)">
+        <img src="Fotos/3.jpg" onclick="setImage(2)">
+        <img src="Fotos/4.jpg" onclick="setImage(3)">
+        <img src="Fotos/5.jpg" onclick="setImage(4)">
+        <img src="Fotos/6.jpg" onclick="setImage(5)">
+        <img src="Fotos/7.jpg" onclick="setImage(6)">
+        <img src="Fotos/8.jpg" onclick="setImage(7)">
+        <img src="Fotos/9.jpg" onclick="setImage(8)">
+
+    </div>
+
+    
+    <div class="counter" id="counter"></div>
+     <!-- Texto com mensagem -->
+     <p>Meus <strong>Parabéns</strong> Meu amor, que Deus siga iluminando você e todos ao seu redor, que você possa continuar sendo essa mulher 
+        forte e incrível, determinada, carismática e uma mãe incrível, você sempre batalhou por tudo o que quis e sempre a admirei por isso, que nosso filho possa crescer e continuar tendo orgulho da mãe maravilhosa que você é! Nunca esqueça o quanto você batalhou e se dedicou para chegar onde chegou e conquistar tudo o que tem, todos ao seu redor notam a sua força e alegria assim que você chega no local, é sempre motivo de muita alegria estar em sua presença, você sempre será uma <strong>mãe, amiga, namorada, amante, esposa e mulher incrível!</strong> Eu te amo, sempre amei e sempre vou te amar, tenho muito orgulho de você e sou muito feliz ao seu lado. ❤️
+    </p>
+    
+    <h1>Seu dia: 03/02/2025</h1>
+
+    <a href="https://juliomelosilva.github.io/Projetos/Ex001/sitecasal.html" class="btn" target="_blank">Agora Clique Aqui</a>
+
+
+    <script>
+        
+        let index = 0;
+        let images = document.querySelectorAll('.carousel img');
+        let thumbnails = document.querySelectorAll('.thumbnails img');
+        let interval;
+
+        function updateCarousel() {
+            images.forEach(img => img.classList.remove('active'));
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            images[index].classList.add('active');
+            thumbnails[index].classList.add('active');
+        }
+
+        function showNextImage() {
+            index = (index + 1) % images.length;
+            updateCarousel();
+        }
+
+        function showPrevImage() {
+            index = (index - 1 + images.length) % images.length;
+            updateCarousel();
+        }
+
+        function setImage(i) {
+            index = i;
+            updateCarousel();
+        }
+
+        function expandImage(imgElement) {
+            let expandedView = document.createElement('div');
+            expandedView.classList.add('expanded');
+            expandedView.onclick = () => expandedView.remove();
+            
+            let img = document.createElement('img');
+            img.src = imgElement.src;
+            expandedView.appendChild(img);
+            document.body.appendChild(expandedView);
+        }
+
+        function startAutoplay() {
+            interval = setInterval(showNextImage, 3000);
+        }
+
+        startAutoplay();
+    </script>
+
+    </script>
+</body>
+</html>
