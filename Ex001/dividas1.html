@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro</title>
   <style>
-    /* ======== ESTILO GERAL ======== */
     body {
       font-family: Arial, sans-serif;
-      background-color: #e06db47a;
+      background-color: #e0e0e0;
       margin: 0;
       padding: 10px;
       color: #333;
@@ -27,7 +26,7 @@
       justify-content: center;
       gap: 15px;
       margin: 15px 0;
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .painel-centro div {
@@ -51,7 +50,7 @@
     .totais {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-around;
       gap: 10px;
       margin-bottom: 20px;
     }
@@ -62,12 +61,12 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       flex: 1;
       min-width: 300px;
-      max-width: 500px;
       text-align: center;
     }
 
-    #dividasCartao { background: linear-gradient(to bottom, #4a96dd98, white); }
-    #dividasExternas { background: linear-gradient(to bottom, #e9691e7e, white); }
+    #dividasCartao { background: linear-gradient(to bottom, #3e90dd, white); }
+    #dividasExternas { background: linear-gradient(to bottom, #e48f20, white); }
+    #comissoes { background: linear-gradient(to bottom, #29be29, white); }
 
     .linha-inputs {
       display: flex;
@@ -118,17 +117,12 @@
       font-size: 12px;
     }
 
-    .item-checkbox {
-      margin-right: 8px;
-    }
-
     .ultima-parcela {
-      margin: 0 auto;
-      background-color: #ffffff;
-      padding: 10px;
+      margin-top: 10px;
+      background-color: #fff3cd;
+      padding: 5px;
       border-radius: 8px;
       font-size: 17px;
-      width: fit-content;
     }
 
     .total-verde { color: green; }
@@ -147,15 +141,18 @@
 </head>
 <body>
   <h1>Controle Financeiro Pessoal</h1>
+
   <div class="salario-container">
     <label for="salario">Salário mensal: R$ </label>
     <input type="number" id="salario" onchange="gravarSalario()">
   </div>
+
   <div class="painel-centro">
     <div>💰 Total Salário: R$ <span id="exibirSalario">0</span></div>
     <div>📉 Total Dívidas: R$ <span id="exibirDividas">0</span></div>
     <div>📊 Saldo Disponível: R$ <span id="saldoDisponivel">0</span></div>
   </div>
+
   <div class="totais">
     <div class="coluna" id="dividasCartao">
       <h3>Dívidas Cartão: R$ <span id="totalCartao">0</span></h3>
@@ -163,12 +160,13 @@
         <input type="text" placeholder="Descrição" id="descricaoCartao">
         <input type="number" placeholder="Valor" id="valorCartao">
         <input type="number" placeholder="Parcela Atual" id="parcelaAtualCartao">
-        <input type="number" placeholder="Total Parcelas" id="parcelaTotalCartao">
+        <input type="number" placeholder="Total Parcelas " id="parcelaTotalCartao">
       </div>
       <button onclick="adicionarItem('cartao')">Adicionar</button>
       <button class="ver-detalhes-btn" onclick="toggleDetalhes('cartao')">Ver detalhes ▼</button>
       <div class="detalhes" id="detalhesCartao"></div>
     </div>
+
     <div class="coluna" id="dividasExternas">
       <h3>Dívidas Externas: R$ <span id="totalExterna">0</span></h3>
       <div class="linha-inputs">
@@ -181,19 +179,35 @@
       <button class="ver-detalhes-btn" onclick="toggleDetalhes('externa')">Ver detalhes ▼</button>
       <div class="detalhes" id="detalhesExterna"></div>
     </div>
+
+    <div class="coluna" id="comissoes">
+      <h3>Comissões até dia 20: R$ <span id="totalComissao">0</span></h3>
+      <div class="linha-inputs">
+        <input type="text" placeholder="Descrição" id="descricaoComissao">
+        <input type="number" placeholder="Valor" id="valorComissao">
+        <input type="number" placeholder="% Comissão" id="porcentagemComissao">
+      </div>
+      <button onclick="adicionarItem('comissao')">Adicionar</button>
+      <button class="ver-detalhes-btn" onclick="toggleDetalhes('comissao')">Ver detalhes ▼</button>
+      <div class="detalhes" id="detalhesComissao"></div>
+    </div>
   </div>
+
   <div class="ultima-parcela">
-    <h4>Dívidas Última Parcela</h4>
+    <h4>Dívidas em Última Parcela</h4>
     <div id="listaUltimaParcela"></div>
     <p>Total: R$ <span id="totalUltimaParcela">0</span></p>
   </div>
+
+  <button onclick="renderizar()">🔄 Atualizar Totais</button>
+
   <script>
     const fsKey = 'financeiro-arquivo';
-    let dados = JSON.parse(localStorage.getItem(fsKey)) || { cartao: [], externa: [], comissao: [], salario: 0 };
+    let dados = JSON.parse(localStorage.getItem(fsKey)) || {
+      cartao: [], externa: [], comissao: [], salario: 0
+    };
 
-    function salvarDados() {
-      localStorage.setItem(fsKey, JSON.stringify(dados));
-    }
+    if (dados.salario) document.getElementById('salario').value = dados.salario;
 
     function gravarSalario() {
       dados.salario = parseFloat(document.getElementById('salario').value) || 0;
@@ -201,13 +215,23 @@
       renderizar();
     }
 
+    function salvarDados() {
+      localStorage.setItem(fsKey, JSON.stringify(dados));
+    }
+
+    function toggleDetalhes(tipo) {
+      const d = document.getElementById('detalhes' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+    }
+
     function adicionarItem(tipo) {
-      const desc = document.getElementById('descricao' + capitalize(tipo)).value;
-      const val = parseFloat(document.getElementById('valor' + capitalize(tipo)).value);
-      const atual = parseInt(document.getElementById('parcelaAtual' + capitalize(tipo)).value) || 1;
-      const total = parseInt(document.getElementById('parcelaTotal' + capitalize(tipo)).value) || 1;
+      const desc = document.getElementById('descricao' + tipo.charAt(0).toUpperCase() + tipo.slice(1)).value;
+      const val = parseFloat(document.getElementById('valor' + tipo.charAt(0).toUpperCase() + tipo.slice(1)).value);
+      const atual = parseInt(document.getElementById('parcelaAtual' + tipo.charAt(0).toUpperCase() + tipo.slice(1))?.value);
+      const total = parseInt(document.getElementById('parcelaTotal' + tipo.charAt(0).toUpperCase() + tipo.slice(1))?.value);
+      const perc = tipo === 'comissao' ? parseFloat(document.getElementById('porcentagemComissao').value) : 100;
       if (!desc || isNaN(val)) return;
-      dados[tipo].push({ descricao: desc, valor: val, atual: atual, total: total, ocultarUltima: false });
+      dados[tipo].push({ descricao: desc, valor: val, atual: atual || 1, total: total || 1, porcentagem: perc });
       salvarDados();
       renderizar();
     }
@@ -218,53 +242,34 @@
       renderizar();
     }
 
-    function editarParcela(tipo, index) {
-      const novaAtual = parseInt(prompt('Nova parcela atual:', dados[tipo][index].atual));
-      if (!isNaN(novaAtual)) {
-        dados[tipo][index].atual = novaAtual;
-        salvarDados();
-        renderizar();
-      }
-    }
-
-    function toggleDetalhes(tipo) {
-      const div = document.getElementById('detalhes' + capitalize(tipo));
-      div.style.display = div.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function toggleOcultarUltima(tipo, index) {
-      dados[tipo][index].ocultarUltima = !dados[tipo][index].ocultarUltima;
-      salvarDados();
-      renderizar();
-    }
-
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
     function renderizar() {
-      let totalCartao = 0, totalExterna = 0, totalUltima = 0;
-      let htmlCartao = '', htmlExterna = '', htmlUltima = '';
-
+      let totalCartao = 0, totalExterna = 0, totalComissao = 0, totalUltima = 0;
+      let htmlCartao = '', htmlExterna = '', htmlComissao = '', htmlUltima = '';
       document.getElementById('salario').value = dados.salario;
       document.getElementById('exibirSalario').textContent = dados.salario.toFixed(2);
 
       dados.cartao.forEach((item, i) => {
         totalCartao += item.valor;
-        if (item.atual === item.total && !item.ocultarUltima) {
+        if (item.atual === item.total) {
           htmlUltima += `<div>${item.descricao} - R$ ${item.valor}</div>`;
           totalUltima += item.valor;
         }
-        htmlCartao += `<div class='item'><span><input type='checkbox' class='item-checkbox' ${item.ocultarUltima ? 'checked' : ''} onchange="toggleOcultarUltima('cartao', ${i})">${item.descricao} - R$ ${item.valor} (${item.atual}/${item.total})</span><div class='item-actions'><button onclick="editarParcela('cartao', ${i})">✏️</button><button onclick="deletarItem('cartao', ${i})">❌</button></div></div>`;
+        htmlCartao += `<div class='item'><span>${item.descricao} - R$ ${item.valor} (${item.atual}/${item.total})</span><div class='item-actions'><button onclick="editarParcela('cartao', ${i})">✏️</button><button onclick="deletarItem('cartao', ${i})">❌</button></div></div>`;
       });
 
       dados.externa.forEach((item, i) => {
         totalExterna += item.valor;
-        if (item.atual === item.total && !item.ocultarUltima) {
+        if (item.atual === item.total) {
           htmlUltima += `<div>${item.descricao} - R$ ${item.valor}</div>`;
           totalUltima += item.valor;
         }
-        htmlExterna += `<div class='item'><span><input type='checkbox' class='item-checkbox' ${item.ocultarUltima ? 'checked' : ''} onchange="toggleOcultarUltima('externa', ${i})">${item.descricao} - R$ ${item.valor} (${item.atual}/${item.total})</span><div class='item-actions'><button onclick="editarParcela('externa', ${i})">✏️</button><button onclick="deletarItem('externa', ${i})">❌</button></div></div>`;
+        htmlExterna += `<div class='item'><span>${item.descricao} - R$ ${item.valor} (${item.atual}/${item.total})</span><div class='item-actions'><button onclick="editarParcela('externa', ${i})">✏️</button><button onclick="deletarItem('externa', ${i})">❌</button></div></div>`;
+      });
+
+      dados.comissao.forEach((item, i) => {
+        let comissao = item.valor * (item.porcentagem / 100);
+        totalComissao += comissao;
+        htmlComissao += `<div class='item'><span>${item.descricao} - R$ ${item.valor} (${item.porcentagem}% = R$ ${comissao.toFixed(2)})</span><div class='item-actions'><button onclick="deletarItem('comissao', ${i})">❌</button></div></div>`;
       });
 
       const totalDividas = totalCartao + totalExterna;
@@ -272,17 +277,29 @@
 
       document.getElementById('totalCartao').textContent = totalCartao.toFixed(2);
       document.getElementById('totalExterna').textContent = totalExterna.toFixed(2);
+      document.getElementById('totalComissao').textContent = totalComissao.toFixed(2);
       document.getElementById('detalhesCartao').innerHTML = htmlCartao;
       document.getElementById('detalhesExterna').innerHTML = htmlExterna;
+      document.getElementById('detalhesComissao').innerHTML = htmlComissao;
       document.getElementById('listaUltimaParcela').innerHTML = htmlUltima;
       document.getElementById('totalUltimaParcela').textContent = totalUltima.toFixed(2);
-      document.getElementById('exibirDividas').textContent = totalDividas.toFixed(2);
 
+      document.getElementById('exibirDividas').textContent = totalDividas.toFixed(2);
       const saldoEl = document.getElementById('saldoDisponivel');
       saldoEl.textContent = saldo.toFixed(2);
       saldoEl.className = saldo > 20 ? 'total-verde' : (saldo < 5 ? 'total-vermelho' : '');
 
       salvarDados();
+    }
+
+    function editarParcela(tipo, index) {
+      const item = dados[tipo][index];
+      const novaAtual = parseInt(prompt('Parcela atual:', item.atual));
+      if (!isNaN(novaAtual)) {
+        item.atual = novaAtual;
+        salvarDados();
+        renderizar();
+      }
     }
 
     renderizar();
