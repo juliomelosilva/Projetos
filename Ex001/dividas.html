@@ -6,11 +6,12 @@
   <title>Controle Financeiro</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #e0e0e0;
+      
+      font-family: Arial, Helvetica, sans-serif;
+      background: rgb(194, 189, 189);
       margin: 0;
       padding: 10px;
-      color: #333;
+      color: #000000;
     }
 
     h1 {
@@ -105,7 +106,7 @@
     }
 
     .item {
-      background: #eee;
+      background: #ffffff;
       padding: 5px;
       margin: 4px 0;
       border-radius: 6px;
@@ -243,7 +244,7 @@
     }
 
     function editarParcela(tipo, index) {
-      const novaAtual = parseInt(prompt('Nova parcela atual:', dados[tipo][index].atual));
+      const novaAtual = parseInt(prompt('Nova Parcela Atual:', dados[tipo][index].atual));
       if (!isNaN(novaAtual)) {
         dados[tipo][index].atual = novaAtual;
         salvarDados();
