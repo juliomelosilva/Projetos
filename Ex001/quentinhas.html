@@ -274,11 +274,11 @@
     const produtos = [
       {
         id: "quentinha1",
-        nome: "Carne",
+        nome: "Carne Guisada",
         precoBase: 15,
         img: "Fotos/Quentinha/Carne.png",
         variacoes: [
-          { nome: "Feijão", opcoes: ["Tropeiro", "Caseiro"] }
+          { nome: "Opção de Feijão", opcoes: ["Tropeiro", "Caseiro"] }
         ]
       },
       {
@@ -287,8 +287,8 @@
         precoBase: 15,
         img: "Fotos/Quentinha/Frango.png",
         variacoes: [
-          { nome: "Opção", opcoes: ["Filé Empanado", "Filé Parmegiana"] },
-          { nome: "Feijão", opcoes: ["Tropeiro", "Caseiro"] }
+          { nome: "Opção de Frango", opcoes: ["Filé Empanado", "Filé Parmegiana"] },
+          { nome: "Opção de Feijão", opcoes: ["Tropeiro", "Caseiro"] }
         ]
       },
       {
@@ -336,7 +336,7 @@
         });
         variacoesHTML += '</div>';
 
-        const complemento = (produto.nome === "Carne" || produto.nome === "Frango")
+        const complemento = (produto.nome === "Carne Guisada" || produto.nome === "Frango")
           ? `<p>Arroz, Macarrão, Feijão, Salada e Farofa</p>` : "";
 
         container.innerHTML += `
