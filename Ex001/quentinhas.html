@@ -1,238 +1,466 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio Nogueira Doceria</title>
-    <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cardápio Quentinhas</title>
+  <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+    @font-face {
+      font-family: 'kiss';
+      src: url(Fotos/Quentinha/Kissing\ Season.ttf) format(truetype);
+      font-weight: normal;
+      font-style: normal;
+    }
 
-        @font-face {
-            font-family: 'kiss' ;
-            src: url(Fotos/Cardápio/Kissing\ Season.ttf) format(truetype);
-            font-weight: normal;
-            font-style: normal;
-        }
-        
-        body { 
-            font-family:Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-            background: url('Fotos/Cardápio/Fundo.png') no-repeat center center fixed;
-            background-size: cover;
-            position: relative;
-        }
-        h1, h2 {
-            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-        }
-        h1{
-            font-size:  75px;
-        }
-        h2{
-            font-size: 55px;
-        }
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
-        }
-        .logo { max-width: 150px; margin: 20px auto; display: block; border-radius: 50%; }
-        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 10px; }
-        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fff; position: relative; display: flex; flex-direction: column; align-items: center; }
-        .card img { width: 100%; height: auto; border-radius: 50%; }
-        .card select, .card input { width: 100%; max-width: 150px; margin-top: 10px; padding: 5px; }
-        .card button { background: #ff69b4; color: white; padding: 10px; text-decoration: none; display: inline-block; margin-top: 10px; border-radius: 20px; cursor: pointer; }
-        .disabled { opacity: 0.5; cursor: not-allowed; }
-        .sacola { margin-top: 20px; padding: 10px; border: 1px solid #ddd; background: #fff; border-radius: 10px; }
-        .sacola button { background: #ff69b4; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
-        
-        /* Seletor para IDs dos produtos */
-        #docesClassicos h3 {
-            font-size: 25px;
-            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-        }
-        #docesGourmet h3 {
-            font-size: 25px;
-            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-        }
-        #salgadosClassicos h3 {
-            font-size: 25px;
-            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-        }
-        #frituras h3 {
-            font-size: 25px;
-            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-        }
-        #tortas h3 {
-            font-size: 25px;
-            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
-        }
+    body {
+      font-family: Montserrat, Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: url('Fotos/Quentinha/Fundo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+    }
 
-        /* Ajustes de responsividade */
-        @media (max-width: 600px) {
-            .card select, .card input, .card button {
-                width: 100%;
-                max-width: none;
-            }
-            .sacola {
-                margin: 10px;
-                padding: 15px;
-            }
-            .sacola button {
-                width: 100%;
-                margin-top: 10px;
-            }
-        }
-    </style>
+    h1, h2, h3 {
+      font-family: 'kiss', Montserrat, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1 { font-size: 75px; }
+    h2 { font-size: 55px; }
+    h3 { font-size: 40px; }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: -1;
+    }
+
+    .logo {
+      max-width: 150px;
+      margin: 20px auto;
+      display: block;
+      border-radius: 50%;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .card {
+      border: 1px solid #000000;
+      padding: 10px;
+      border-radius: 10px;
+      background: #ffffff98;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Arredondamento das imagens melhorado */
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 25px; /* ← AJUSTE AQUI se quiser mais arredondado */
+    }
+
+    /* Tamanho dos campos de variação */
+    .card select, .card input[type="number"] {
+      max-width: 90px;     /* ← largura */
+      padding: 3px;        /* ← altura interna */
+      font-size: 12px;     /* ← tamanho da fonte */
+    }
+
+    .card button {
+      background: #ff69b4;
+      color: white;
+      padding: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* Layout lado a lado das variações */
+    .variacoes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .variacoes-linha {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .variacoes-linha label {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .sacola {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #dddddd;
+      background: #ffffffda;
+      border-radius: 10px;
+    }
+
+    .sacola button {
+      background: #ff69b4;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 5px;
+    }
+
+    .pagamento {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 400px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .pagamento select,
+    .pagamento input,
+    .pagamento textarea {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .pix-info {
+      background: #eee;
+      padding: 10px;
+      border-radius: 5px;
+      user-select: all;
+    }
+
+    .taxa-cartao-msg, .taxa-pix-msg {
+      color: red;
+      font-weight: bold;
+      display: none;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <img src="Fotos/Cardápio/Logotipo Doceria.png" alt="Logo Marca" class="logo">
-    <h1>Cardápio</h1>
-    <div class="container" id="menu"></div>
-    <div class="sacola" id="sacola">
-        <h2>Sacola</h2>
-        <ul id="listaSacola"></ul>
-        <p><strong>Total:</strong> <span id="totalSacola">R$ 0,00</span></p>
-        <button onclick="finalizarPedido()">Finalizar Pedido</button>
-        <button onclick="limparSacola()">Limpar Sacola</button>
+  <h1>Cardápio</h1>
+  <div class="container" id="menu"></div>
+
+  <div class="sacola" id="sacola">
+    <h2>Sacola</h2>
+    <ul id="listaSacola"></ul>
+    <p><strong>Total:</strong> <span id="totalSacola">R$ 0,00</span></p>
+
+    <div class="pagamento">
+      <label for="formaPagamento">Forma de Pagamento:</label>
+      <select id="formaPagamento" onchange="atualizarPagamento()">
+        <option value="">Selecione</option>
+        <option value="dinheiro">Dinheiro</option>
+        <option value="cartao">Cartão de Crédito/Débito</option>
+        <option value="pix">Pix</option>
+      </select>
+
+      <div class="taxa-cartao-msg" id="taxaCartaoMsg">R$1,00 (Juros Maquineta)</div>
+
+      <div id="trocoDiv" style="display:none;">
+        <label>Precisa de troco?</label>
+        <input type="text" id="trocoValor" placeholder="Ex: Troco para R$ 100,00" />
+      </div>
+
+      <div id="pixDiv" style="display:none;">
+        <label>Chave PIX:</label>
+        <div class="pix-info">82 9 2000 4574</div>
+        <div class="taxa-pix-msg" id="taxaPixMsg">Por gentileza, enviar comprovante na conversa do whatsapp</div>
+      </div>
+
+      <label for="endereco">Endereço de Entrega:</label>
+      <textarea id="endereco" rows="2" placeholder="Digite seu endereço completo e pontos de referência"></textarea>
+
+      <label for="observacao">Observações:</label>
+      <textarea id="observacao" rows="2" placeholder="Ex: Sem cebola, pouco sal, sem macarrão"></textarea>
     </div>
-    <script>
-        let sacola = [];
-        const produtos = [
-            { 
-                id: "docesClassicos", 
-                nome: "Carne", 
-                img: "Fotos/Quentinha/Galeto Assado.png", 
-                minQuantidade: 1, 
-                variacoes: {
-                    "Feijão Tropeiro": 15, 
-                    "Feijão Caseiro": 15
-                }
-            },
-            { 
-                id: "docesGourmet", 
-                nome: "Frango", 
-                img: "Fotos/Quentinha/Filé a Parmegiana.png", 
-                minQuantidade: 1,  // Quantidade mínima agora personalizada
-                variacoes: {
-                    "Feijão Tropeiro": 15, 
-                    "Feijão Caseiro": 15
-                } 
-            },
-            { 
-                id: "salgadosClassicos", 
-                nome: "Porções de Mistura", 
-                img: "Fotos/Cardápio/Salgados.png", 
-                minQuantidade: 1, // Quantidade mínima personalizada
-                variacoes: {
-                    "Frango Empanado": 15, 
-                    "Frango à Parmegiana": 15, 
-                    "Xarel": 15, 
-                    "Carne Guizada": 15, 
-                    "Pãozinho da vovó Gô": 15
-                } 
-            },
-        ];
-        
-        function renderizarMenu() {
-            const container = document.getElementById("menu");
-            container.innerHTML = "";
-            produtos.forEach((produto, index) => {
-                const primeiraVariacao = Object.keys(produto.variacoes)[0];
-                const precoInicial = produto.variacoes[primeiraVariacao].toFixed(2);
 
-                container.innerHTML += `
-                    <div class="card" id="${produto.id}">
-                        <img src="${produto.img}" alt="${produto.nome}">
-                        <h3>${produto.nome}</h3>
-                        <p>Preço: R$ <span id="preco${index}">${precoInicial}</span>/un</p>
-                        <label>Opção Feijão:</label>
-                        <select id="var${index}" onchange="atualizarPreco(${index})">
-                            ${Object.keys(produto.variacoes).map(variedade => `<option value="${variedade}">${variedade}</option>`).join('')}
-                        </select>
-                        <br>
-                        <label for="qtd${index}">Quantidade:</label>
-                        <input type="number" id="qtd${index}" min="0" value="0">
-                        <button onclick="adicionarCento(${index})">+1</button>
-                        <button id="btn${index}" class="button" onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
-                    </div>`;
-            });
-        }
-        
-        function atualizarPreco(index) {
-            const select = document.getElementById(`var${index}`);
-            const variacao = select.value;
-            const preco = produtos[index].variacoes[variacao];
-            document.getElementById(`preco${index}`).innerText = preco.toFixed(2);
-        }
-        
-        function adicionarCento(index) {
-            const qtd = document.getElementById(`qtd${index}`);
-            qtd.value = parseInt(qtd.value) + 100;
-        }
-        
-        function adicionarSacola(index) {
-            const qtd = parseInt(document.getElementById(`qtd${index}`).value);
-            if (isNaN(qtd) || qtd < produtos[index].minQuantidade) {
-                alert(`❗ A quantidade mínima para este produto é ${produtos[index].minQuantidade} unidades!`);
-                return;
-            }
-            const select = document.getElementById(`var${index}`);
-            const variacao = select.value;
-            const preco = produtos[index].variacoes[variacao];
-            
-            let itemExistente = sacola.find(item => item.nome === produtos[index].nome && item.variacao === variacao);
-            if (itemExistente) {
-                itemExistente.quantidade += qtd;
-                itemExistente.precoTotal += preco * qtd;
-            } else {
-                sacola.push({ nome: produtos[index].nome, variacao, quantidade: qtd, precoTotal: preco * qtd });
-            }
-            atualizarSacola();
-            alert(`✅ ${qtd}x ${variacao} adicionado à sacola!`);
-        }
-        
-        function atualizarSacola() {
-            const lista = document.getElementById("listaSacola");
-            const totalSacola = document.getElementById("totalSacola");
-            lista.innerHTML = "";
-            let total = 0;
-            sacola.forEach(item => {
-                lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
-                total += item.precoTotal;
-            });
-            totalSacola.innerText = `R$ ${total.toFixed(2)}`;
-        }
-        
-        function finalizarPedido() {
-            if (sacola.length === 0) {
-                alert("Sua sacola está vazia!");
-                return;
-            }
-            let mensagem = "Pedido:%0A";
-            sacola.forEach(item => {
-                mensagem += `${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}%0A`;
-            });
-            mensagem += `%0ATotal: R$ ${document.getElementById("totalSacola").innerText}`;
-            window.open(`https://wa.me/5582920004574?text=${mensagem}`);
-            
-            // Limpa a sacola após finalizar o pedido
-            sacola = [];
-            atualizarSacola();
-            alert("✅ Pedido Finalizado! Sua sacola foi limpa.");
-        }
-        
-        function limparSacola() {
-            sacola = [];
-            atualizarSacola();
-            alert("🔴 Sua sacola foi limpa!");
+    <button onclick="finalizarPedido()">Finalizar Pedido</button>
+    <button onclick="limparSacola()">Limpar Sacola</button>
+  </div>
+
+  <script>
+
+    
+    let sacola = [];
+    const taxaCartao = 1.00;
+
+    const produtos = [
+      {
+        id: "quentinha1",
+        nome: "Carne",
+        precoBase: 15,
+        img: "Fotos/Quentinha/Carne.png",
+        variacoes: [
+          { nome: "Feijão", opcoes: ["Tropeiro", "Caseiro"] }
+        ]
+      },
+      {
+        id: "quentinha2",
+        nome: "Frango",
+        precoBase: 15,
+        img: "Fotos/Quentinha/Frango.png",
+        variacoes: [
+          { nome: "Opção", opcoes: [, "Filé Empanado", "Filé Parmegiana"] },
+          { nome: "Feijão", opcoes: ["Tropeiro", "Caseiro"] }
+        ]
+      },
+      {
+        id: "quentinha3",
+        nome: "Adicionais",
+        precoBase: 0,
+        img: "Fotos/Quentinha/Adicionais.png",
+        variacoes: [
+          {
+            nome: "Bebidas 200ml",
+            opcoes: ["Coca", "Fanta", "Guarana", "Suco"],
+            preco: 1.50,
+            quantidade: true
+          },
+          {
+            nome: "Carnes",
+            opcoes: ["Guisada", "Filé Empanado", "Filé Parmegiana"],
+            preco: 5.00
+          },
+        ]
+      }
+    ];
+
+    function renderizarMenu()
+    {
+      const container = document.getElementById("menu");
+      container.innerHTML = "";
+      produtos.forEach((produto, index) => {
+        let variacoesHTML = '<div class="variacoes-grid">';
+        produto.variacoes.forEach((v, vi) => {
+          const selectId = `qtd_${index}_${vi}`;
+          const inputId = `quant_${index}_${vi}`;
+          let precoTexto = (produto.nome === "Adicionais" && v.preco) ? ` - R$ ${v.preco.toFixed(2)}` : "";
+          let campo = `
+            <div class="variacoes-linha">
+              <label>${v.nome}${precoTexto}:</label>
+              <select id="${selectId}">
+                <option value="">Selecione</option>
+                ${v.opcoes.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+              </select>
+              ${v.quantidade ? `<input type="number" id="${inputId}" value="1" min="1" style="width: 40px;">` : ""}
+            </div>
+          `;
+          variacoesHTML += campo;
+        });
+        variacoesHTML += '</div>';
+
+        const complemento = (produto.nome === "Carne" || produto.nome === "Frango")
+          ? `<p>Arroz, Macarrão, Feijão, Salada e Farofa</p>` : "";
+
+        container.innerHTML += `
+          <div class="card" id="${produto.id}">
+            <img src="${produto.img}" alt="${produto.nome}">
+            <h3>${produto.nome}</h3>
+           <strong><p>Preço base: R$<strong/> ${produto.precoBase.toFixed(2)}</p>
+            ${complemento}
+            ${variacoesHTML}
+            <button onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
+          </div>`;
+      });
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("menu").addEventListener("click", async (e) => {
+    if (e.target.tagName === "IMG") {
+      const card = e.target.closest(".card");
+      const produtoId = card.id;
+      const index = produtos.findIndex(p => p.id === produtoId);
+      const produto = produtos[index];
+
+      // Limpa seleções anteriores (se houver)
+      produto.variacoes.forEach((v, vi) => {
+        const select = document.getElementById(`qtd_${index}_${vi}`);
+        const input = document.getElementById(`quant_${index}_${vi}`);
+        if (select) select.value = "";
+        if (input) input.value = 1;
+      });
+
+      // Fluxo para CARNE
+      if (produto.nome === "Carne") {
+        const feijao = prompt("Escolha o tipo de feijão: Tropeiro ou Caseiro");
+        if (feijao && ["tropeiro", "caseiro"].includes(feijao.toLowerCase())) {
+          document.getElementById(`qtd_${index}_0`).value = capitalize(feijao);
+          adicionarSacola(index);
+        } else {
+          alert("Opção inválida. Cancelei a adição.");
         }
 
-        renderizarMenu();
-    </script>
+      // Fluxo para FRANGO
+      } else if (produto.nome === "Frango") {
+        const tipoFrango = prompt("Escolha a opção de frango: Filé Empanado ou Filé Parmegiana");
+        if (tipoFrango && ["filé empanado", "filé parmegiana", "parmegiana", "empanado"].includes(tipoFrango.toLowerCase())) {
+          document.getElementById(`qtd_${index}_0`).value = capitalize(tipoFrango);
+          const feijao = prompt("Agora escolha o tipo de feijão: Tropeiro ou Caseiro");
+          if (feijao && ["tropeiro", "caseiro"].includes(feijao.toLowerCase())) {
+            document.getElementById(`qtd_${index}_1`).value = capitalize(feijao);
+            adicionarSacola(index);
+          } else {
+            alert("Tipo Feijão inválido. Tente Novamente.");
+          }
+        } else {
+          alert("Tipo Frango inválido. Cancelei a adição.");
+        }
+
+      // Fluxo para ADICIONAIS
+      } else if (produto.nome === "Adicionais") {
+        const bebida = prompt("Escolha a bebida: Coca, Fanta, Guarana ou Suco");
+        const bebidaFormatada = capitalize(bebida || "");
+        if (["Coca", "Fanta", "Guarana", "Suco"].includes(bebidaFormatada)) {
+          document.getElementById(`qtd_${index}_0`).value = bebidaFormatada;
+          const qtd = prompt("Quantas unidades da bebida?");
+          if (!isNaN(qtd) && qtd > 0) {
+            document.getElementById(`quant_${index}_0`).value = qtd;
+          }
+        }
+
+        const desejaCarne = confirm("Deseja adicionar algum tipo de carne?");
+        if (desejaCarne) {
+          const carne = prompt("Escolha a carne: Guisada, Filé Empanado ou Filé Parmegiana");
+          if (["guisada", "filé empanado", "filé parmegiana", "parmegiana", "empanado"].includes(carne.toLowerCase())) {
+            document.getElementById(`qtd_${index}_1`).value = capitalize(carne);
+          }
+        }
+
+        adicionarSacola(index);
+      }
+    }
+  });
+});
+
+// Função auxiliar para capitalizar entrada do usuário
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+
+    function adicionarSacola(index) {
+      const produto = produtos[index];
+      let precoTotal = produto.precoBase;
+      let variacoesSelecionadas = [];
+      let selecionouAlgo = false;
+
+      produto.variacoes.forEach((v, vi) => {
+        const select = document.getElementById(`qtd_${index}_${vi}`);
+        const valor = select.value;
+        const qtdInput = document.getElementById(`quant_${index}_${vi}`);
+        const quantidade = qtdInput ? Math.max(1, parseInt(qtdInput.value) || 1) : 1;
+
+        if (valor && valor !== "Não") {
+          selecionouAlgo = true;
+          if (produto.nome === "Adicionais" && v.preco) {
+            precoTotal += v.preco * quantidade;
+          }
+          let label = `${v.nome}: ${valor}`;
+          if (v.quantidade) label += ` (Qtd: ${quantidade})`;
+          variacoesSelecionadas.push(label);
+        }
+      });
+
+      if (!selecionouAlgo) {
+        alert("Selecione pelo menos uma variação");
+        return;
+      }
+
+      sacola.push({ nome: produto.nome, variacao: variacoesSelecionadas.join(", "), quantidade: 1, precoTotal });
+      atualizarSacola();
+      alert(`✅ 1 unidade de ${produto.nome} adicionada à sacola!`);
+    }
+
+    function atualizarSacola() {
+      const lista = document.getElementById("listaSacola");
+      const totalSacola = document.getElementById("totalSacola");
+      lista.innerHTML = "";
+      let total = 0;
+      sacola.forEach(item => {
+        lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
+        total += item.precoTotal;
+      });
+      if (document.getElementById("formaPagamento").value === "cartao" || document.getElementById("formaPagamento").value === "pix") {
+        total += taxaCartao;
+      }
+      totalSacola.innerText = `R$ ${total.toFixed(2)}`;
+    }
+
+    function atualizarPagamento() {
+      const pagamento = document.getElementById("formaPagamento").value;
+      document.getElementById("trocoDiv").style.display = pagamento === "dinheiro" ? "block" : "none";
+      document.getElementById("pixDiv").style.display = pagamento === "pix" ? "block" : "none";
+      document.getElementById("taxaCartaoMsg").style.display = pagamento === "cartao" ? "block" : "none";
+      document.getElementById("taxaPixMsg").style.display = pagamento === "pix" ? "block" : "none";
+      atualizarSacola();
+    }
+
+    function finalizarPedido() {
+      if (sacola.length === 0) {
+        alert("Sua sacola está vazia!");
+        return;
+      }
+      const pagamento = document.getElementById("formaPagamento").value;
+      if (!pagamento) {
+        alert("Escolha uma forma de pagamento");
+        return;
+      }
+      const endereco = document.getElementById("endereco").value.trim();
+      const obs = document.getElementById("observacao").value.trim();
+      const trocoInput = document.getElementById("trocoValor").value.trim();
+      const troco = pagamento === "dinheiro" ? (trocoInput || "Não") : "";
+
+      let mensagem = "Olá, gostaria de realizar meu pedido:%0A%0A";
+      sacola.forEach(item => {
+        mensagem += `${item.nome} (${item.variacao})%0A`;
+      });
+
+      mensagem += `%0A--------------%0AForma de pagamento:%0A${pagamento.charAt(0).toUpperCase() + pagamento.slice(1)}`;
+      if (pagamento === "dinheiro") mensagem += `%0ATroco: ${troco}`;
+      mensagem += `%0A--------------%0AEndereço:%0A${endereco || "Não informado"}`;
+      mensagem += `%0A--------------%0A%0ATotal: ${document.getElementById("totalSacola").innerText}`;
+      if (obs) mensagem += `%0AObservações:%0A${obs}`;
+
+      window.open(`https://wa.me/5582920004574?text=${mensagem}`);
+      limparSacola();
+      alert("Pedido finalizado!");
+    }
+
+    function limparSacola() {
+      sacola = [];
+      atualizarSacola();
+      document.getElementById("formaPagamento").value = "";
+      atualizarPagamento();
+      document.getElementById("endereco").value = "";
+      document.getElementById("observacao").value = "";
+      document.getElementById("trocoValor").value = "";
+    }
+
+    renderizarMenu();
+  </script>
 </body>
 </html>
