@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Nogueira Doceria</title>
+    <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+        @font-face {
+            font-family: 'kiss';
+            src: url(Fotos/Cardápio/Kissing\ Season.ttf) format(truetype);
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: Montserrat, Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: url('Fotos/Cardápio/Fundo.png') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        h1, h2 {
+            font-family: 'kiss', Montserrat, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 { font-size: 75px; }
+        h2 { font-size: 55px; }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .logo { max-width: 150px; margin: 20px auto; display: block; border-radius: 50%; }
+        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 10px; }
+        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fff; display: flex; flex-direction: column; align-items: center; }
+        .card img { width: 100%; height: auto; border-radius: 50%; }
+        .card select, .card input { width: 100%; max-width: 150px; margin-top: 10px; padding: 5px; }
+        .card button { background: #ff69b4; color: white; padding: 10px; border-radius: 20px; cursor: pointer; margin-top: 10px; }
+
+        .variacoes-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .variacoes-grid label { display: flex; flex-direction: column; align-items: center; min-width: 120px; }
+
+        .sacola { margin-top: 20px; padding: 10px; border: 1px solid #ddd; background: #fff; border-radius: 10px; }
+        .sacola button { background: #ff69b4; color: white; padding: 10px; border-radius: 5px; margin: 5px; }
+
+        .pagamento { margin-top: 20px; text-align: left; max-width: 400px; margin: 0 auto; background: #fff; padding: 15px; border-radius: 10px; }
+        .pagamento select, .pagamento input, .pagamento textarea { width: 100%; padding: 5px; margin-top: 5px; margin-bottom: 10px; }
+        .pix-info { background: #eee; padding: 10px; border-radius: 5px; user-select: all; }
+        .taxa-cartao-msg { color: red; font-weight: bold; display: none; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <img src="Fotos/Cardápio/Logotipo Doceria.png" alt="Logo Marca" class="logo">
+    <h1>Cardápio</h1>
+    <div class="container" id="menu"></div>
+
+    <div class="sacola" id="sacola">
+        <h2>Sacola</h2>
+        <ul id="listaSacola"></ul>
+        <p><strong>Total:</strong> <span id="totalSacola">R$ 0,00</span></p>
+
+        <div class="pagamento">
+            <label for="formaPagamento">Forma de Pagamento:</label>
+            <select id="formaPagamento" onchange="atualizarPagamento()">
+                <option value="">Selecione</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="cartao">Cartão de Crédito/Débito</option>
+                <option value="pix">Pix</option>
+            </select>
+
+            <div class="taxa-cartao-msg" id="taxaCartaoMsg">R$1,00 (Juros Maquineta)</div>
+
+            <div id="trocoDiv" style="display:none;">
+                <label>Precisa de troco?</label>
+                <input type="text" id="trocoValor" placeholder="Ex: Troco para R$ 100,00">
+            </div>
+
+            <div id="pixDiv" style="display:none;">
+                <label>Chave PIX:</label>
+                <div class="pix-info">5582920004574</div>
+            </div>
+
+            <label for="endereco">Endereço de Entrega:</label>
+            <textarea id="endereco" rows="2" placeholder="Digite seu endereço completo"></textarea>
+
+            <label for="observacao">Observações:</label>
+            <textarea id="observacao" rows="2" placeholder="Ex: Sem cebola, pouco sal..."></textarea>
+        </div>
+
+        <button onclick="finalizarPedido()">Finalizar Pedido</button>
+        <button onclick="limparSacola()">Limpar Sacola</button>
+    </div>
+
+    <script>
+        let sacola = [];
+        let taxaCartao = 1.00;
+
+        const produtos = [
+            {
+                id: "quentinha1",
+                nome: "Carne",
+                img: "Fotos/Quentinha/Galeto Assado.png",
+                minQuantidade: 1,
+                variacoes: ["Carne", "Feijão", "Macarrão", "Arroz", "Farofa", "Salada"]
+            },
+            {
+                id: "quentinha2",
+                nome: "Frango",
+                img: "Fotos/Quentinha/Filé a Parmegiana.png",
+                minQuantidade: 1,
+                variacoes: ["Frango", "Feijão", "Macarrão", "Arroz", "Farofa", "Salada"]
+            },
+            {
+                id: "quentinha3",
+                nome: "Adicionais",
+                img: "Fotos/Quentinha/Filé a Parmegiana.png",
+                minQuantidade: 1,
+                variacoes: ["Frango", "Feijão", "Macarrão", "Arroz", "Farofa", "Salada"]
+            }
+        ];
+
+        function renderizarMenu() {
+            const container = document.getElementById("menu");
+            container.innerHTML = "";
+            produtos.forEach((produto, index) => {
+                let variacoesHTML = '<div class="variacoes-grid">';
+                produto.variacoes.forEach((v, vi) => {
+                    if (v === "Feijão") {
+                        variacoesHTML += `
+                            <label>${v}:
+                                <select id="qtd_${index}_${vi}">
+                                    <option value="">Não</option>
+                                    <option value="Tropeiro">Tropeiro</option>
+                                    <option value="Caseiro">Caseiro</option>
+                                </select>
+                            </label>`;
+                    } else {
+                        variacoesHTML += `
+                            <label>${v}:
+                                <select id="qtd_${index}_${vi}">
+                                    <option value="Não">Não</option>
+                                    <option value="Sim">Sim</option>
+                                </select>
+                            </label>`;
+                    }
+                });
+                variacoesHTML += '</div>';
+
+                container.innerHTML += `
+                    <div class="card" id="${produto.id}">
+                        <img src="${produto.img}" alt="${produto.nome}">
+                        <h3>${produto.nome}</h3>
+                        <p>Preço base: R$ 15,00</p>
+                        ${variacoesHTML}
+                        <button onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
+                    </div>`;
+            });
+        }
+
+        function adicionarSacola(index) {
+            const produto = produtos[index];
+            let adicionado = false;
+            let precoTotal = 15;
+            let variacoesSelecionadas = [];
+
+            produto.variacoes.forEach((v, vi) => {
+                const valor = document.getElementById(`qtd_${index}_${vi}`).value;
+                if (valor && valor !== "Não") {
+                    variacoesSelecionadas.push(`${v}: ${valor}`);
+                    adicionado = true;
+                }
+            });
+
+            if (!adicionado) {
+                alert("Selecione pelo menos uma variação");
+                return;
+            }
+
+            sacola.push({ nome: produto.nome, variacao: variacoesSelecionadas.join(", "), quantidade: 1, precoTotal });
+            atualizarSacola();
+            alert(`✅ 1 unidade de ${produto.nome} adicionada à sacola!`);
+        }
+
+        function atualizarSacola() {
+            const lista = document.getElementById("listaSacola");
+            const totalSacola = document.getElementById("totalSacola");
+            lista.innerHTML = "";
+            let total = 0;
+            sacola.forEach(item => {
+                lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
+                total += item.precoTotal;
+            });
+
+            const pagamento = document.getElementById("formaPagamento").value;
+            if (pagamento === "cartao") total += taxaCartao;
+            totalSacola.innerText = `R$ ${total.toFixed(2)}`;
+        }
+
+        function atualizarPagamento() {
+            const pagamento = document.getElementById("formaPagamento").value;
+            document.getElementById("trocoDiv").style.display = pagamento === "dinheiro" ? "block" : "none";
+            document.getElementById("pixDiv").style.display = pagamento === "pix" ? "block" : "none";
+            document.getElementById("taxaCartaoMsg").style.display = pagamento === "cartao" ? "block" : "none";
+            atualizarSacola();
+        }
+
+        function finalizarPedido() {
+            if (sacola.length === 0) {
+                alert("Sua sacola está vazia!");
+                return;
+            }
+
+            const pagamento = document.getElementById("formaPagamento").value;
+            if (!pagamento) {
+                alert("Escolha uma forma de pagamento");
+                return;
+            }
+
+            const endereco = document.getElementById("endereco").value;
+            const obs = document.getElementById("observacao").value;
+
+            let mensagem = "Pedido:%0A";
+            sacola.forEach(item => {
+                mensagem += `${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}%0A`;
+            });
+
+            if (pagamento === "cartao") mensagem += "%0A+ R$1,00 (Juros Maquineta)";
+            if (pagamento === "dinheiro") {
+                const troco = document.getElementById("trocoValor").value;
+                if (troco) mensagem += `%0ATroco para: ${troco}`;
+            }
+
+            mensagem += `%0AForma de pagamento: ${pagamento}`;
+            if (endereco) mensagem += `%0AEndereço: ${endereco}`;
+            if (obs) mensagem += `%0AObservações: ${obs}`;
+            mensagem += `%0ATotal: ${document.getElementById("totalSacola").innerText}`;
+
+            window.open(`https://wa.me/5582920004574?text=${mensagem}`);
+            limparSacola();
+            alert("Pedido finalizado!");
+        }
+
+        function limparSacola() {
+            sacola = [];
+            atualizarSacola();
+        }
+
+        renderizarMenu();
+    </script>
+</body>
+</html>

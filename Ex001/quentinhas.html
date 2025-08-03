@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Nogueira Doceria</title>
+    <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+        @font-face {
+            font-family: 'kiss' ;
+            src: url(Fotos/Cardápio/Kissing\ Season.ttf) format(truetype);
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        body { 
+            font-family:Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+            background: url('Fotos/Cardápio/Fundo.png') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        h1, h2 {
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        h1{
+            font-size:  75px;
+        }
+        h2{
+            font-size: 55px;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        .logo { max-width: 150px; margin: 20px auto; display: block; border-radius: 50%; }
+        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 10px; }
+        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fff; position: relative; display: flex; flex-direction: column; align-items: center; }
+        .card img { width: 100%; height: auto; border-radius: 50%; }
+        .card select, .card input { width: 100%; max-width: 150px; margin-top: 10px; padding: 5px; }
+        .card button { background: #ff69b4; color: white; padding: 10px; text-decoration: none; display: inline-block; margin-top: 10px; border-radius: 20px; cursor: pointer; }
+        .disabled { opacity: 0.5; cursor: not-allowed; }
+        .sacola { margin-top: 20px; padding: 10px; border: 1px solid #ddd; background: #fff; border-radius: 10px; }
+        .sacola button { background: #ff69b4; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
+        
+        /* Seletor para IDs dos produtos */
+        #docesClassicos h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #docesGourmet h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #salgadosClassicos h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #frituras h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+        #tortas h3 {
+            font-size: 25px;
+            font-family: 'kiss', Montserrat, Arial, sans-serif; text-align: center; margin: 0; padding: 0;
+        }
+
+        /* Ajustes de responsividade */
+        @media (max-width: 600px) {
+            .card select, .card input, .card button {
+                width: 100%;
+                max-width: none;
+            }
+            .sacola {
+                margin: 10px;
+                padding: 15px;
+            }
+            .sacola button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="Fotos/Cardápio/Logotipo Doceria.png" alt="Logo Marca" class="logo">
+    <h1>Cardápio</h1>
+    <div class="container" id="menu"></div>
+    <div class="sacola" id="sacola">
+        <h2>Sacola</h2>
+        <ul id="listaSacola"></ul>
+        <p><strong>Total:</strong> <span id="totalSacola">R$ 0,00</span></p>
+        <button onclick="finalizarPedido()">Finalizar Pedido</button>
+        <button onclick="limparSacola()">Limpar Sacola</button>
+    </div>
+    <script>
+        let sacola = [];
+        const produtos = [
+            { 
+                id: "docesClassicos", 
+                nome: "Carne", 
+                img: "Fotos/Quentinha/Galeto Assado.png", 
+                minQuantidade: 1, 
+                variacoes: {
+                    "Feijão Tropeiro": 15, 
+                    "Feijão Caseiro": 15
+                }
+            },
+            { 
+                id: "docesGourmet", 
+                nome: "Frango", 
+                img: "Fotos/Quentinha/Filé a Parmegiana.png", 
+                minQuantidade: 1,  // Quantidade mínima agora personalizada
+                variacoes: {
+                    "Feijão Tropeiro": 15, 
+                    "Feijão Caseiro": 15
+                } 
+            },
+            { 
+                id: "salgadosClassicos", 
+                nome: "Porções de Mistura", 
+                img: "Fotos/Cardápio/Salgados.png", 
+                minQuantidade: 1, // Quantidade mínima personalizada
+                variacoes: {
+                    "Frango Empanado": 15, 
+                    "Frango à Parmegiana": 15, 
+                    "Xarel": 15, 
+                    "Carne Guizada": 15, 
+                    "Pãozinho da vovó Gô": 15
+                } 
+            },
+        ];
+        
+        function renderizarMenu() {
+            const container = document.getElementById("menu");
+            container.innerHTML = "";
+            produtos.forEach((produto, index) => {
+                const primeiraVariacao = Object.keys(produto.variacoes)[0];
+                const precoInicial = produto.variacoes[primeiraVariacao].toFixed(2);
+
+                container.innerHTML += `
+                    <div class="card" id="${produto.id}">
+                        <img src="${produto.img}" alt="${produto.nome}">
+                        <h3>${produto.nome}</h3>
+                        <p>Preço: R$ <span id="preco${index}">${precoInicial}</span>/un</p>
+                        <label>Opção Feijão:</label>
+                        <select id="var${index}" onchange="atualizarPreco(${index})">
+                            ${Object.keys(produto.variacoes).map(variedade => `<option value="${variedade}">${variedade}</option>`).join('')}
+                        </select>
+                        <br>
+                        <label for="qtd${index}">Quantidade:</label>
+                        <input type="number" id="qtd${index}" min="0" value="0">
+                        <button onclick="adicionarCento(${index})">+1</button>
+                        <button id="btn${index}" class="button" onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
+                    </div>`;
+            });
+        }
+        
+        function atualizarPreco(index) {
+            const select = document.getElementById(`var${index}`);
+            const variacao = select.value;
+            const preco = produtos[index].variacoes[variacao];
+            document.getElementById(`preco${index}`).innerText = preco.toFixed(2);
+        }
+        
+        function adicionarCento(index) {
+            const qtd = document.getElementById(`qtd${index}`);
+            qtd.value = parseInt(qtd.value) + 100;
+        }
+        
+        function adicionarSacola(index) {
+            const qtd = parseInt(document.getElementById(`qtd${index}`).value);
+            if (isNaN(qtd) || qtd < produtos[index].minQuantidade) {
+                alert(`❗ A quantidade mínima para este produto é ${produtos[index].minQuantidade} unidades!`);
+                return;
+            }
+            const select = document.getElementById(`var${index}`);
+            const variacao = select.value;
+            const preco = produtos[index].variacoes[variacao];
+            
+            let itemExistente = sacola.find(item => item.nome === produtos[index].nome && item.variacao === variacao);
+            if (itemExistente) {
+                itemExistente.quantidade += qtd;
+                itemExistente.precoTotal += preco * qtd;
+            } else {
+                sacola.push({ nome: produtos[index].nome, variacao, quantidade: qtd, precoTotal: preco * qtd });
+            }
+            atualizarSacola();
+            alert(`✅ ${qtd}x ${variacao} adicionado à sacola!`);
+        }
+        
+        function atualizarSacola() {
+            const lista = document.getElementById("listaSacola");
+            const totalSacola = document.getElementById("totalSacola");
+            lista.innerHTML = "";
+            let total = 0;
+            sacola.forEach(item => {
+                lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
+                total += item.precoTotal;
+            });
+            totalSacola.innerText = `R$ ${total.toFixed(2)}`;
+        }
+        
+        function finalizarPedido() {
+            if (sacola.length === 0) {
+                alert("Sua sacola está vazia!");
+                return;
+            }
+            let mensagem = "Pedido:%0A";
+            sacola.forEach(item => {
+                mensagem += `${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}%0A`;
+            });
+            mensagem += `%0ATotal: R$ ${document.getElementById("totalSacola").innerText}`;
+            window.open(`https://wa.me/5582920004574?text=${mensagem}`);
+            
+            // Limpa a sacola após finalizar o pedido
+            sacola = [];
+            atualizarSacola();
+            alert("✅ Pedido Finalizado! Sua sacola foi limpa.");
+        }
+        
+        function limparSacola() {
+            sacola = [];
+            atualizarSacola();
+            alert("🔴 Sua sacola foi limpa!");
+        }
+
+        renderizarMenu();
+    </script>
+</body>
+</html>
