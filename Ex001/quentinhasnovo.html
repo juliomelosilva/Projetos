@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cardápio Quentinhas</title>
-  <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon"/>
+  <link rel="shortcut icon" href="Fotos/Cardápio/Logotipo Doceria.ico" type="image/x-icon" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
     @font-face {
@@ -70,14 +70,15 @@
     .card img {
       width: 100%;
       height: auto;
-      border-radius: 25px; /* ← AJUSTE AQUI se quiser mais arredondado */
+      border-radius: 25px;
+      cursor: pointer;
     }
 
     /* Tamanho dos campos de variação */
     .card select, .card input[type="number"] {
-      max-width: 90px;     /* ← largura */
-      padding: 3px;        /* ← altura interna */
-      font-size: 12px;     /* ← tamanho da fonte */
+      max-width: 90px;
+      padding: 3px;
+      font-size: 12px;
     }
 
     .card button {
@@ -117,6 +118,9 @@
       border: 1px solid #dddddd;
       background: #ffffffda;
       border-radius: 10px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .sacola button {
@@ -125,13 +129,16 @@
       padding: 10px;
       border-radius: 5px;
       margin: 5px;
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
     }
 
     .pagamento {
       margin-top: 20px;
       text-align: left;
       max-width: 400px;
-      margin: 0 auto;
+      margin: 20px auto 0 auto;
       background: #fff;
       padding: 15px;
       border-radius: 10px;
@@ -159,11 +166,67 @@
       display: none;
       margin-bottom: 10px;
     }
+
+    /* Modal básico */
+    #modalSelecao {
+      display: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #modalConteudo {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 320px;
+      max-width: 90%;
+      text-align: left;
+    }
+    #modalConteudo h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+    #modalConteudo select, #modalConteudo input {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    #modalBotoes {
+      display: flex;
+      justify-content: space-between;
+    }
+    #modalBotoes button {
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background: #ff69b4;
+      color: white;
+      font-weight: bold;
+      width: 48%;
+    }
   </style>
 </head>
 <body>
   <h1>Cardápio</h1>
   <div class="container" id="menu"></div>
+
+  <!-- Modal Seleção -->
+  <div id="modalSelecao">
+    <div id="modalConteudo">
+      <h3 id="modalTitulo"></h3>
+      <div id="modalVariacoes"></div>
+      <div id="modalBotoes">
+        <button id="btnCancelar">Cancelar</button>
+        <button id="btnConfirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
 
   <div class="sacola" id="sacola">
     <h2>Sacola</h2>
@@ -180,6 +243,7 @@
       </select>
 
       <div class="taxa-cartao-msg" id="taxaCartaoMsg">R$1,00 (Juros Maquineta)</div>
+      
 
       <div id="trocoDiv" style="display:none;">
         <label>Precisa de troco?</label>
@@ -208,46 +272,42 @@
     const taxaCartao = 1.00;
 
     const produtos = [
-      {
-        id: "quentinha1",
-        nome: "Carne",
-        precoBase: 15,
-        img: "Fotos/Quentinha/Carne.png",
-        variacoes: [
-          { nome: "Feijão", opcoes: ["Tropeiro", "Caseiro"] }
-        ]
-      },
+     // { opção de carne que não será usada nesse momento, só tirar comentário para ativar
+       //  id: "quentinha1",
+        // nome: "Carne Guisada",
+       //  precoBase: 15,
+       //  img: "Fotos/Quentinha/Carne.png",
+       //  variacoes: [
+       //    { nome: "Opção de Feijão", opcoes: ["Tropeiro", "Caseiro"] }
+       //  ]
+   //   }
       {
         id: "quentinha2",
-        nome: "Frango",
+        nome: "Quentinha",
         precoBase: 15,
-        img: "Fotos/Quentinha/Frango.png",
+        img: "Fotos/Quentinha/quentinha.jpg",
         variacoes: [
-          { nome: "Opção", opcoes: [, "Filé Empanado", "Filé Parmegiana"] },
-          { nome: "Feijão", opcoes: ["Tropeiro", "Caseiro"] }
+          { nome: "Opção de Frango", opcoes: ["Coxa e Sobrecoxa Forno", "Filé Empanado"] },
+          { nome: "Opção de Feijão", opcoes: ["Tropeiro", "Caseiro"] }
         ]
       },
       {
         id: "quentinha3",
-        nome: "Adicionais",
-        precoBase: 0,
+        nome: "Carnes Adicionais",
+        precoBase: 5,
         img: "Fotos/Quentinha/Adicionais.png",
         variacoes: [
           {
-            nome: "Bebidas 200ml",
-            opcoes: ["Coca", "Fanta", "Guarana", "Suco"],
-            preco: 1.50,
-            quantidade: true
-          },
-          {
             nome: "Carnes",
-            opcoes: ["Guisada", "Filé Empanado", "Filé Parmegiana"],
-            preco: 5.00
-          },
+            opcoes: ["Filé Empanado", "Coxa e Sobrecoxa Forno"],
+            preco: 5.00,
+            quantidade: true
+          }
         ]
       }
     ];
 
+    // Renderizar o menu
     function renderizarMenu() {
       const container = document.getElementById("menu");
       container.innerHTML = "";
@@ -271,14 +331,14 @@
         });
         variacoesHTML += '</div>';
 
-        const complemento = (produto.nome === "Carne" || produto.nome === "Frango")
+        const complemento = (produto.nome === "Carne Guisada" || produto.nome === "Frango")
           ? `<p>Arroz, Macarrão, Feijão, Salada e Farofa</p>` : "";
 
         container.innerHTML += `
           <div class="card" id="${produto.id}">
             <img src="${produto.img}" alt="${produto.nome}">
             <h3>${produto.nome}</h3>
-           <strong><p>Preço base: R$<strong/> ${produto.precoBase.toFixed(2)}</p>
+            <strong><p>Preço base: R$<strong/> ${produto.precoBase.toFixed(2)}</p>
             ${complemento}
             ${variacoesHTML}
             <button onclick="adicionarSacola(${index})">Adicionar à Sacola</button>
@@ -286,7 +346,122 @@
       });
     }
 
-    function adicionarSacola(index) {
+    // Modal elementos
+    const modal = document.getElementById("modalSelecao");
+    const modalTitulo = document.getElementById("modalTitulo");
+    const modalVariacoes = document.getElementById("modalVariacoes");
+    const btnCancelar = document.getElementById("btnCancelar");
+    const btnConfirmar = document.getElementById("btnConfirmar");
+
+    let produtoSelecionadoIndex = null;
+
+    // Abrir modal ao clicar na imagem
+    document.getElementById("menu").addEventListener("click", (e) => {
+      if(e.target.tagName === "IMG"){
+        const card = e.target.closest(".card");
+        const produtoId = card.id;
+        const index = produtos.findIndex(p => p.id === produtoId);
+        produtoSelecionadoIndex = index;
+        abrirModal(produtos[index]);
+      }
+    });
+
+    // Função que abre o modal e monta selects e inputs conforme variações
+    function abrirModal(produto){
+      modalTitulo.textContent = produto.nome;
+      modalVariacoes.innerHTML = "";
+
+      produto.variacoes.forEach((v, vi) => {
+        let div = document.createElement("div");
+        div.style.marginBottom = "10px";
+
+        let label = document.createElement("label");
+        label.textContent = v.nome + (produto.nome === "Adicionais" && v.preco ? ` - R$ ${v.preco.toFixed(2)}` : "");
+        label.style.display = "block";
+        label.style.fontWeight = "bold";
+        div.appendChild(label);
+
+        let select = document.createElement("select");
+        select.id = `modal_qtd_${vi}`;
+        let optionVazio = document.createElement("option");
+        optionVazio.value = "";
+        optionVazio.textContent = "Selecione";
+        select.appendChild(optionVazio);
+
+        v.opcoes.forEach(opt => {
+          let option = document.createElement("option");
+          option.value = opt;
+          option.textContent = opt;
+          select.appendChild(option);
+        });
+        div.appendChild(select);
+
+        if(v.quantidade){
+          let inputQtd = document.createElement("input");
+          inputQtd.type = "number";
+          inputQtd.min = 1;
+          inputQtd.value = 1;
+          inputQtd.id = `modal_quant_${vi}`;
+          inputQtd.style.width = "50px";
+          inputQtd.style.marginLeft = "5px";
+          div.appendChild(inputQtd);
+        }
+
+        modalVariacoes.appendChild(div);
+      });
+
+      modal.style.display = "flex";
+    }
+
+    btnCancelar.addEventListener("click", () => {
+      modal.style.display = "none";
+      produtoSelecionadoIndex = null;
+    });
+
+    btnConfirmar.addEventListener("click", () => {
+      modal.style.display = "none";
+      confirmarSelecao();
+    });
+
+    // Confirmar selecao do modal e adicionar na sacola
+    function confirmarSelecao(){
+      if(produtoSelecionadoIndex === null) return;
+
+      const produto = produtos[produtoSelecionadoIndex];
+      let precoTotal = produto.precoBase;
+      let variacoesSelecionadas = [];
+      let selecionouAlgo = false;
+
+      produto.variacoes.forEach((v, vi) => {
+        const select = document.getElementById(`modal_qtd_${vi}`);
+        const valor = select.value;
+        const qtdInput = document.getElementById(`modal_quant_${vi}`);
+        const quantidade = qtdInput ? Math.max(1, parseInt(qtdInput.value) || 1) : 1;
+
+        if(valor && valor !== ""){
+          selecionouAlgo = true;
+          if(produto.nome === "Adicionais" && v.preco){
+            precoTotal += v.preco * quantidade;
+          }
+          let label = `${v.nome}: ${valor}`;
+          if(v.quantidade) label += ` (Qtd: ${quantidade})`;
+          variacoesSelecionadas.push(label);
+        }
+      });
+
+      if(!selecionouAlgo){
+        alert("Selecione pelo menos uma variação");
+        return;
+      }
+
+      sacola.push({ nome: produto.nome, variacao: variacoesSelecionadas.join(", "), quantidade: 1, precoTotal });
+      produtoSelecionadoIndex = null;
+      atualizarSacola();
+      alert(`✅ 1 unidade de ${produto.nome} adicionada à sacola!`);
+    }
+
+    // Função para adicionar sacola pelo botão "Adicionar à Sacola" (usa valores nos selects na listagem)
+    function adicionarSacola(index){
       const produto = produtos[index];
       let precoTotal = produto.precoBase;
       let variacoesSelecionadas = [];
@@ -298,18 +473,18 @@
         const qtdInput = document.getElementById(`quant_${index}_${vi}`);
         const quantidade = qtdInput ? Math.max(1, parseInt(qtdInput.value) || 1) : 1;
 
-        if (valor && valor !== "Não") {
+        if(valor && valor !== ""){
           selecionouAlgo = true;
-          if (produto.nome === "Adicionais" && v.preco) {
+          if(produto.nome === "Adicionais" && v.preco){
             precoTotal += v.preco * quantidade;
           }
           let label = `${v.nome}: ${valor}`;
-          if (v.quantidade) label += ` (Qtd: ${quantidade})`;
+          if(v.quantidade) label += ` (Qtd: ${quantidade})`;
           variacoesSelecionadas.push(label);
         }
       });
 
-      if (!selecionouAlgo) {
+      if(!selecionouAlgo){
         alert("Selecione pelo menos uma variação");
         return;
       }
@@ -319,6 +494,7 @@
       alert(`✅ 1 unidade de ${produto.nome} adicionada à sacola!`);
     }
 
+    // Atualiza a exibição da sacola e o total
     function atualizarSacola() {
       const lista = document.getElementById("listaSacola");
       const totalSacola = document.getElementById("totalSacola");
@@ -326,65 +502,101 @@
       let total = 0;
       sacola.forEach(item => {
         lista.innerHTML += `<li>${item.quantidade}x ${item.nome} - ${item.variacao} - R$ ${item.precoTotal.toFixed(2)}</li>`;
-        total += item.precoTotal;
+        total += item.precoTotal * item.quantidade;
       });
-      if (document.getElementById("formaPagamento").value === "cartao" || document.getElementById("formaPagamento").value === "pix") {
+
+      const formaPagamento = document.getElementById("formaPagamento").value;
+      if(formaPagamento === "cartao"){
         total += taxaCartao;
+        document.getElementById("taxaCartaoMsg").style.display = "block";
+        document.getElementById("trocoDiv").style.display = "none";
+        document.getElementById("pixDiv").style.display = "none";
+      } else if (formaPagamento === "dinheiro") {
+        document.getElementById("trocoDiv").style.display = "block";
+        document.getElementById("taxaPixMsg").style.display = "none";
+        document.getElementById("pixDiv").style.display = "none";
+        document.getElementById("taxaCartaoMsg").style.display = "none";
+      } else if (formaPagamento === "pix") {
+        document.getElementById("taxaPixMsg").style.display = "block";
+        document.getElementById("pixDiv").style.display = "block";
+        document.getElementById("trocoDiv").style.display = "none";
+        document.getElementById("taxaCartaoMsg").style.display = "none";
+      } else {
+        document.getElementById("trocoDiv").style.display = "none";
+        document.getElementById("pixDiv").style.display = "none";
+        document.getElementById("taxaCartaoMsg").style.display = "none";
+        document.getElementById("taxaPixMsg").style.display = "none";
       }
+
       totalSacola.innerText = `R$ ${total.toFixed(2)}`;
     }
 
+    // Atualizar exibição ao trocar forma de pagamento
     function atualizarPagamento() {
-      const pagamento = document.getElementById("formaPagamento").value;
-      document.getElementById("trocoDiv").style.display = pagamento === "dinheiro" ? "block" : "none";
-      document.getElementById("pixDiv").style.display = pagamento === "pix" ? "block" : "none";
-      document.getElementById("taxaCartaoMsg").style.display = pagamento === "cartao" ? "block" : "none";
-      document.getElementById("taxaPixMsg").style.display = pagamento === "pix" ? "block" : "none";
       atualizarSacola();
     }
 
+    // Finalizar pedido, montar mensagem e abrir WhatsApp
     function finalizarPedido() {
-      if (sacola.length === 0) {
-        alert("Sua sacola está vazia!");
+      if(sacola.length === 0) {
+        alert("Adicione algum produto à sacola antes de finalizar o pedido.");
         return;
       }
-      const pagamento = document.getElementById("formaPagamento").value;
-      if (!pagamento) {
-        alert("Escolha uma forma de pagamento");
-        return;
-      }
-      const endereco = document.getElementById("endereco").value.trim();
-      const obs = document.getElementById("observacao").value.trim();
-      const trocoInput = document.getElementById("trocoValor").value.trim();
-      const troco = pagamento === "dinheiro" ? (trocoInput || "Não") : "";
 
-      let mensagem = "Olá, gostaria de realizar meu pedido:%0A%0A";
-      sacola.forEach(item => {
-        mensagem += `${item.nome} (${item.variacao})%0A`;
+      const formaPagamento = document.getElementById("formaPagamento").value;
+      if(!formaPagamento) {
+        alert("Por favor, selecione a forma de pagamento.");
+        return;
+      }
+
+      const endereco = document.getElementById("endereco").value.trim();
+      if(!endereco) {
+        alert("Por favor, preencha o endereço de entrega.");
+        return;
+      }
+
+      let mensagem = "Pedido via Site:%0A%0A";
+      sacola.forEach((item, i) => {
+        mensagem += `*${i+1}* - ${item.nome} (${item.variacao}) - R$ ${item.precoTotal.toFixed(2)}%0A`;
       });
 
-      mensagem += `%0A--------------%0AForma de pagamento:%0A${pagamento.charAt(0).toUpperCase() + pagamento.slice(1)}`;
-      if (pagamento === "dinheiro") mensagem += `%0ATroco: ${troco}`;
-      mensagem += `%0A--------------%0AEndereço:%0A${endereco || "Não informado"}`;
-      mensagem += `%0A--------------%0A%0ATotal: ${document.getElementById("totalSacola").innerText}`;
-      if (obs) mensagem += `%0AObservações:%0A${obs}`;
+      const totalTexto = document.getElementById("totalSacola").innerText;
+      mensagem += `%0A*Total:* ${totalTexto}%0A`;
 
-      window.open(`https://wa.me/5582920004574?text=${mensagem}`);
-      limparSacola();
-      alert("Pedido finalizado!");
+      mensagem += `%0A*Forma de pagamento:* ${formaPagamento.charAt(0).toUpperCase() + formaPagamento.slice(1)}%0A`;
+      
+      if(formaPagamento === "dinheiro") {
+        const troco = document.getElementById("trocoValor").value.trim();
+        if(troco) mensagem += `*Troco:* ${troco}%0A`;
+      }
+
+      mensagem += `%0A*Endereço:* ${endereco}%0A`;
+
+      const obs = document.getElementById("observacao").value.trim();
+      if(obs) mensagem += `%0A*Observações:* ${obs}%0A`;
+
+      // Número de WhatsApp formatado (exemplo)
+      const telefone = "5582920004574"; // Troque para seu número
+
+      // Abrir WhatsApp
+      const urlWhats = `https://wa.me/${telefone}?text=${mensagem}`;
+      window.open(urlWhats, "_blank");
     }
 
+    // Limpar sacola e campos
     function limparSacola() {
-      sacola = [];
-      atualizarSacola();
-      document.getElementById("formaPagamento").value = "";
-      atualizarPagamento();
-      document.getElementById("endereco").value = "";
-      document.getElementById("observacao").value = "";
-      document.getElementById("trocoValor").value = "";
+      if(confirm("Deseja realmente limpar a sacola?")) {
+        sacola = [];
+        atualizarSacola();
+        document.getElementById("formaPagamento").value = "";
+        document.getElementById("trocoValor").value = "";
+        document.getElementById("endereco").value = "";
+        document.getElementById("observacao").value = "";
+      }
     }
 
     renderizarMenu();
+    atualizarSacola();
   </script>
 </body>
 </html>
