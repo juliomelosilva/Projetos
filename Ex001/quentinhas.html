@@ -542,51 +542,57 @@
     }
 
     // Finalizar pedido, montar mensagem e abrir WhatsApp
-    function finalizarPedido() {
-      if(sacola.length === 0) {
-        alert("Adicione algum produto à sacola antes de finalizar o pedido.");
-        return;
-      }
+// Finalizar pedido, montar mensagem e abrir WhatsApp
+function finalizarPedido() {
+  if (sacola.length === 0) {
+    alert("Adicione algum produto à sacola antes de finalizar o pedido.");
+    return;
+  }
 
-      const formaPagamento = document.getElementById("formaPagamento").value;
-      if(!formaPagamento) {
-        alert("Por favor, selecione a forma de pagamento.");
-        return;
-      }
+  const formaPagamento = document.getElementById("formaPagamento").value;
+  if (!formaPagamento) {
+    alert("Por favor, selecione a forma de pagamento.");
+    return;
+  }
 
-      const endereco = document.getElementById("endereco").value.trim();
-      if(!endereco) {
-        alert("Por favor, preencha o endereço de entrega.");
-        return;
-      }
+  const endereco = document.getElementById("endereco").value.trim();
+  if (!endereco) {
+    alert("Por favor, preencha o endereço de entrega.");
+    return;
+  }
 
-      let mensagem = "Pedido via Site:%0A%0A";
-      sacola.forEach((item, i) => {
-        mensagem += `*${i+1}* - ${item.nome} (${item.variacao}) - R$ ${item.precoTotal.toFixed(2)}%0A`;
-      });
+  let mensagem = "Pedido via Site:%0A%0A";
+  sacola.forEach((item, i) => {
+    mensagem += `*${i+1}* - ${item.nome} (${item.variacao}) - R$ ${item.precoTotal.toFixed(2)}%0A`;
+  });
 
-      const totalTexto = document.getElementById("totalSacola").innerText;
-      mensagem += `%0A*Total:* ${totalTexto}%0A`;
+  const totalTexto = document.getElementById("totalSacola").innerText;
+  mensagem += `%0A*Total:* ${totalTexto}%0A`;
 
-      mensagem += `%0A*Forma de pagamento:* ${formaPagamento.charAt(0).toUpperCase() + formaPagamento.slice(1)}%0A`;
-      
-      if(formaPagamento === "dinheiro") {
-        const troco = document.getElementById("trocoValor").value.trim();
-        if(troco) mensagem += `*Troco:* ${troco}%0A`;
-      }
+  mensagem += `%0A*Forma de pagamento:* ${formaPagamento.charAt(0).toUpperCase() + formaPagamento.slice(1)}%0A`;
+  
+  if (formaPagamento === "dinheiro") {
+    const troco = document.getElementById("trocoValor").value.trim();
+    if (troco) mensagem += `*Troco:* ${troco}%0A`;
+  }
 
-      mensagem += `%0A*Endereço:* ${endereco}%0A`;
+  mensagem += `%0A*Endereço:* ${endereco}%0A`;
 
-      const obs = document.getElementById("observacao").value.trim();
-      if(obs) mensagem += `%0A*Observações:* ${obs}%0A`;
+  const obs = document.getElementById("observacao").value.trim();
+  if (obs) mensagem += `%0A*Observações:* ${obs}%0A`;
 
-      // Número de WhatsApp formatado (exemplo)
-      const telefone = "5582920004574"; // Troque para seu número
+  // Número de WhatsApp formatado
+  const telefone = "5582920004574"; // Troque para seu número
 
-      // Abrir WhatsApp
-      const urlWhats = `https://wa.me/${telefone}?text=${mensagem}`;
-      window.open(urlWhats, "_blank");
-    }
+  // Abrir WhatsApp
+  const urlWhats = `https://wa.me/${telefone}?text=${mensagem}`;
+  window.open(urlWhats, "_blank");
+
+  // 🔽 Mensagem de agradecimento e recarregar página
+  alert("🙏 Obrigado por ajudar o Departamento Perfeito Louvor! Seu pedido foi enviado com sucesso.");
+  location.reload();
+}
+
 
     // Limpar sacola e campos
     function limparSacola() {
