@@ -294,7 +294,7 @@
       {
         id: "quentinha3",
         nome: "Carnes Adicionais",
-        precoBase: 5,
+        precoBase: 0,
         img: "Fotos/Quentinha/Adicionais.png",
         variacoes: [
           {
@@ -316,7 +316,7 @@
         produto.variacoes.forEach((v, vi) => {
           const selectId = `qtd_${index}_${vi}`;
           const inputId = `quant_${index}_${vi}`;
-          let precoTexto = (produto.nome === "Adicionais" && v.preco) ? ` - R$ ${v.preco.toFixed(2)}` : "";
+          let precoTexto = (produto.nome === "Carnes Adicionais" && v.preco) ? ` - R$ ${v.preco.toFixed(2)}` : "";
           let campo = `
             <div class="variacoes-linha">
               <label>${v.nome}${precoTexto}:</label>
@@ -376,7 +376,7 @@
         div.style.marginBottom = "10px";
 
         let label = document.createElement("label");
-        label.textContent = v.nome + (produto.nome === "Adicionais" && v.preco ? ` - R$ ${v.preco.toFixed(2)}` : "");
+        label.textContent = v.nome + (produto.nome === "Carnes Adicionais" && v.preco ? ` - R$ ${v.preco.toFixed(2)}` : "");
         label.style.display = "block";
         label.style.fontWeight = "bold";
         div.appendChild(label);
@@ -440,7 +440,7 @@
 
         if(valor && valor !== ""){
           selecionouAlgo = true;
-          if(produto.nome === "Adicionais" && v.preco){
+          if(produto.nome === "Carnes Adicionais" && v.preco){
             precoTotal += v.preco * quantidade;
           }
           let label = `${v.nome}: ${valor}`;
@@ -475,7 +475,7 @@
 
         if(valor && valor !== ""){
           selecionouAlgo = true;
-          if(produto.nome === "Adicionais" && v.preco){
+          if(produto.nome === "Carnes Adicionais" && v.preco){
             precoTotal += v.preco * quantidade;
           }
           let label = `${v.nome}: ${valor}`;
