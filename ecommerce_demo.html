@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title id="site-title">Minha Loja Teste</title>
+
+<!-- =========================
+     Estilos (IDs preparados)
+     ========================= -->
+<style>
+  :root{
+    --accent:#0d6efd;
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#222;
+    --muted:#666;
+    --maxWidth:1100px;
+    --navWidth:320px;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;}
+  body{background:var(--bg);color:var(--text);line-height:1.4;}
+  /* Top bar: logo (left) + fixed menu (right) */
+  #topbar{position:fixed;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(255,255,255,0.95);backdrop-filter:blur(4px);z-index:999;border-bottom:1px solid rgba(0,0,0,0.04);}
+  #logo-input-wrap{display:flex;align-items:center;gap:12px;}
+  #logo-input{display:inline-block;}
+  #logo-preview{width:48px;height:48px;border-radius:6px;background:#eee;object-fit:cover;}
+  #brand-title{position:absolute;left:50%;transform:translateX(-50%);font-weight:700;font-size:20px;pointer-events:none;transition:opacity .25s, transform .25s;}
+  /* Menu botão no canto superior direito */
+  #menu-button{margin-left:auto;}
+  #menu{position:fixed;top:12px;right:18px;display:flex;gap:8px;align-items:center;z-index:1001;}
+  .menu-btn{background:transparent;border:1px solid transparent;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600;}
+  .menu-btn:hover{background:rgba(0,0,0,0.03);}
+  /* Offcanvas menu small on mobile */
+  #offcanvas{position:fixed;top:72px;right:18px;width:var(--navWidth);max-width:calc(100% - 40px);background:var(--card);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,0.08);padding:12px;display:none;flex-direction:column;gap:10px;z-index:1002;}
+  #offcanvas.show{display:flex;}
+  #offcanvas a, #offcanvas button{border:0;background:transparent;padding:8px;text-align:left;border-radius:6px;cursor:pointer;}
+  /* Main area */
+  main{padding:100px 18px 60px;max-width:var(--maxWidth);margin:0 auto;}
+  .products{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .product-card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(16,24,40,0.04);display:flex;flex-direction:column;gap:10px;min-height:320px;}
+  .product-image{width:100%;height:160px;border-radius:8px;object-fit:cover;cursor:zoom-in;}
+  .product-title{font-weight:700;font-size:16px;}
+  .product-desc{color:var(--muted);font-size:13px;}
+  /* Controls area */
+  .controls{display:flex;flex-direction:column;gap:8px;margin-top:auto;}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px;}
+  select,input[type="number"]{padding:8px;border-radius:8px;border:1px solid #e6e9ef;background:#fff;}
+  .qty-wrap{display:flex;gap:8px;align-items:center;}
+  .qty-btn{padding:8px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;}
+  .add-btn{padding:10px;border-radius:10px;background:var(--accent);color:#fff;border:0;font-weight:700;cursor:pointer;}
+  .zoom-toggle{padding:6px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;}
+  /* Modal zoom */
+  #zoom-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:2000;}
+  #zoom-modal.show{display:flex;}
+  #zoom-modal img{max-width:90%;max-height:80%;border-radius:8px;box-shadow:0 16px 32px rgba(0,0,0,0.5);}
+  /* Login / Cadastro modals */
+  .auth-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:420px;max-width:calc(100% - 36px);background:var(--card);border-radius:12px;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,0.12);z-index:1500;display:none;}
+  .auth-modal.show{display:block;}
+  .auth-modal h3{margin:0 0 12px 0;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .form-row{margin-bottom:8px;}
+  .small{font-size:13px;color:var(--muted);}
+  /* Bag (sacola) sidebar */
+  #bag-sidebar{position:fixed;top:72px;right:18px;width:380px;max-width:calc(100% - 40px);height:calc(100% - 90px);background:var(--card);border-radius:12px;padding:12px;box-shadow:0 10px 40px rgba(0,0,0,0.1);display:none;flex-direction:column;z-index:1200;overflow:auto;}
+  #bag-sidebar.show{display:flex;}
+  .bag-item{display:flex;gap:10px;align-items:center;padding:8px;border-bottom:1px solid #eee;}
+  .bag-item img{width:64px;height:64px;object-fit:cover;border-radius:8px;}
+  .bag-footer{margin-top:auto;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;}
+  /* Back to top */
+  #back-top{position:fixed;right:18px;bottom:18px;border-radius:10px;padding:10px;background:#fff;border:1px solid #e6e9ef;cursor:pointer;box-shadow:0 6px 18px rgba(16,24,40,0.06);}
+  /* Responsive */
+  @media (max-width:900px){
+    .products{grid-template-columns:repeat(2,1fr);}
+    #brand-title{font-size:18px;}
+    #offcanvas{right:12px;top:70px;}
+  }
+  @media (max-width:600px){
+    .products{grid-template-columns:1fr;}
+    #brand-title{font-size:16px;left:50%;transform:translateX(-50%);top:16px;}
+    #topbar{height:64px;padding:8px;}
+    #offcanvas{width:calc(100% - 32px);right:16px;top:64px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- =========================
+     Top bar: logo input + central title + menu (fixed)
+     IDs provided for styling
+     ========================= -->
+<header id="topbar" aria-hidden="false">
+  <div id="logo-input-wrap">
+    <!-- Input para logomarca -->
+    <input id="logo-input" type="file" accept="image/*" aria-label="Escolha a logomarca" />
+    <img id="logo-preview" src="" alt="Logo preview" />
+  </div>
+
+  <div id="brand-title">Minha Loja Teste</div>
+
+  <div id="menu" aria-hidden="false">
+    <button id="menu-button" class="menu-btn" aria-expanded="false">☰ Menu</button>
+  </div>
+</header>
+
+<!-- Offcanvas menu (canto superior direito) -->
+<nav id="offcanvas" role="navigation" aria-label="Menu principal" aria-hidden="true">
+  <button id="login-open">Login</button>
+  <button id="register-open">Criar conta</button>
+  <button id="open-bag">Sacola (<span id="bag-count">0</span>)</button>
+</nav>
+
+<!-- Zoom modal -->
+<div id="zoom-modal" aria-hidden="true">
+  <img id="zoom-img" src="" alt="Zoom imagem" />
+</div>
+
+<!-- Bag sidebar -->
+<aside id="bag-sidebar" aria-hidden="true" aria-label="Sacola">
+  <h3>Sacola</h3>
+  <div id="bag-items"></div>
+  <div class="bag-footer">
+    <div>
+      <strong>Total:</strong> R$ <span id="bag-total">0.00</span>
+    </div>
+    <div>
+      <button id="checkout-btn" class="add-btn">Finalizar</button>
+    </div>
+  </div>
+</aside>
+
+<!-- Login modal -->
+<div id="login-modal" class="auth-modal" aria-hidden="true">
+  <h3>Login</h3>
+  <div class="form-row">
+    <label for="login-cpf">CPF</label>
+    <input id="login-cpf" type="text" placeholder="000.000.000-00" />
+  </div>
+  <div class="form-row">
+    <label for="login-pass">Senha</label>
+    <input id="login-pass" type="password" />
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+    <button id="login-submit" class="add-btn">Entrar</button>
+  </div>
+</div>
+
+<!-- Register modal -->
+<div id="register-modal" class="auth-modal" aria-hidden="true">
+  <h3>Criar conta</h3>
+  <div class="form-row">
+    <label for="reg-cpf">CPF (necessário para emissão fiscal)</label>
+    <input id="reg-cpf" type="text" />
+  </div>
+  <div class="form-row">
+    <label for="reg-whats">Número (WhatsApp)</label>
+    <input id="reg-whats" type="text" placeholder="+55 (xx) xxxxx-xxxx" />
+  </div>
+
+  <div class="form-grid">
+    <div class="form-row">
+      <label for="reg-nome">Nome</label>
+      <input id="reg-nome" type="text" />
+    </div>
+    <div class="form-row">
+      <label for="reg-sob">Sobrenome</label>
+      <input id="reg-sob" type="text" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label for="reg-rua">Rua</label>
+    <input id="reg-rua" type="text" />
+  </div>
+  <div class="form-grid">
+    <div class="form-row">
+      <label for="reg-num">Número</label>
+      <input id="reg-num" type="text" />
+    </div>
+    <div class="form-row">
+      <label for="reg-bairro">Bairro</label>
+      <input id="reg-bairro" type="text" />
+    </div>
+  </div>
+  <div class="form-grid">
+    <div class="form-row">
+      <label for="reg-cidade">Cidade</label>
+      <input id="reg-cidade" type="text" />
+    </div>
+    <div class="form-row">
+      <label for="reg-estado">Estado</label>
+      <input id="reg-estado" type="text" />
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="reg-pass">Senha</label>
+    <input id="reg-pass" type="password" />
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+    <button id="register-submit" class="add-btn">Criar conta</button>
+  </div>
+</div>
+
+<!-- Back to top -->
+<button id="back-top" title="Ir ao início">↑</button>
+
+<!-- =========================
+     Main content: 3 produtos de teste
+     ========================= -->
+<main id="main">
+  <section id="hero" style="text-align:center;margin-bottom:24px;">
+    <h1 id="hero-title">Loja Teste — Produtos de Exemplo</h1>
+    <p class="small">Clique nas imagens para zoom, selecione variação e adicione à sacola.</p>
+  </section>
+
+  <section id="product-list" class="products" role="list">
+    <!-- Product 1 -->
+    <article class="product-card" data-id="p1" role="listitem" id="product-p1">
+      <img class="product-image" id="p1-img" src="https://picsum.photos/seed/prod1/600/400" alt="Produto 1" data-large="https://picsum.photos/seed/prod1/1200/800" />
+      <div>
+        <div class="product-title" id="p1-title">Camiseta Básica</div>
+        <div class="product-desc" id="p1-desc">Algodão macio, corte regular.</div>
+        <div class="small">Preço base: R$ <span id="p1-price">59.90</span></div>
+      </div>
+      <div class="controls">
+        <div>
+          <label for="p1-variation">Variação</label>
+          <select id="p1-variation" data-product="p1">
+            <option value="" data-price="0">Selecione</option>
+            <option value="P" data-price="0">P</option>
+            <option value="M" data-price="0">M</option>
+            <option value="G" data-price="5">G (+R$5,00)</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Quantidade</label>
+          <div class="qty-wrap">
+            <button class="qty-btn" data-action="dec" data-for="p1">-</button>
+            <input id="p1-qty" type="number" value="1" min="1" style="width:68px" />
+            <button class="qty-btn" data-action="inc" data-for="p1">+</button>
+            <button class="zoom-toggle" data-img="#p1-img">Zoom</button>
+          </div>
+        </div>
+
+        <button class="add-btn" data-add="p1">Adicionar à sacola</button>
+      </div>
+    </article>
+
+    <!-- Product 2 -->
+    <article class="product-card" data-id="p2" role="listitem" id="product-p2">
+      <img class="product-image" id="p2-img" src="https://picsum.photos/seed/prod2/600/400" alt="Produto 2" data-large="https://picsum.photos/seed/prod2/1200/800" />
+      <div>
+        <div class="product-title" id="p2-title">Moletom Confort</div>
+        <div class="product-desc" id="p2-desc">Forro leve e quentinho.</div>
+        <div class="small">Preço base: R$ <span id="p2-price">129.90</span></div>
+      </div>
+      <div class="controls">
+        <div>
+          <label for="p2-variation">Variação</label>
+          <select id="p2-variation" data-product="p2">
+            <option value="" data-price="0">Selecione</option>
+            <option value="Cinza" data-price="0">Cinza</option>
+            <option value="Preto" data-price="0">Preto</option>
+            <option value="Edição Limitada" data-price="30">Edição Limitada (+R$30,00)</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Quantidade</label>
+          <div class="qty-wrap">
+            <button class="qty-btn" data-action="dec" data-for="p2">-</button>
+            <input id="p2-qty" type="number" value="1" min="1" style="width:68px" />
+            <button class="qty-btn" data-action="inc" data-for="p2">+</button>
+            <button class="zoom-toggle" data-img="#p2-img">Zoom</button>
+          </div>
+        </div>
+
+        <button class="add-btn" data-add="p2">Adicionar à sacola</button>
+      </div>
+    </article>
+
+    <!-- Product 3 -->
+    <article class="product-card" data-id="p3" role="listitem" id="product-p3">
+      <img class="product-image" id="p3-img" src="https://picsum.photos/seed/prod3/600/400" alt="Produto 3" data-large="https://picsum.photos/seed/prod3/1200/800" />
+      <div>
+        <div class="product-title" id="p3-title">Boné Street</div>
+        <div class="product-desc" id="p3-desc">Ajustável, bordado frontal.</div>
+        <div class="small">Preço base: R$ <span id="p3-price">39.90</span></div>
+      </div>
+      <div class="controls">
+        <div>
+          <label for="p3-variation">Variação</label>
+          <select id="p3-variation" data-product="p3">
+            <option value="" data-price="0">Selecione</option>
+            <option value="Azul" data-price="0">Azul</option>
+            <option value="Vermelho" data-price="0">Vermelho</option>
+            <option value="Couro" data-price="15">Couro (+R$15,00)</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Quantidade</label>
+          <div class="qty-wrap">
+            <button class="qty-btn" data-action="dec" data-for="p3">-</button>
+            <input id="p3-qty" type="number" value="1" min="1" style="width:68px" />
+            <button class="qty-btn" data-action="inc" data-for="p3">+</button>
+            <button class="zoom-toggle" data-img="#p3-img">Zoom</button>
+          </div>
+        </div>
+
+        <button class="add-btn" data-add="p3">Adicionar à sacola</button>
+      </div>
+    </article>
+  </section>
+</main>
+
+<!-- =========================
+     JavaScript: comportamento + API placeholders
+     ========================= -->
+<script>
+/* =================
+   Utilitários e dados
+   ================= */
+const PRODUCTS = {
+  p1: { id:'p1', title:'Camiseta Básica', price:59.90 },
+  p2: { id:'p2', title:'Moletom Confort', price:129.90 },
+  p3: { id:'p3', title:'Boné Street', price:39.90 }
+};
+
+const API_BASE = 'https://api.exemplo.com'; // <-- Substitua pela sua API real
+
+function money(v){ return Number(v).toFixed(2); }
+
+/* ===========
+   Menu (offcanvas)
+   =========== */
+const menuBtn = document.getElementById('menu-button');
+const offcanvas = document.getElementById('offcanvas');
+menuBtn.addEventListener('click', e=>{
+  const open = offcanvas.classList.toggle('show');
+  menuBtn.setAttribute('aria-expanded', open);
+  offcanvas.setAttribute('aria-hidden', !open);
+});
+/* Fecha offcanvas ao clicar fora */
+document.addEventListener('click', (ev)=>{
+  const path = ev.composedPath?.() || (ev.path || []);
+  if(!path.includes(offcanvas) && !path.includes(menuBtn)){
+    offcanvas.classList.remove('show');
+    menuBtn.setAttribute('aria-expanded','false');
+    offcanvas.setAttribute('aria-hidden','true');
+  }
+});
+
+/* Logo input preview */
+const logoInput = document.getElementById('logo-input');
+const logoPreview = document.getElementById('logo-preview');
+logoInput.addEventListener('change', async (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) { logoPreview.src = ''; return; }
+  const dataURL = await new Promise(res=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result);
+    r.readAsDataURL(f);
+  });
+  logoPreview.src = dataURL;
+  // você pode enviar a logo para a API aqui se quiser
+});
+
+/* Back to top */
+const backTop = document.getElementById('back-top');
+backTop.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+/* Diminui visibilidade do título ao rolar */
+const brandTitle = document.getElementById('brand-title');
+window.addEventListener('scroll', ()=>{
+  const y = window.scrollY;
+  const opacity = Math.max(0, 1 - y/200);
+  brandTitle.style.opacity = opacity;
+});
+
+/* ===================
+   Zoom modal
+   =================== */
+const zoomModal = document.getElementById('zoom-modal');
+const zoomImg = document.getElementById('zoom-img');
+document.querySelectorAll('.zoom-toggle, .product-image').forEach(el=>{
+  el.addEventListener('click', (ev)=>{
+    // suporte tanto ao botão quanto ao clique na imagem
+    let imgEl;
+    if(el.classList.contains('zoom-toggle')){
+      imgEl = document.querySelector(el.getAttribute('data-img'));
+    } else {
+      imgEl = el;
+    }
+    const src = imgEl.getAttribute('data-large') || imgEl.src;
+    zoomImg.src = src;
+    zoomModal.classList.add('show');
+    zoomModal.setAttribute('aria-hidden','false');
+  });
+});
+zoomModal.addEventListener('click', ()=>{ zoomModal.classList.remove('show'); zoomModal.setAttribute('aria-hidden','true'); });
+
+/* ===================
+   Quantidade + validação
+   =================== */
+document.querySelectorAll('.qty-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> {
+    const forId = btn.dataset.for;
+    const action = btn.dataset.action;
+    const input = document.getElementById(forId + '-qty');
+    let v = Number(input.value || 1);
+    if(action === 'inc') v++;
+    else v--;
+    if(v < 1) v = 1;
+    input.value = v;
+  });
+});
+/* Impedir ficar < 1 digitando */
+document.querySelectorAll('input[type="number"]').forEach(inp=>{
+  inp.addEventListener('input', ()=> {
+    if(inp.value === '' || Number(inp.value) < 1) inp.value = 1;
+  });
+});
+
+/* ===================
+   Adicionar à sacola
+   =================== */
+let BAG = JSON.parse(localStorage.getItem('bag_v1') || '[]');
+function persistBag(){ localStorage.setItem('bag_v1', JSON.stringify(BAG)); updateBagUI(); }
+
+function updateBagUI(){
+  const count = BAG.reduce((s,i)=>s+i.quantity,0);
+  document.getElementById('bag-count').textContent = count;
+  const itemsWrap = document.getElementById('bag-items');
+  itemsWrap.innerHTML = '';
+  let total = 0;
+  BAG.forEach(item=>{
+    const div = document.createElement('div');
+    div.className = 'bag-item';
+    div.innerHTML = `
+      <img src="${item.image}" alt="${item.title}" />
+      <div style="flex:1">
+        <div style="font-weight:700">${item.title}</div>
+        <div class="small">Var: ${item.variation || '-'} • Qtd: ${item.quantity}</div>
+        <div style="margin-top:6px;">R$ ${money(item.unitPrice)} cada</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <button class="remove-btn" data-id="${item.id}">Remover</button>
+      </div>
+    `;
+    itemsWrap.appendChild(div);
+    total += item.unitPrice * item.quantity;
+  });
+  document.getElementById('bag-total').textContent = money(total);
+  // remove handler
+  document.querySelectorAll('.remove-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id = b.dataset.id;
+      BAG = BAG.filter(x=>!(x.id===id));
+      persistBag();
+    });
+  });
+}
+updateBagUI();
+
+/* abrir/fechar sacola */
+const bagSidebar = document.getElementById('bag-sidebar');
+document.getElementById('open-bag').addEventListener('click', ()=>{
+  bagSidebar.classList.toggle('show');
+  bagSidebar.setAttribute('aria-hidden', !bagSidebar.classList.contains('show'));
+});
+
+/* Add buttons */
+document.querySelectorAll('[data-add]').forEach(btn=>{
+  btn.addEventListener('click', async (e)=>{
+    const pid = btn.dataset.add;
+    // obter elementos relacionados
+    const qty = Number(document.getElementById(pid+'-qty').value || 1);
+    const variationSel = document.getElementById(pid+'-variation');
+    const variation = variationSel?.value || '';
+    if(!variation){ alert('Escolha uma variação antes de adicionar.'); variationSel.focus(); return; }
+
+    // calcular preço base + variação (variação usa data-price)
+    const base = Number(document.getElementById(pid+'-price').textContent || 0);
+    const selOpt = variationSel.selectedOptions[0];
+    const addPrice = Number(selOpt?.dataset?.price || 0);
+    const unitPrice = base + addPrice;
+
+    // imagem
+    const imgEl = document.querySelector('#' + pid + '-img');
+    const image = imgEl?.src || '';
+
+    const item = {
+      id: pid + '-' + (new Date().getTime()), // id único dentro da sacola
+      productId: pid,
+      title: PRODUCTS[pid].title,
+      variation,
+      quantity: qty,
+      unitPrice,
+      image
+    };
+
+    BAG.push(item);
+    persistBag();
+
+    // Tentativa de enviar para API (exemplo)
+    try{
+      // Exemplo: POST /cart/add
+      await fetch(API_BASE + '/cart/add', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(item)
+      }).catch(err=>{ /* falha não bloqueia */ });
+    }catch(err){ console.warn('Falha API (ok durante teste):', err); }
+
+    // animação simples: abrir sacola ao adicionar
+    bagSidebar.classList.add('show');
+    bagSidebar.setAttribute('aria-hidden','false');
+    alert('Adicionado à sacola!');
+  });
+});
+
+/* Checkout button */
+document.getElementById('checkout-btn').addEventListener('click', async ()=>{
+  if(BAG.length === 0){ alert('A sacola está vazia.'); return; }
+  // Aqui você pode montar o payload de pedido com usuário, endereço, forma de pagamento...
+  const payload = {
+    items: BAG,
+    // exemplo: os dados do comprador devem vir do usuário logado / formulário
+    customer: { cpf: localStorage.getItem('logged_cpf') || null }
+  };
+  try{
+    const res = await fetch(API_BASE + '/orders', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    if(res.ok){
+      alert('Pedido enviado com sucesso (simulação).');
+      BAG = [];
+      persistBag();
+      bagSidebar.classList.remove('show');
+    } else {
+      alert('Falha ao enviar pedido (simulação). Verifique API.');
+    }
+  }catch(err){
+    alert('Erro ao comunicar com API (simulação). Veja console.');
+    console.error(err);
+  }
+});
+
+/* ===================
+   Autenticação simples (localStorage) — apenas para demo
+   =================== */
+const loginOpen = document.getElementById('login-open');
+const registerOpen = document.getElementById('register-open');
+const loginModal = document.getElementById('login-modal');
+const regModal = document.getElementById('register-modal');
+
+loginOpen.addEventListener('click', ()=>{ loginModal.classList.add('show'); loginModal.setAttribute('aria-hidden','false'); });
+registerOpen.addEventListener('click', ()=>{ regModal.classList.add('show'); regModal.setAttribute('aria-hidden','false'); });
+
+/* Fechar modal ao clicar fora */
+['login-modal','register-modal'].forEach(id=>{
+  const modal = document.getElementById(id);
+  document.addEventListener('click', (ev)=>{
+    const path = ev.composedPath?.() || (ev.path || []);
+    if(modal.classList.contains('show') && !path.includes(modal) && !path.includes(document.getElementById('login-open')) && !path.includes(document.getElementById('register-open'))){
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+    }
+  });
+});
+
+/* Cadastro */
+document.getElementById('register-submit').addEventListener('click', async ()=>{
+  const cpf = document.getElementById('reg-cpf').value.trim();
+  const whats = document.getElementById('reg-whats').value.trim();
+  const nome = document.getElementById('reg-nome').value.trim();
+  const sob = document.getElementById('reg-sob').value.trim();
+  const rua = document.getElementById('reg-rua').value.trim();
+  const num = document.getElementById('reg-num').value.trim();
+  const bairro = document.getElementById('reg-bairro').value.trim();
+  const cidade = document.getElementById('reg-cidade').value.trim();
+  const estado = document.getElementById('reg-estado').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+
+  if(!cpf||!whats||!nome||!sob||!rua||!num||!bairro||!cidade||!estado||!pass){
+    alert('Preencha todos os campos obrigatórios.');
+    return;
+  }
+
+  const user = { cpf, whats, nome, sob, rua, num, bairro, cidade, estado };
+  // Salvar local (simples demo). Em produção: enviar para API /users
+  localStorage.setItem('user_' + cpf, JSON.stringify({...user, password:pass}));
+  alert('Conta criada (demo). Agora faça login.');
+  regModal.classList.remove('show');
+});
+
+/* Login */
+document.getElementById('login-submit').addEventListener('click', async ()=>{
+  const cpf = document.getElementById('login-cpf').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if(!cpf||!pass){ alert('Preencha CPF e senha.'); return; }
+  const raw = localStorage.getItem('user_' + cpf);
+  if(!raw){ alert('Usuário não encontrado (demo).'); return; }
+  const u = JSON.parse(raw);
+  if(u.password !== pass){ alert('Senha incorreta (demo).'); return; }
+  // sucesso
+  localStorage.setItem('logged_cpf', cpf);
+  alert('Login realizado (demo).');
+  loginModal.classList.remove('show');
+});
+
+/* ===================
+   Acessibilidade / teclado
+   =================== */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.auth-modal.show').forEach(m=>{ m.classList.remove('show'); m.setAttribute('aria-hidden','true'); });
+    offcanvas.classList.remove('show');
+    bagSidebar.classList.remove('show');
+    zoomModal.classList.remove('show');
+  }
+});
+
+/* ===================
+   Notas finais
+   ===================
+   - Troque API_BASE para sua URL real.
+   - Endpoints de exemplo usados: /cart/add e /orders
+   - Todos os elementos principais possuem IDs para você alterar via CSS:
+     #topbar, #logo-input, #logo-preview, #brand-title, #offcanvas, #product-list,
+     #product-p1, #p1-variation, #p1-qty, #bag-sidebar, #bag-items, #bag-total, #login-modal, #register-modal
+   - Melhorias fáceis: formatar CPF, validar telefone, usar máscara, conectar uma autenticação real.
+*/
+</script>
+</body>
+</html>
