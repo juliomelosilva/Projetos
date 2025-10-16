@@ -1,1 +1,14 @@
-{"tecnico": "C:/Users/Growth Live/Desktop/Chamados/tecnico.png", "selecao_data": "C:/Users/Growth Live/Desktop/Chamados/selecao_data.png", "dia": "C:/Users/Growth Live/Desktop/Chamados/dia.png", "empresa": "C:/Users/Growth Live/Desktop/Chamados/empresa.png", "titulo": "C:/Users/Growth Live/Desktop/Chamados/titulo.png", "descricao": "C:/Users/Growth Live/Desktop/Chamados/descricao.png", "resolucao": "C:/Users/Growth Live/Desktop/Chamados/resolucao.png", "prioridade": "C:/Users/Growth Live/Desktop/Chamados/prioridade.png", "prioridade_opcao": "C:/Users/Growth Live/Desktop/Chamados/prioridade_opcao.png", "categoria": "C:/Users/Growth Live/Desktop/Chamados/categoria.png", "categoria_opcao": "C:/Users/Growth Live/Desktop/Chamados/categoria_opcao.png", "finalizar": "C:/Users/Growth Live/Desktop/Chamados/finalizar.png"}
+{
+  "tecnico": "C:/Users/Growth Live/Desktop/Chamados/tecnico.png",
+  "selecao_data": "C:/Users/Growth Live/Desktop/Chamados/selecao_data.png",
+  "dia": "C:/Users/Growth Live/Desktop/Chamados/dia.png",
+  "empresa": "C:/Users/Growth Live/Desktop/Chamados/empresa.png",
+  "titulo": "C:/Users/Growth Live/Desktop/Chamados/titulo.png",
+  "descricao": "C:/Users/Growth Live/Desktop/Chamados/descricao.png",
+  "resolucao": "C:/Users/Growth Live/Desktop/Chamados/resolucao.png",
+  "prioridade": "C:/Users/Growth Live/Desktop/Chamados/prioridade.png",
+  "prioridade_opcao": "C:/Users/Growth Live/Desktop/Chamados/prioridade_opcao.png",
+  "categoria": "C:/Users/Growth Live/Desktop/Chamados/categoria.png",
+  "categoria_opcao": "C:/Users/Growth Live/Desktop/Chamados/categoria_opcao.png",
+  "finalizar": "C:/Users/Growth Live/Desktop/Chamados/finalizar.png"
+}
