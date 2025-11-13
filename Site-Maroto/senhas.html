@@ -1,0 +1,42 @@
+<style>
+  body {font-family: raleway; text-align: center; margin: 0;}
+  main {max-width: 600px; margin: auto;}
+  div {border: 2px solid rgba(199, 195, 191, 0.8); border-radius: 12px; padding: 8px; margin: 6px;}
+  b {color: rgb(74, 2, 141);}
+  button {margin: 8px; padding: 10px 20px; border: 2px solid rgb(0, 0, 0); border-radius: 8px; background: #fff; cursor: pointer; font-weight: 700;}
+  button:hover {background: rgb(74, 2, 141); color: #fff;}
+  </style>
+  <main>
+    <div><b>Retaguarda:</b> <span id="r"></span></div>
+    <div><b>Config PDV:</b> <span id="c"></span></div>
+    <div><b>CBC 2k9:</b> <span id="b"></span></div>
+    <div>
+      <b>Usuário Elgin:</b> <span id="u"></span>
+      <p><b>Senha Gsurf-Elgin:</b> <span id="s"></span></p>
+    </div>
+    <button onclick="calc()">Atualizar</button>
+    <h3>Senha EzTech</h3>
+    <input id="n" type="number">
+    <button onclick="sen()">Calcular</button>
+    <p id="x"></p>
+  </main>
+  <script>
+  const q = x => document.getElementById(x);
+  function calc() {
+    let d = new Date, h = d.getHours(), a = d.getFullYear(), di = d.getDate(), m = d.getMonth() + 1;
+    let r = new Date(a, m, di).toLocaleDateString('en', {year: '2-digit'});
+    let c = a - 75 + h + di + m, t = di + m + +r, b = a - m - di - h;
+    if (m < 10) m = "0" + m;
+    q('r').textContent = t;
+    q('c').textContent = c;
+    q('b').textContent = b;
+    q('u').textContent = "elgin.growth";
+    q('s').textContent = "elgin@123";
+  }
+  function sen() {
+    let n = parseFloat(q("n").value), r = Math.abs(Math.cos(n * Math.PI / 180)).toFixed(3).slice(-3);
+    q("x").textContent = "Senha: " + r;
+  }
+  calc(); // Executa ao carregar o bloco
+  </script>
+  
