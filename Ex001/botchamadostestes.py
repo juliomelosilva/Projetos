@@ -1,166 +1,186 @@
-import openpyxl
-import time
+# ============================================================
+# AUTOMAÇÃO COM AUTO CLIQUE + INTERFACE GRÁFICA
+# Autor: Ajustável por você
+# ============================================================
+
 import pyautogui
-import webbrowser
-import keyboard
+import time
+import threading
 import tkinter as tk
-from tkinter import filedialog, messagebox
-import json
+from tkinter import messagebox, scrolledtext
 import os
+import sys
 
-# Caminho do arquivo de configuração para salvar as coordenadas do dia
-config_file = "config_dia.json"
+# ============================================================
+# CONFIGURAÇÕES GERAIS (AJUSTE AQUI)
+# ============================================================
 
-# Função para salvar as coordenadas no arquivo
-def salvar_configuracao(coordenadas):
-    with open(config_file, "w") as file:
-        json.dump(coordenadas, file)
-    print(f"Coordenadas salvas: {coordenadas}")
+# Tempo padrão entre ações
+DEFAULT_DELAY = 1.0
 
-# Função para carregar as coordenadas do arquivo
-def carregar_configuracao():
-    if os.path.exists(config_file):
-        with open(config_file, "r") as file:
-            return json.load(file)
+# Confiança para reconhecimento de imagem (0.7 a 0.9)
+IMAGE_CONFIDENCE = 0.8
+
+# Pasta onde ficam as imagens usadas para reconhecimento
+IMAGE_DIR = "imagens"
+
+# Flag global para controle Start / Stop
+automation_running = False
+
+
+# ============================================================
+# FUNÇÃO DE LOG (MOSTRA NA INTERFACE)
+# ============================================================
+def log(msg):
+    log_area.insert(tk.END, f"{msg}\n")
+    log_area.see(tk.END)
+    root.update_idletasks()
+
+
+# ============================================================
+# FUNÇÃO: ESPERA INTELIGENTE POR IMAGEM
+# Espera até a imagem aparecer na tela
+# ============================================================
+def wait_for_image(image_name, timeout=15):
+    """
+    image_name: nome do arquivo dentro da pasta imagens
+    timeout: tempo máximo de espera
+    """
+    log(f"🔍 Aguardando imagem: {image_name}")
+    start = time.time()
+
+    while time.time() - start < timeout:
+        if not automation_running:
+            return None
+
+        try:
+            location = pyautogui.locateCenterOnScreen(
+                os.path.join(IMAGE_DIR, image_name),
+                confidence=IMAGE_CONFIDENCE
+            )
+            if location:
+                log(f"✅ Imagem encontrada: {image_name}")
+                return location
+        except:
+            pass
+
+        time.sleep(0.5)
+
+    log(f"❌ Timeout ao esperar imagem: {image_name}")
     return None
 
-# Função para limpar o arquivo de configuração
-def limpar_configuracao():
-    if os.path.exists(config_file):
-        with open(config_file, "w") as file:
-            json.dump({}, file)  # Escreve um JSON vazio
-        print("Configuração de coordenadas limpa.")
-    else:
-        print("Nenhum arquivo de configuração encontrado para limpar.")
 
-# Função para capturar o dia desejado do calendário
-def configurar_dia():
-    messagebox.showinfo("Configuração do Dia", "Posicione o mouse sobre o dia desejado no calendário.\nAguarde 3 segundos.")
-    time.sleep(3)  # Contagem de 3 segundos
+# ============================================================
+# FUNÇÃO: CLIQUE POR IMAGEM
+# ============================================================
+def click_image(image_name, timeout=15):
+    pos = wait_for_image(image_name, timeout)
+    if pos:
+        pyautogui.click(pos)
+        time.sleep(DEFAULT_DELAY)
+        return True
+    return False
 
-    # Captura as coordenadas atuais do mouse
-    x, y = pyautogui.position()
-    coordenadas = {"x": x, "y": y}
-    salvar_configuracao(coordenadas)
-    messagebox.showinfo("Configuração Salva", f"Dia configurado com sucesso nas coordenadas: ({x}, {y})")
 
-# Função para selecionar o dia com base na configuração salva
-def selecionar_dia():
-    coordenadas = carregar_configuracao()
-    if coordenadas:
-        pyautogui.click(x=coordenadas["x"], y=coordenadas["y"])
-        time.sleep(0.5)
-        print(f"Selecionado o dia configurado nas coordenadas: ({coordenadas['x']}, {coordenadas['y']})")
-    else:
-        print("Nenhuma configuração de dia encontrada. Configure o dia primeiro.")
-        messagebox.showerror("Erro", "Nenhuma configuração de dia encontrada.\nPor favor, configure o dia.")
+# ============================================================
+# FUNÇÃO: CLIQUE POR COORDENADA FIXA
+# ============================================================
+def click_coord(x, y):
+    log(f"🖱️ Clique em coordenada: ({x},{y})")
+    pyautogui.click(x, y)
+    time.sleep(DEFAULT_DELAY)
 
-# Função principal para iniciar a automação
-def iniciar_automacao():
-    definir_nome = nome_entry.get()
 
-    if not definir_nome:
-        messagebox.showerror("Erro", "Por favor, preencha seu nome.")
+# ============================================================
+# FUNÇÃO: DIGITAR TEXTO
+# ============================================================
+def type_text(text):
+    pyautogui.write(text, interval=0.05)
+    time.sleep(DEFAULT_DELAY)
+
+
+# ============================================================
+# AQUI FICA A LÓGICA PRINCIPAL DO PROCESSO
+# 👉 É ESTA FUNÇÃO QUE VOCÊ VAI AJUSTAR CONFORME O VÍDEO
+# ============================================================
+def automation_flow():
+    global automation_running
+
+    log("🚀 Automação iniciada")
+
+    # ================================
+    # EXEMPLO DE FLUXO
+    # ================================
+
+    # 1️⃣ Esperar botão inicial
+    if not click_image("botao_iniciar.png", timeout=20):
+        log("❌ Falha no botão iniciar")
+        automation_running = False
         return
 
-    # Limpa a configuração antes de selecionar a planilha
-    limpar_configuracao()
+    # 2️⃣ Clique por coordenada (caso posição seja fixa)
+    click_coord(500, 400)
 
-    arquivo_excel = filedialog.askopenfilename(title="Selecione o arquivo Excel", filetypes=[("Arquivos Excel", "*.xlsx")])
+    # 3️⃣ Digitar algo em um campo
+    type_text("EXEMPLO DE TEXTO")
 
-    if not arquivo_excel:
-        messagebox.showerror("Erro", "Por favor, selecione a planilha com os chamados registrados.")
+    # 4️⃣ Confirmar ação
+    click_image("botao_confirmar.png", timeout=10)
+
+    # 5️⃣ Exemplo de decisão
+    erro = wait_for_image("mensagem_erro.png", timeout=5)
+    if erro:
+        log("⚠️ Erro detectado, voltando fluxo")
+        click_image("botao_voltar.png", timeout=5)
+
+    log("✅ Fluxo finalizado")
+    automation_running = False
+
+
+# ============================================================
+# CONTROLE START
+# ============================================================
+def start_automation():
+    global automation_running
+
+    if automation_running:
+        messagebox.showwarning("Aviso", "Automação já está rodando")
         return
 
-    try:
-        # Carrega o arquivo Excel
-        workbook = openpyxl.load_workbook(arquivo_excel)
-        chamados = workbook['Planilha1']
+    automation_running = True
+    log_area.delete(1.0, tk.END)
 
-        # Abre o site no navegador
-        webbrowser.open('https://smliveloja.bitrix24.site/plantao/')
-        time.sleep(5)
+    thread = threading.Thread(target=automation_flow)
+    thread.start()
 
-        # Seleção do dia (configura caso não exista)
-        if not carregar_configuracao():
-            configurar_dia()
 
-        # Preenche os chamados
-        for linha in chamados.iter_rows(min_row=2):
-            Nome = linha[0].value
-            Descricao = linha[1].value
-            Resolucao = linha[2].value
+# ============================================================
+# CONTROLE STOP
+# ============================================================
+def stop_automation():
+    global automation_running
+    automation_running = False
+    log("⛔ Automação interrompida pelo usuário")
 
-            # Verifica se a linha está vazia
-            if Nome is None and Descricao is None and Resolucao is None:
-                print("Linha vazia encontrada. Encerrando o processo.")
-                break
 
-            # Preenche o nome do técnico em cada repetição
-            pyautogui.click(x=495, y=336)  # Campo do nome do técnico
-            keyboard.write(definir_nome)
-            time.sleep(0.5)
+# ============================================================
+# INTERFACE GRÁFICA
+# ============================================================
+root = tk.Tk()
+root.title("Automação de Processo")
+root.geometry("600x450")
+root.resizable(False, False)
 
-            # Seleciona o dia em cada repetição
-            pyautogui.click(x=514, y=400)  # Posição para abrir o seletor de data
-            time.sleep(0.5)
-            selecionar_dia()
+frame = tk.Frame(root)
+frame.pack(pady=10)
 
-            # Automação com pyautogui
-            pyautogui.PAUSE = 0.3
-            time.sleep(1)
+btn_start = tk.Button(frame, text="▶ Iniciar", width=15, bg="green", fg="white", command=start_automation)
+btn_start.grid(row=0, column=0, padx=5)
 
-            # Insere nome da empresa
-            pyautogui.click(x=530, y=477)  # Posição nome da empresa
-            keyboard.write(Nome)
-            time.sleep(0.5)
+btn_stop = tk.Button(frame, text="⛔ Parar", width=15, bg="red", fg="white", command=stop_automation)
+btn_stop.grid(row=0, column=1, padx=5)
 
-            # Insere descrição e resolução
-            pyautogui.click(x=548, y=528)  # Posição título
-            keyboard.write(Descricao)
-            pyautogui.click(x=457, y=626)  # Posição descrição
-            keyboard.write(Descricao)
-            pyautogui.scroll(-500)
-            time.sleep(0.5)
-            pyautogui.click(x=448, y=374)  # Posição resolução
-            keyboard.write(Resolucao)
-            time.sleep(0.5)
+log_area = scrolledtext.ScrolledText(root, width=70, height=20)
+log_area.pack(padx=10, pady=10)
 
-            # Preenche prioridade e categoria
-            pyautogui.click(x=486, y=453)  # Posição prioridade
-            pyautogui.click(x=458, y=543)  # Seleção prioridade média
-            time.sleep(0.5)
-            pyautogui.click(x=586, y=516)  # Posição categoria
-            time.sleep(1)
-            pyautogui.moveTo(x=623, y=632, duration=0.1)
-            pyautogui.scroll(-10000)
-            pyautogui.moveTo(x=1084, y=610, duration=0.1)
-            pyautogui.scroll(-1000)
-            pyautogui.click(x=498, y=689)  # Categoria plantão
-            pyautogui.click(x=658, y=523)  # Botão enviar
-            pyautogui.click(x=658, y=523)  # Botão enviar 2
-            time.sleep(6)
-
-        messagebox.showinfo("Concluído", "Chamados Registrados!")
-
-    except Exception as e:
-        messagebox.showerror("Erro", f"Ocorreu um erro: {e}")
-
-# Configuração da interface gráfica
-app = tk.Tk()
-app.title("Automação de Chamados Plantão")
-app.geometry("250x150")
-
-# Label e campo de entrada para o nome
-nome_label = tk.Label(app, text="Nome do Técnico:")
-nome_label.pack(pady=5)
-
-nome_entry = tk.Entry(app, width=30)
-nome_entry.pack(pady=5)
-
-# Botão para iniciar a automação
-iniciar_button = tk.Button(app, text="Abrir Chamados", command=iniciar_automacao, bg="green", fg="white")
-iniciar_button.pack(pady=20)
-
-# Loop principal
-app.mainloop()
+root.mainloop()

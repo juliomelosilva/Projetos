@@ -1,0 +1,50 @@
+{
+    "campo_nome_tecnico": {
+        "x": 687,
+        "y": 336
+    },
+    "abrir_calendario": {
+        "x": 643,
+        "y": 400
+    },
+    "dia_calendario": {
+        "x": 616,
+        "y": 603
+    },
+    "nome_empresa": {
+        "x": 780,
+        "y": 470
+    },
+    "titulo": {
+        "x": 790,
+        "y": 544
+    },
+    "descricao": {
+        "x": 783,
+        "y": 633
+    },
+    "resolucao": {
+        "x": 794,
+        "y": 753
+    },
+    "prioridade": {
+        "x": 788,
+        "y": 427
+    },
+    "prioridade_media": {
+        "x": 788,
+        "y": 510
+    },
+    "categoria": {
+        "x": 810,
+        "y": 491
+    },
+    "categoria_plantao": {
+        "x": 786,
+        "y": 831
+    },
+    "botao_enviar": {
+        "x": 801,
+        "y": 661
+    }
+}
