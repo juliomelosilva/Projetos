@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jarvis OS - Interface de Comando</title>
+    <title>Jarvis OS - v3.5</title>
     <style>
         :root {
             --neon-blue: #00f2ff;
@@ -20,18 +20,21 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Navbar Estilizada */
         .navbar {
             display: flex;
             gap: 15px;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             width: 100%;
             justify-content: center;
             border-bottom: 1px solid var(--neon-blue);
             backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .nav-btn {
@@ -43,7 +46,7 @@
             border-radius: 5px;
             transition: 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: bold;
         }
 
         .nav-btn.active {
@@ -52,7 +55,6 @@
             box-shadow: 0 0 15px var(--neon-blue);
         }
 
-        /* Container de Paineis */
         .container {
             width: 90%;
             max-width: 600px;
@@ -71,7 +73,7 @@
 
         .panel.active { display: block; animation: fadeIn 0.5s; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         input, textarea {
             width: 100%;
@@ -82,12 +84,12 @@
             color: white;
             border-radius: 5px;
             box-sizing: border-box;
+            font-size: 16px; /* Evita zoom automático no iOS */
         }
 
-        /* O Reator Arc (Botão Jarvis) */
         .jarvis-circle {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
             border: 3px solid var(--neon-blue);
             border-radius: 50%;
@@ -107,7 +109,7 @@
 
         @keyframes pulse {
             0% { transform: scale(1); box-shadow: 0 0 20px var(--neon-blue); }
-            50% { transform: scale(1.15); box-shadow: 0 0 40px var(--neon-blue); }
+            50% { transform: scale(1.1); box-shadow: 0 0 40px var(--neon-blue); }
             100% { transform: scale(1); box-shadow: 0 0 20px var(--neon-blue); }
         }
 
@@ -117,6 +119,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: -20px;
+            height: 20px;
         }
     </style>
 </head>
@@ -132,12 +135,12 @@
         <h2 id="titulo-modulo" style="color: var(--neon-blue);">Controle Financeiro</h2>
         
         <div id="panel-plantao" class="panel">
-            <input type="text" id="pla-tecnico" value="Técnico: Júlio" readonly style="border-color: #555; color: #888;">
+            <input type="text" id="pla-tecnico" value="Técnico: Júlio" readonly style="color: #00f2ff55;">
             <input type="date" id="pla-data">
-            <input type="text" id="pla-empresa" placeholder="Nome da Empresa">
-            <input type="text" id="pla-titulo" placeholder="Título do Chamado">
-            <textarea id="pla-resolucao" placeholder="Resolução do Problema" rows="3"></textarea>
-            <div style="display: flex; justify-content: space-around; font-size: 12px; color: var(--neon-blue);">
+            <input type="text" id="pla-empresa" placeholder="Empresa">
+            <input type="text" id="pla-titulo" placeholder="Título / Descrição">
+            <textarea id="pla-resolucao" placeholder="Resolução do Chamado" rows="3"></textarea>
+            <div style="display: flex; justify-content: space-around; font-size: 12px; color: var(--neon-blue); margin-top: 10px;">
                 <span>PRIORIDADE: MÉDIA</span>
                 <span>CATEGORIA: PLANTÃO</span>
             </div>
@@ -146,36 +149,37 @@
         <div id="panel-financas" class="panel active">
             <input type="text" id="fin-desc" placeholder="Descrição da compra">
             <input type="text" id="fin-valor" placeholder="Valor (R$)">
-            <input type="text" id="fin-parcela" placeholder="Parcela (ex: 1 de 5)">
+            <input type="text" id="fin-parcela" placeholder="Parcelas">
         </div>
 
         <div id="panel-casa" class="panel">
-            <p>Sistemas de Automação Residencial</p>
-            <button class="nav-btn" style="width: 100%; margin-bottom: 10px;">Ligar Ar Condicionado</button>
-            <button class="nav-btn" style="width: 100%;">Ligar Cafeteira</button>
+            <p>Sistemas de Domótica</p>
+            <div id="status-casa" style="color: var(--neon-blue); border: 1px solid; padding: 10px; border-radius: 5px;">Aguardando comando de voz para dispositivos...</div>
         </div>
 
         <div class="jarvis-circle" id="jarvisBtn" onclick="toggleJarvis()">
-            <div style="width: 40%; height: 40%; border: 2px solid white; border-radius: 50%; opacity: 0.5;"></div>
+            <div style="width: 30%; height: 30%; border: 2px solid white; border-radius: 50%;"></div>
         </div>
         <p class="status-text" id="status">Aguardando Comando</p>
     </div>
 
     <script>
+        // --- CONFIGURAÇÃO DE VOZ ---
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'pt-BR';
-        recognition.continuous = false;
-        const synth = window.speechSynthesis;
+        recognition.continuous = false; // False para processar frases completas de cada vez
+        recognition.interimResults = false;
 
+        const synth = window.speechSynthesis;
         let moduloAtual = 'financas';
         let passoPlantao = 0; 
 
-        // Configura data de hoje
         document.getElementById('pla-data').valueAsDate = new Date();
 
         function falar(texto) {
             const utter = new SpeechSynthesisUtterance(texto);
-            utter.rate = 1.1;
+            utter.rate = 1.2;
+            utter.onstart = () => { recognition.stop(); }; // Garante que o mic feche enquanto a IA fala
             synth.speak(utter);
         }
 
@@ -192,15 +196,25 @@
         function toggleJarvis() {
             try {
                 recognition.start();
-                document.getElementById('jarvisBtn').classList.add('listening');
-                document.getElementById('status').innerText = "Ouvindo...";
-            } catch(e) { console.log("Reconhecimento já ativo"); }
+            } catch(e) {
+                console.log("Reiniciando...");
+            }
         }
+
+        recognition.onstart = () => {
+            document.getElementById('jarvisBtn').classList.add('listening');
+            document.getElementById('status').innerText = "JARVIS OUVINDO...";
+        };
+
+        recognition.onend = () => {
+            document.getElementById('jarvisBtn').classList.remove('listening');
+            document.getElementById('status').innerText = "Processando...";
+        };
 
         recognition.onresult = (event) => {
             const voz = event.results[0][0].transcript.toLowerCase();
-            document.getElementById('jarvisBtn').classList.remove('listening');
-            
+            document.getElementById('status').innerText = "Comando: " + voz;
+
             // Troca de módulo por voz
             if(voz.includes("abrir menu") || voz.includes("mudar para")) {
                 if(voz.includes("plantão")) document.querySelectorAll('.nav-btn')[1].click();
@@ -212,11 +226,15 @@
             if(moduloAtual === 'plantao') {
                 fluxoPlantao(voz);
             } else if(moduloAtual === 'financas') {
-                // Lógica de finanças simplificada
                 if(voz.includes("registre")) {
                     const preco = voz.match(/\d+/);
                     document.getElementById('fin-valor').value = preco;
                     falar("Valor de " + preco + " registrado.");
+                }
+            } else if(moduloAtual === 'casa') {
+                if(voz.includes("ligar")) {
+                    document.getElementById('status-casa').innerText = "DISPOSITIVO ATIVADO";
+                    falar("Comando de ativação enviado.");
                 }
             }
         };
@@ -224,32 +242,38 @@
         function fluxoPlantao(comando) {
             if (passoPlantao === 0) {
                 document.getElementById('pla-empresa').value = comando;
-                falar("Entendido. Qual o título e a descrição do chamado?");
+                falar("Registrado. Qual o título e a descrição do problema?");
                 passoPlantao = 1;
+                autoReativar(3000);
             } else if (passoPlantao === 1) {
                 document.getElementById('pla-titulo').value = comando;
-                falar("Qual foi a resolução para este caso?");
+                falar("Certo. Qual foi a resolução aplicada?");
                 passoPlantao = 2;
+                autoReativar(3000);
             } else if (passoPlantao === 2) {
                 document.getElementById('pla-resolucao').value = comando;
-                falar("Júlio, todos os campos foram preenchidos com prioridade média e categoria plantão. Posso enviar para o Bitrix?");
+                falar("Júlio, todos os dados foram preenchidos. Posso enviar o chamado?");
                 passoPlantao = 3;
+                autoReativar(4000);
             } else if (passoPlantao === 3 && (comando.includes("sim") || comando.includes("pode"))) {
-                falar("Enviando chamado agora.");
-                document.getElementById('status').innerText = "ENVIADO!";
+                falar("Enviando agora para o Bitrix.");
+                document.getElementById('status').innerText = "CHAMADO ENVIADO!";
                 passoPlantao = 0;
             }
         }
 
-        recognition.onend = () => {
-            document.getElementById('jarvisBtn').classList.remove('listening');
-            document.getElementById('status').innerText = "Aguardando Comando";
-        };
+        // Função para abrir o microfone automaticamente após a IA falar
+        function autoReativar(ms) {
+            setTimeout(() => {
+                toggleJarvis();
+            }, ms);
+        }
 
-        // Resolve problema de áudio no iOS/Android
+        // Correção de áudio para dispositivos móveis
         document.body.addEventListener('click', () => {
             if (synth.state === 'suspended') synth.resume();
         }, { once: true });
+
     </script>
 </body>
 </html>
