@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis OS - Interface de Comando</title>
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --dark-bg: #0a0e14;
+            --card-bg: #161b22;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Navbar Estilizada */
+        .navbar {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            justify-content: center;
+            border-bottom: 1px solid var(--neon-blue);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn.active {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        /* Container de Paineis */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--neon-blue);
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .panel.active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* O Reator Arc (Botão Jarvis) */
+        .jarvis-circle {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
+            border: 3px solid var(--neon-blue);
+            border-radius: 50%;
+            margin: 40px auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--neon-blue);
+            transition: 0.3s;
+        }
+
+        .listening {
+            animation: pulse 1.2s infinite;
+            background: radial-gradient(circle, #fff 0%, var(--neon-blue) 70%);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px var(--neon-blue); }
+            50% { transform: scale(1.15); box-shadow: 0 0 40px var(--neon-blue); }
+            100% { transform: scale(1); box-shadow: 0 0 20px var(--neon-blue); }
+        }
+
+        .status-text {
+            color: var(--neon-blue);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: -20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <button class="nav-btn active" onclick="setModulo('financas', this)">Finanças</button>
+        <button class="nav-btn" onclick="setModulo('plantao', this)">Plantão</button>
+        <button class="nav-btn" onclick="setModulo('casa', this)">Casa</button>
+    </div>
+
+    <div class="container">
+        <h2 id="titulo-modulo" style="color: var(--neon-blue);">Controle Financeiro</h2>
+        
+        <div id="panel-plantao" class="panel">
+            <input type="text" id="pla-tecnico" value="Técnico: Júlio" readonly style="border-color: #555; color: #888;">
+            <input type="date" id="pla-data">
+            <input type="text" id="pla-empresa" placeholder="Nome da Empresa">
+            <input type="text" id="pla-titulo" placeholder="Título do Chamado">
+            <textarea id="pla-resolucao" placeholder="Resolução do Problema" rows="3"></textarea>
+            <div style="display: flex; justify-content: space-around; font-size: 12px; color: var(--neon-blue);">
+                <span>PRIORIDADE: MÉDIA</span>
+                <span>CATEGORIA: PLANTÃO</span>
+            </div>
+        </div>
+
+        <div id="panel-financas" class="panel active">
+            <input type="text" id="fin-desc" placeholder="Descrição da compra">
+            <input type="text" id="fin-valor" placeholder="Valor (R$)">
+            <input type="text" id="fin-parcela" placeholder="Parcela (ex: 1 de 5)">
+        </div>
+
+        <div id="panel-casa" class="panel">
+            <p>Sistemas de Automação Residencial</p>
+            <button class="nav-btn" style="width: 100%; margin-bottom: 10px;">Ligar Ar Condicionado</button>
+            <button class="nav-btn" style="width: 100%;">Ligar Cafeteira</button>
+        </div>
+
+        <div class="jarvis-circle" id="jarvisBtn" onclick="toggleJarvis()">
+            <div style="width: 40%; height: 40%; border: 2px solid white; border-radius: 50%; opacity: 0.5;"></div>
+        </div>
+        <p class="status-text" id="status">Aguardando Comando</p>
+    </div>
+
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'pt-BR';
+        recognition.continuous = false;
+        const synth = window.speechSynthesis;
+
+        let moduloAtual = 'financas';
+        let passoPlantao = 0; 
+
+        // Configura data de hoje
+        document.getElementById('pla-data').valueAsDate = new Date();
+
+        function falar(texto) {
+            const utter = new SpeechSynthesisUtterance(texto);
+            utter.rate = 1.1;
+            synth.speak(utter);
+        }
+
+        function setModulo(mod, btn) {
+            moduloAtual = mod;
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('panel-' + mod).classList.add('active');
+            btn.classList.add('active');
+            document.getElementById('titulo-modulo').innerText = btn.innerText;
+            falar("Sistema " + btn.innerText + " ativo.");
+        }
+
+        function toggleJarvis() {
+            try {
+                recognition.start();
+                document.getElementById('jarvisBtn').classList.add('listening');
+                document.getElementById('status').innerText = "Ouvindo...";
+            } catch(e) { console.log("Reconhecimento já ativo"); }
+        }
+
+        recognition.onresult = (event) => {
+            const voz = event.results[0][0].transcript.toLowerCase();
+            document.getElementById('jarvisBtn').classList.remove('listening');
+            
+            // Troca de módulo por voz
+            if(voz.includes("abrir menu") || voz.includes("mudar para")) {
+                if(voz.includes("plantão")) document.querySelectorAll('.nav-btn')[1].click();
+                if(voz.includes("finanças")) document.querySelectorAll('.nav-btn')[0].click();
+                if(voz.includes("casa")) document.querySelectorAll('.nav-btn')[2].click();
+                return;
+            }
+
+            if(moduloAtual === 'plantao') {
+                fluxoPlantao(voz);
+            } else if(moduloAtual === 'financas') {
+                // Lógica de finanças simplificada
+                if(voz.includes("registre")) {
+                    const preco = voz.match(/\d+/);
+                    document.getElementById('fin-valor').value = preco;
+                    falar("Valor de " + preco + " registrado.");
+                }
+            }
+        };
+
+        function fluxoPlantao(comando) {
+            if (passoPlantao === 0) {
+                document.getElementById('pla-empresa').value = comando;
+                falar("Entendido. Qual o título e a descrição do chamado?");
+                passoPlantao = 1;
+            } else if (passoPlantao === 1) {
+                document.getElementById('pla-titulo').value = comando;
+                falar("Qual foi a resolução para este caso?");
+                passoPlantao = 2;
+            } else if (passoPlantao === 2) {
+                document.getElementById('pla-resolucao').value = comando;
+                falar("Júlio, todos os campos foram preenchidos com prioridade média e categoria plantão. Posso enviar para o Bitrix?");
+                passoPlantao = 3;
+            } else if (passoPlantao === 3 && (comando.includes("sim") || comando.includes("pode"))) {
+                falar("Enviando chamado agora.");
+                document.getElementById('status').innerText = "ENVIADO!";
+                passoPlantao = 0;
+            }
+        }
+
+        recognition.onend = () => {
+            document.getElementById('jarvisBtn').classList.remove('listening');
+            document.getElementById('status').innerText = "Aguardando Comando";
+        };
+
+        // Resolve problema de áudio no iOS/Android
+        document.body.addEventListener('click', () => {
+            if (synth.state === 'suspended') synth.resume();
+        }, { once: true });
+    </script>
+</body>
+</html>
