@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Busca Empresarial Pro</title>
+
+<style>
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#4e73df,#1cc88a);
+    padding: 30px;
+}
+
+.container{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+input, select, button{
+    padding:12px 18px;
+    border-radius:30px;
+    border:1px solid #ddd;
+    margin:5px;
+    font-size:14px;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:bold;
+}
+
+.btn-search{ background:#4e73df; color:#fff; }
+.btn-search:hover{ background:#2e59d9; }
+
+.btn-more{ background:#858796; color:#fff; }
+.btn-export{ background:#1cc88a; color:#fff; }
+
+table{
+    width:100%;
+    margin-top:25px;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    font-size:14px;
+}
+
+th{
+    background:#f8f9fc;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Busca Empresarial Avançada</h1>
+
+    <input type="text" id="estadoInput" placeholder="Digite o Estado (ex: Alagoas ou AL)">
+    
+    <select id="estadoSelect">
+        <option value="">Selecione o Estado</option>
+        <option>AC</option><option>AL</option><option>AP</option>
+        <option>AM</option><option>BA</option><option>CE</option>
+        <option>DF</option><option>ES</option><option>GO</option>
+        <option>MA</option><option>MT</option><option>MS</option>
+        <option>MG</option><option>PA</option><option>PB</option>
+        <option>PR</option><option>PE</option><option>PI</option>
+        <option>RJ</option><option>RN</option><option>RS</option>
+        <option>RO</option><option>RR</option><option>SC</option>
+        <option>SP</option><option>SE</option><option>TO</option>
+    </select>
+
+    <input type="text" id="segmento" placeholder="Digite o segmento (ex: Mercadinhos)">
+
+    <button class="btn-search" onclick="buscar()">Buscar</button>
+    <button class="btn-more" onclick="carregarMais()">Carregar Mais</button>
+    <button class="btn-export" onclick="exportarExcel()">Exportar Excel</button>
+
+    <table id="tabela">
+        <thead>
+            <tr>
+                <th>Empresa</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+let baseDados = [];
+let resultados = [];
+let indiceAtual = 0;
+const LIMITE = 100;
+
+// Simulação de base maior
+const segmentos = ["Mercadinho","Padaria","Farmácia","Auto Peças","Loja de Roupas"];
+const estados = ["AL","SP","RJ","MG","BA","PE"];
+
+for(let i=1;i<=1000;i++){
+    baseDados.push({
+        nome: segmentos[Math.floor(Math.random()*segmentos.length)]+" "+i,
+        telefone: "(82) 9"+(10000000+i),
+        endereco: "Rua Exemplo, "+i,
+        cidade: "Cidade "+i,
+        estado: estados[Math.floor(Math.random()*estados.length)]
+    });
+}
+
+function normalizarEstado(estado){
+    return estado.trim().toUpperCase();
+}
+
+function buscar(){
+    let estadoDigitado = normalizarEstado(document.getElementById("estadoInput").value);
+    let estadoSelect = normalizarEstado(document.getElementById("estadoSelect").value);
+    let segmento = document.getElementById("segmento").value.toLowerCase();
+
+    let estadoFinal = estadoDigitado || estadoSelect;
+
+    if(!estadoFinal || !segmento){
+        alert("Digite estado e segmento.");
+        return;
+    }
+
+    resultados = baseDados.filter(emp => 
+        emp.estado === estadoFinal &&
+        emp.nome.toLowerCase().includes(segmento)
+    );
+
+    indiceAtual = 0;
+    document.querySelector("#tabela tbody").innerHTML = "";
+    carregarMais();
+}
+
+function carregarMais(){
+    let tabela = document.querySelector("#tabela tbody");
+    let novos = resultados.slice(indiceAtual, indiceAtual + LIMITE);
+
+    novos.forEach(emp=>{
+        tabela.innerHTML += `
+            <tr>
+                <td>${emp.nome}</td>
+                <td>${emp.telefone}</td>
+                <td>${emp.endereco}</td>
+                <td>${emp.cidade}</td>
+                <td>${emp.estado}</td>
+            </tr>
+        `;
+    });
+
+    indiceAtual += LIMITE;
+}
+
+function exportarExcel(){
+    let linhas = document.querySelectorAll("#tabela tbody tr");
+    let csv = "Empresa,Telefone,Endereço,Cidade,Estado\n";
+
+    linhas.forEach(linha=>{
+        let col = linha.querySelectorAll("td");
+        csv += `${col[0].innerText},${col[1].innerText},${col[2].innerText},${col[3].innerText},${col[4].innerText}\n`;
+    });
+
+    let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "resultado_empresas.xlsx";
+    link.click();
+}
+</script>
+
+</body>
+</html>
