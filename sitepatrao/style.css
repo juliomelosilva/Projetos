@@ -75,6 +75,7 @@ nav a:hover {
     font-weight: 700;
     border-radius: 30px;
     transition: 0.3s;
+    padding: 10%;
 }
 
 .btn:hover {
