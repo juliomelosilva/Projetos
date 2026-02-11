@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['C:\\Users\\Júlio Cesar\\Documents\\Bkp Júlio\\Documentos\\Código\\Códigos\\HTML - CSS (Curso em Vídeo)\\M2\\Projetos\\BotNovoScroll.py'],
+    ['BotNovoScroll.py'],
     pathex=[],
     binaries=[],
     datas=[],

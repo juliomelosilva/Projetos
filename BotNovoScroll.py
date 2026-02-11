@@ -203,6 +203,11 @@ def iniciar_automacao():
         time.sleep(0.15)
         pyautogui.scroll(-100000)
         time.sleep(0.15)
+        pyautogui.scroll(-100000)
+        time.sleep(0.15)
+        pyautogui.moveRel(500, 0)
+        pyautogui.scroll(-100000)
+        time.sleep(0.15)
 
         clicar_imagem("categoria_opcao.png")
         time.sleep(0.3)
