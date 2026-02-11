@@ -71,6 +71,7 @@ nav a:hover {
     background: #ffcc00;
     color: #0d47a1;
     padding: 25px 30px;
+    padding-bottom: 25px;
     text-decoration: none;
     font-weight: 700;
     border-radius: 30px;
