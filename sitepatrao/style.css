@@ -20,6 +20,12 @@ body{
     margin:auto;
 }
 
+section{
+    padding-left:20px;
+    padding-right:20px;
+}
+
+/* HEADER */
 header{
     background:#0d47a1;
     padding:20px 0;
@@ -49,13 +55,15 @@ nav a:hover{
 
 /* HERO */
 .hero{
-    background-position:center center;
-    background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
-    url('https://imgs.search.brave.com/QgIbpzXtjhPxT1Y7Dao0kGupkCOEH-oBZTbKLf2rj5M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cHJvZC53ZWJzaXRl/LWZpbGVzLmNvbS82/MDk1Yzg2NzU1MmFj/MjI5MjNhNTBlZTcv/NjBkZjljZDUzMDY3/YmE2NWQ4MmZiZGJk/X2NvbW8tZnVuY2lv/bmEtaGlkcm9qYXRl/YW1lbnRvLmpwZw');
+    background:
+        linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+        url('https://imgs.search.brave.com/QgIbpzXtjhPxT1Y7Dao0kGupkCOEH-oBZTbKLf2rj5M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cHJvZC53ZWJzaXRl/LWZpbGVzLmNvbS82/MDk1Yzg2NzU1MmFj/MjI5MjNhNTBlZTcv/NjBkZjljZDUzMDY3/YmE2NWQ4MmZiZGJk/X2NvbW8tZnVuY2lv/bmEtaGlkcm9qYXRl/YW1lbnRvLmpwZw');
     background-size:cover;
-    color:#fff;
+    background-position:center center;
+    background-repeat:no-repeat;
     text-align:center;
     padding:140px 20px;
+    color:#fff;
 }
 
 .hero h2{
@@ -84,6 +92,7 @@ nav a:hover{
 
 .btn:hover{
     background:#128C7E;
+    transform:scale(1.05);
 }
 
 .servico-btn{
@@ -113,6 +122,9 @@ nav a:hover{
     padding:30px;
     border-radius:15px;
     transition:0.3s;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 }
 
 .card:hover{
@@ -207,7 +219,7 @@ footer{
     padding:20px;
 }
 
-/* BOTÃO VOLTAR AO TOPO */
+/* VOLTAR AO TOPO */
 .voltar-topo{
     position:fixed;
     bottom:25px;
@@ -225,8 +237,33 @@ footer{
     box-shadow:0 5px 15px rgba(0,0,0,0.3);
     transition:0.3s;
     z-index:999;
+    opacity:0.8;
 }
 
 .voltar-topo:hover{
-    background:#128C7E;
+    opacity:1;
+    transform:scale(1.1);
+}
+
+/* RESPONSIVO */
+@media(max-width:768px){
+
+    .header-content{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    nav{
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    nav a{
+        margin:10px;
+    }
+
+    .hero h2{
+        font-size:26px;
+    }
 }
