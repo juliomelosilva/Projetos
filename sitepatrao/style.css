@@ -70,12 +70,12 @@ nav a:hover {
 .btn {
     background: #ffcc00;
     color: #0d47a1;
-    padding: 15px 30px;
+    padding: 25px 30px;
     text-decoration: none;
     font-weight: 700;
     border-radius: 30px;
     transition: 0.3s;
-    padding: 10%;
+    
 }
 
 .btn:hover {
