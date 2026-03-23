@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ERP</title>
+
+  <style>
+    body { font-family: Arial; background:#f0f8ff; text-align:center; }
+    .box { background:white; padding:20px; margin:20px auto; width:300px; border-radius:10px; }
+    input { width:100%; padding:8px; margin:5px 0; }
+    button { background:blue; color:white; padding:10px; border:none; cursor:pointer; }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Login ERP</h2>
+  <input type="password" id="senha" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div class="box" id="erp" style="display:none;">
+  <h2>Cadastro Produto</h2>
+
+  <input id="nome" placeholder="Nome">
+  <input id="preco" placeholder="Preço">
+  <input id="estoque" placeholder="Estoque">
+
+  <label>
+    <input type="checkbox" id="vendaOnline"> Venda Online
+  </label>
+
+  <br><br>
+  <button onclick="salvar()">Salvar Produto</button>
+</div>
+
+<script>
+let token = "";
+
+// LOGIN
+async function login(){
+  const res = await fetch('http://localhost:3000/login', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ senha: senha.value })
+  });
+
+  const data = await res.json();
+
+  if(data.token){
+    token = data.token;
+    document.getElementById('erp').style.display = 'block';
+    alert('Login realizado!');
+  } else {
+    alert('Erro no login');
+  }
+}
+
+// SALVAR PRODUTO (ENVIA PARA API)
+async function salvar(){
+  await fetch('http://localhost:3000/api/produtos', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization': token
+    },
+    body: JSON.stringify({
+      nome: nome.value,
+      preco: parseFloat(preco.value),
+      estoque: parseInt(estoque.value),
+      vendaOnline: vendaOnline.checked
+    })
+  });
+
+  alert('Produto cadastrado!');
+}
+</script>
+
+</body>
+</html>

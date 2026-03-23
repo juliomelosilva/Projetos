@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loja Online</title>
+
+  <style>
+    body { font-family: Arial; background:#e6f0ff; text-align:center; }
+    .produto {
+      background:white;
+      padding:15px;
+      margin:10px;
+      display:inline-block;
+      border-radius:10px;
+      width:200px;
+    }
+    button {
+      background:blue;
+      color:white;
+      border:none;
+      padding:10px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Loja Online</h2>
+
+<div id="lista"></div>
+
+<script>
+// 🔥 PUXA PRODUTOS AUTOMATICAMENTE DO ERP
+fetch('http://localhost:3000/api/produtos')
+  .then(res => res.json())
+  .then(produtos => {
+    produtos.forEach(p => {
+      lista.innerHTML += `
+        <div class="produto">
+          <h3>${p.nome}</h3>
+          <p>R$ ${p.preco}</p>
+          <p>Estoque: ${p.estoque}</p>
+          <button onclick="comprar(${p.id})">Comprar</button>
+        </div>
+      `;
+    });
+  });
+
+// COMPRA
+async function comprar(id){
+  await fetch('http://localhost:3000/api/vendas', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ produtoId: id })
+  });
+
+  alert('Compra realizada!');
+  location.reload();
+}
+</script>
+
+</body>
+</html>
