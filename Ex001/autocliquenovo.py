@@ -2,40 +2,16 @@ import threading
 import time
 import tkinter as tk
 from tkinter import ttk
-import ctypes
+from pynput.mouse import Controller, Button
 import keyboard
 
 # ============================
-# SENDINPUT (CLIQUE REAL)
+# CONTROLE DO MOUSE (PYNPUT)
 # ============================
-PUL = ctypes.POINTER(ctypes.c_ulong)
-
-class MOUSEINPUT(ctypes.Structure):
-    _fields_ = [
-        ("dx", ctypes.c_long),
-        ("dy", ctypes.c_long),
-        ("mouseData", ctypes.c_ulong),
-        ("dwFlags", ctypes.c_ulong),
-        ("time", ctypes.c_ulong),
-        ("dwExtraInfo", PUL)
-    ]
-
-class INPUT(ctypes.Structure):
-    _fields_ = [
-        ("type", ctypes.c_ulong),
-        ("mi", MOUSEINPUT)
-    ]
+mouse = Controller()
 
 def send_click():
-    extra = ctypes.c_ulong(0)
-
-    ii_ = INPUT(type=0,
-        mi=MOUSEINPUT(0, 0, 0, 0x0002, 0, ctypes.pointer(extra)))
-    ctypes.windll.user32.SendInput(1, ctypes.pointer(ii_), ctypes.sizeof(ii_))
-
-    ii_ = INPUT(type=0,
-        mi=MOUSEINPUT(0, 0, 0, 0x0004, 0, ctypes.pointer(extra)))
-    ctypes.windll.user32.SendInput(1, ctypes.pointer(ii_), ctypes.sizeof(ii_))
+    mouse.click(Button.left)
 
 # ============================
 # CONTROLE
@@ -50,11 +26,12 @@ def auto_clicker():
     click_count = 0
 
     while running:
-        delay = speed_scale.get() / 1000
+        delay = speed_scale.get() / 1000  # ms → segundos
 
         send_click()
         click_count += 1
 
+        # Atualiza interface com segurança
         root.after(0, lambda: label_counter.config(text=f"Cliques: {click_count}"))
 
         time.sleep(delay)
@@ -91,10 +68,12 @@ root.geometry("320x280")
 root.resizable(False, False)
 root.configure(bg="#1e1e1e")
 
+# Título
 tk.Label(root, text="AUTO CLICKER",
          font=("Arial", 14, "bold"),
          fg="white", bg="#1e1e1e").pack(pady=10)
 
+# Status
 status_label = tk.Label(root, text="● PARADO",
                         fg="red", bg="#1e1e1e")
 status_label.pack()
