@@ -83,7 +83,6 @@
             display: flex;
         }
 
-        /* --- [EDITÁVEL] Estilo dos Textos e Títulos dos Cards --- */
         .card h1 {
             font-size: 1.8rem;
             margin-bottom: 12px;
@@ -97,16 +96,15 @@
             margin-bottom: 25px;
             line-height: 1.5;
             max-width: 400px;
-            display: inline-block; /* Alinhamento correto do bloco de texto */
+            display: inline-block;
         }
 
-        /* OTIMIZAÇÃO DA IMAGEM: Exibição perfeita sem cortes */
         .card-img {
             width: 100%;
             height: auto;
             max-height: 250px;
             object-fit: contain;
-            background-color: rgba(0, 0, 0, 0.4); /* Fundo discreto para fotos verticais */
+            background-color: rgba(0, 0, 0, 0.4); 
             border-radius: 12px;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 0, 0, 0.3);
@@ -183,7 +181,7 @@
 
         <div class="card" id="card-3">
             <h1>Nosso Destino</h1>
-            <p>Seja bem-vinda ao centro da minha órbita em minha própria galáxia. Agora, o universo inteiro é seu para explorar.</p>
+            <p>Seja bem-vibe ao centro da minha órbita em minha própria galáxia. Agora, o universo inteiro é seu para explorar.</p>
             <button class="btn" onclick="releaseUniverseControls()">Explorar Livremente</button>
         </div>
 
@@ -200,7 +198,6 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <audio controls autoplay src="Music/Love Is Not A Fight.mp3"></audio>
     <script>
-        // --- BANCO DE DADOS DOS TEXTOS E IMAGENS CLICÁVEIS (ÓRBITA 3D) ---
         const dadosMemorias = {
             "EU TE AMO": {
                 titulo: "Além das Estrelas",
@@ -309,6 +306,7 @@
             document.getElementById('card-3').style.display = 'none';
             initialPhase = false;
             document.getElementById('hint-overlay').style.display = 'block';
+            if (heartTextMesh) heartTextMesh.visible = true; 
             controls.enabled = true; 
         }
 
@@ -351,7 +349,7 @@
         controls.minDistance = 20;
         controls.enabled = false;
 
-        // --- ENGINE DE NEBULA/ESPIRAL PREENCHIDA E AMPLA ---
+        // --- ENGINE DE NEBULA/ESPIRAL ---
         const particleCount = 25000; 
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
@@ -422,17 +420,20 @@
         const galaxy = new THREE.Points(geometry, material);
         scene.add(galaxy);
 
-        // --- CORAÇÃO VERMELHO ALTO ---
+        // --- CORAÇÃO VERMELHO ALTO (MOLDURA LIMPA E EXPANDIDA) ---
         const heartGeometry = new THREE.BufferGeometry();
-        const heartCount = 1200; 
+        const heartCount = 1800; 
         const heartPositions = new Float32Array(heartCount * 3);
 
         for(let i=0; i<heartCount; i++) {
             const t = Math.random() * Math.PI * 2;
-            const scale = 0.6; 
-            const x = 16 * Math.pow(Math.sin(t), 3) * scale;
-            const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale;
-            const z = (Math.random() - 0.5) * 3;
+            const scale = 1.0; 
+            const hollowFactor = Math.sqrt(Math.random()) * 0.3 + 0.85; 
+
+            const x = 16 * Math.pow(Math.sin(t), 3) * scale * hollowFactor;
+            const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale * hollowFactor;
+            const z = (Math.random() - 0.5) * 4;
+            
             heartPositions[i*3] = x;
             heartPositions[i*3+1] = y + 14; 
             heartPositions[i*3+2] = z;
@@ -442,7 +443,60 @@
         const centerHeart = new THREE.Points(heartGeometry, heartMat);
         scene.add(centerHeart);
 
-        // --- TEXTOS EM PORTUGUÊS ---
+        // --- TEXTO INTERNO DO CORAÇÃO (OTIMIZADO COM TAMANHO MAIOR E CENTRALIZAÇÃO VERTICAL) ---
+        const heartCanvas = document.createElement('canvas');
+        heartCanvas.width = 512; 
+        heartCanvas.height = 512; 
+        const hCtx = heartCanvas.getContext('2d');
+        
+        // Ajuste de Estilo: Fonte aumentada e nítida
+        hCtx.font = 'Bold 24px Arial';
+        hCtx.fillStyle = '#ffffff'; 
+        hCtx.shadowColor = '#ff0000'; 
+        hCtx.shadowBlur = 12;
+        hCtx.textAlign = 'center';
+
+        // Título Bíblico (Subido ligeiramente para dar espaço)
+        hCtx.fillText("1 Coríntios 13:4-7", 256, 140);
+
+        function desenharTextoComQuebra(context, texto, x, yInicial, larguraMaxima, espacamentoLinha) {
+            const palavras = texto.split(' ');
+            let linha = '';
+            let y = yInicial;
+
+            for (let n = 0; n < palavras.length; n++) {
+                let linhaTeste = linha + palavras[n] + ' ';
+                let metricas = context.measureText(linhaTeste);
+                let larguraTeste = metricas.width;
+                
+                if (larguraTeste > larguraMaxima && n > 0) {
+                    context.fillText(linha, x, y);
+                    linha = palavras[n] + ' ';
+                    y += espacamentoLinha;
+                } else {
+                    linha = linhaTeste;
+                }
+            }
+            context.fillText(linha, x, y);
+        }
+
+        const versiculo = "O amor é paciente e bondoso. O amor não é ciumento, nem presunçoso. Não é orgulhoso, nem grosseiro. Não exige que as coisas sejam à sua maneira. Não é irritável, nem rancoroso. Não se alegra com a injustiça, mas sim com a verdade. O amor nunca desiste, nunca perde a fé, sempre tem esperança e sempre se mantém firme.";
+
+        // Modificado larguraMaxima para 410px e yInicial para 135 para centralizar o bloco perfeitamente
+        desenharTextoComQuebra(hCtx, versiculo, 256, 170, 420, 27);
+
+        const heartTextTex = new THREE.CanvasTexture(heartCanvas);
+        const heartTextMat = new THREE.MeshBasicMaterial({ map: heartTextTex, transparent: true, side: THREE.DoubleSide, depthWrite: false });
+        
+        // Mantendo o plano quadrado proporcional à nova geometria limpa do coração
+        const heartTextGeo = new THREE.PlaneGeometry(18, 18); 
+        const heartTextMesh = new THREE.Mesh(heartTextGeo, heartTextMat);
+        
+        heartTextMesh.position.set(0, 13.5, 2); 
+        heartTextMesh.visible = false;
+        scene.add(heartTextMesh);
+
+        // --- TEXTOS DA GALÁXIA ---
         const frasesMesh = [
             "EU TE AMO", "INFINITO ∞", "AMOR ETERNO", "MINHA VIDA", "MINHA GRAVIDADE", "VOCÊ ME FASCINA",
             "COMPANHEIRA", "CARINHOSA", "ATENCIOSA", "AMIGA", "NAMORADA", "AMANTE", "ESPOSA", "VOCÊ ME INSPIRA"
@@ -529,6 +583,13 @@
             const pulse = 1 + Math.sin(time * 3) * 0.05;
             centerHeart.scale.set(pulse, pulse, pulse);
             centerHeart.rotation.y = time * 0.05;
+
+            if (heartTextMesh) {
+                heartTextMesh.scale.set(pulse, pulse, pulse);
+                heartTextMesh.position.x = Math.sin(time * 0.05) * 0.1;
+                heartTextMesh.position.z = Math.cos(time * 0.05) * 2;
+                heartTextMesh.lookAt(camera.position);
+            }
 
             textMeshes.forEach(mesh => {
                 mesh.userData.angle += mesh.userData.speed;
