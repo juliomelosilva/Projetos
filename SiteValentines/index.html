@@ -97,15 +97,20 @@
             margin-bottom: 25px;
             line-height: 1.5;
             max-width: 400px;
+            display: inline-block; /* Alinhamento correto do bloco de texto */
         }
 
+        /* OTIMIZAÇÃO DA IMAGEM: Exibição perfeita sem cortes */
         .card-img {
             width: 100%;
-            height: 160px;
-            object-fit: cover;
+            height: auto;
+            max-height: 250px;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.4); /* Fundo discreto para fotos verticais */
             border-radius: 12px;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 0, 0, 0.3);
+            display: block;
         }
 
         .card-date {
@@ -160,8 +165,6 @@
 </head>
 <body>
 
-    
-
     <div id="canvas-container"></div>
     <div id="hint-overlay">✨ Arraste a tela para navegar em 3D • Clique nas mensagens flutuantes ✨ From Júlio Cesar</div>
 
@@ -197,7 +200,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <audio controls autoplay src="Music/Love Is Not A Fight.mp3"></audio>
     <script>
-        // --- [EDITÁVEL] BANCO DE DADOS DOS TEXTOS E IMAGENS CLICÁVEIS (ÓRBITA 3D) ---
+        // --- BANCO DE DADOS DOS TEXTOS E IMAGENS CLICÁVEIS (ÓRBITA 3D) ---
         const dadosMemorias = {
             "EU TE AMO": {
                 titulo: "Além das Estrelas",
@@ -239,37 +242,37 @@
                 titulo: "Singularidade",
                 data: "Nossos Detalhes",
                 texto: "Caminhar ao seu lado faz qualquer jornada valer a pena. Obrigado por dividir a vida comigo e por ser meu porto seguro em cada curva desse universo.",
-                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/companheira.jpeg" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/Companheira.jpeg" 
             },
             "CARINHOSA": {
                 titulo: "Além das Estrelas",
                 data: "Hoje e Sempre",
                 texto: "Seu abraço tem o superpoder de desarmar qualquer dia difícil. O seu afeto é o calor que alimenta a minha alma e me faz querer voltar sempre para os seus braços.",
-                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/carinhosa.jpeg" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/Carinhosa.jpeg" 
             },
             "ATENCIOSA": {
                 titulo: "Sem Fim",
                 data: "Nosso Tempo",
                 texto: "Você enxerga os meus detalhes e cuida de mim como ninguém. Seu zelo e sua sensibilidade transformam a nossa rotina no lugar mais bonito de se viver.",
-                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/atenciosa.jpeg" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/Atenciosa.jpeg" 
             },
             "AMIGA": {
                 titulo: "Distorção Temporal",
                 data: "Para Sempre",
                 texto: "Minha melhor ouvinte, minha cúmplice e dona das minhas melhores risadas. Sei que nunca estou sozinho, porque a sua lealdade é a minha maior certeza todos os dias.",
-                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/amiga.jpeg" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/Amiga.jpeg" 
             },
             "NAMORADA": {
                 titulo: "Meu Ponto de Luz",
                 data: "Desde o Início",
                 texto: "O tempo passa e o meu frio na barriga ao te ver continua o mesmo. Amo o nosso eterno clima de conquista e a delícia de namorar você todos os dias da minha vida.",
-                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/namorada.jpeg" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/Namorada.jpeg" 
             },
             "AMANTE": {
                 titulo: "Ponto de Retorno",
                 data: "Sempre",
                 texto: "Nossa química é única e o meu desejo por você só cresce. Em seus braços encontro a paixão que incendeia minha rotina e me faz te querer cada vez mais.",
-                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/amante.jpeg" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/Amante.jpeg" 
             },
             "ESPOSA": {
                 titulo: "Singularidade",
@@ -349,7 +352,7 @@
         controls.enabled = false;
 
         // --- ENGINE DE NEBULA/ESPIRAL PREENCHIDA E AMPLA ---
-        const particleCount = 25000; // Aumentado para criar volume real de nuvem galáctica
+        const particleCount = 25000; 
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
@@ -360,22 +363,19 @@
         const colorWhite = new THREE.Color('#ffffff'); 
 
         for (let i = 0; i < particleCount; i++) {
-            // Nova lógica: Distribuição homogênea espalhada ao longo de braços nebulosos
             const r = Math.sqrt(Math.random()) * 80 + 2; 
             const numArms = 4;
             const armIndex = i % numArms;
             const armAngle = (armIndex / numArms) * Math.PI * 2;
             
-            // Fator espiral + espalhamento aleatório (gera a largura preenchida da espiral)
             const spiralFactor = 0.12; 
-            const spread = (Math.random() - 0.5) * (14 / (r * 0.05 + 1)) * 1.5; // Dá corpo e largura ao traço
+            const spread = (Math.random() - 0.5) * (14 / (r * 0.05 + 1)) * 1.5; 
             
             const theta = armAngle + (r * spiralFactor) + (Math.random() - 0.5) * 0.3;
             
-            // Conversão trigonométrica com o ruído de espalhamento somado
             const x = Math.cos(theta) * r + Math.sin(theta) * spread;
             const z = Math.sin(theta) * r - Math.cos(theta) * spread;
-            const y = (Math.random() - 0.5) * (8 / (r * 0.04 + 1)); // Altura volumosa no centro, fina nas pontas
+            const y = (Math.random() - 0.5) * (8 / (r * 0.04 + 1)); 
 
             positions[i * 3] = x;
             positions[i * 3 + 1] = y;
@@ -434,7 +434,6 @@
             const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale;
             const z = (Math.random() - 0.5) * 3;
             heartPositions[i*3] = x;
-            // --- [EDITÁVEL] Altere o +14 para ajustar a altura do coração ---
             heartPositions[i*3+1] = y + 14; 
             heartPositions[i*3+2] = z;
         }
@@ -445,20 +444,8 @@
 
         // --- TEXTOS EM PORTUGUÊS ---
         const frasesMesh = [
-            "EU TE AMO",
-            "INFINITO ∞",
-            "AMOR ETERNO",
-            "MINHA VIDA",
-            "MINHA GRAVIDADE",
-            "VOCÊ ME FASCINA",
-            "COMPANHEIRA",
-            "CARINHOSA",
-            "ATENCIOSA",
-            "AMIGA",
-            "NAMORADA",
-            "AMANTE",
-            "ESPOSA",
-            "VOCÊ ME INSPIRA"
+            "EU TE AMO", "INFINITO ∞", "AMOR ETERNO", "MINHA VIDA", "MINHA GRAVIDADE", "VOCÊ ME FASCINA",
+            "COMPANHEIRA", "CARINHOSA", "ATENCIOSA", "AMIGA", "NAMORADA", "AMANTE", "ESPOSA", "VOCÊ ME INSPIRA"
         ];
         const textMeshes = [];
 
@@ -481,7 +468,6 @@
             mesh.userData = {
                 name: texto,
                 angle: angle,
-                // --- [EDITÁVEL] Distância dos textos flutuantes ---
                 radius: 38 + Math.random() * 8, 
                 speed: 0.003 + Math.random() * 0.002, 
                 yPos: 4 + (Math.random() - 0.5) * 4 
@@ -526,7 +512,6 @@
             const time = clock.getElapsedTime();
             const posArray = galaxy.geometry.attributes.position.array;
 
-            // Movimento fluido aplicando o novo cálculo de nebulosidade espiral
             for (let i = 0; i < particleCount; i++) {
                 pUserData[i].angle += pUserData[i].speed * 0.15; 
                 
