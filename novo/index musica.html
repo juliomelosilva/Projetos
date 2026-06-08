@@ -83,6 +83,7 @@
             display: flex;
         }
 
+        /* --- [EDITÁVEL] Estilo dos Textos e Títulos dos Cards --- */
         .card h1 {
             font-size: 1.8rem;
             margin-bottom: 12px;
@@ -96,15 +97,20 @@
             margin-bottom: 25px;
             line-height: 1.5;
             max-width: 400px;
+            display: inline-block; /* Alinhamento correto do bloco de texto */
         }
 
+        /* OTIMIZAÇÃO DA IMAGEM: Exibição perfeita sem cortes */
         .card-img {
             width: 100%;
-            height: 160px;
-            object-fit: cover;
+            height: auto;
+            max-height: 250px;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.4); /* Fundo discreto para fotos verticais */
             border-radius: 12px;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 0, 0, 0.3);
+            display: block;
         }
 
         .card-date {
@@ -151,11 +157,6 @@
             text-shadow: 0 0 5px #000;
         }
 
-        /* Ocultando a tag de áudio padrão para não quebrar o layout */
-        audio {
-            display: none;
-        }
-
         @keyframes pulse {
             0%, 100% { opacity: 0.4; }
             50% { opacity: 1; }
@@ -163,8 +164,6 @@
     </style>
 </head>
 <body>
-
-    <audio id="bg-music" src="Music/Love Is Not A Fight.mp3" loop></audio>
 
     <div id="canvas-container"></div>
     <div id="hint-overlay">✨ Arraste a tela para navegar em 3D • Clique nas mensagens flutuantes ✨ From Júlio Cesar</div>
@@ -184,7 +183,7 @@
 
         <div class="card" id="card-3">
             <h1>Nosso Destino</h1>
-            <p>Seja bem-vinda ao centro da minha órbita in minha própria galáxia. Agora, o universo inteiro é seu para explorar.</p>
+            <p>Seja bem-vinda ao centro da minha órbita em minha própria galáxia. Agora, o universo inteiro é seu para explorar.</p>
             <button class="btn" onclick="releaseUniverseControls()">Explorar Livremente</button>
         </div>
 
@@ -199,44 +198,93 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
+    <audio controls autoplay src="Music/Love Is Not A Fight.mp3"></audio>
     <script>
+        // --- BANCO DE DADOS DOS TEXTOS E IMAGENS CLICÁVEIS (ÓRBITA 3D) ---
         const dadosMemorias = {
-            "TE AMO": {
+            "EU TE AMO": {
                 titulo: "Além das Estrelas",
                 data: "Hoje e Sempre",
                 texto: "Meu amor por você é uma força gravitacional: constante, forte e impossível de escapar.",
-                foto: "https://picsum.photos/id/1004/400/300" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/eu-te-amo.jpeg" 
             },
             "INFINITO ∞": {
                 titulo: "Sem Fim",
                 data: "Nosso Tempo",
                 texto: "Nem todas as estrelas do céu poderiam contar as vezes que eu sorri pensando em você.",
-                foto: "https://picsum.photos/id/1029/400/300" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/infinito.jpeg" 
             },
             "AMOR ETERNO": {
                 titulo: "Distorção Temporal",
                 data: "Para Sempre",
                 texto: "Perto de você o tempo corre diferente. Um minuto parece um segundo, e a saudade vira uma eternidade.",
-                foto: "https://picsum.photos/id/1043/400/300" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/amor-eterno.jpeg" 
             },
             "MINHA VIDA": {
                 titulo: "Meu Ponto de Luz",
                 data: "Desde o Início",
                 texto: "Você clareia toda a imensidão do meu peito e dá sentido a cada dia.",
-                foto: "https://picsum.photos/id/1057/400/300" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/minha-vida.jpeg" 
             },
             "MINHA GRAVIDADE": {
                 titulo: "Ponto de Retorno",
                 data: "Sempre",
                 texto: "Não importa para onde eu vá, todos os meus caminhos misteriosamente me puxam de volta para você.",
-                foto: "https://picsum.photos/id/1062/400/300" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/minha-gravidade.jpeg" 
             },
             "VOCÊ ME FASCINA": {
                 titulo: "Singularidade",
                 data: "Nossos Detalhes",
                 texto: "Seu sorriso brilha mais forte do que qualquer supernova que a ciência já registrou.",
-                foto: "https://picsum.photos/id/1081/400/300" 
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/voce-me-fascina.jpeg" 
+            },
+            "COMPANHEIRA": {
+                titulo: "Singularidade",
+                data: "Nossos Detalhes",
+                texto: "Caminhar ao seu lado faz qualquer jornada valer a pena. Obrigado por dividir a vida comigo e por ser meu porto seguro em cada curva desse universo.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/companheira.jpeg" 
+            },
+            "CARINHOSA": {
+                titulo: "Além das Estrelas",
+                data: "Hoje e Sempre",
+                texto: "Seu abraço tem o superpoder de desarmar qualquer dia difícil. O seu afeto é o calor que alimenta a minha alma e me faz querer voltar sempre para os seus braços.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/carinhosa.jpeg" 
+            },
+            "ATENCIOSA": {
+                titulo: "Sem Fim",
+                data: "Nosso Tempo",
+                texto: "Você enxerga os meus detalhes e cuida de mim como ninguém. Seu zelo e sua sensibilidade transformam a nossa rotina no lugar mais bonito de se viver.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/atenciosa.jpeg" 
+            },
+            "AMIGA": {
+                titulo: "Distorção Temporal",
+                data: "Para Sempre",
+                texto: "Minha melhor ouvinte, minha cúmplice e dona das minhas melhores risadas. Sei que nunca estou sozinho, porque a sua lealdade é a minha maior certeza todos os dias.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/amiga.jpeg" 
+            },
+            "NAMORADA": {
+                titulo: "Meu Ponto de Luz",
+                data: "Desde o Início",
+                texto: "O tempo passa e o meu frio na barriga ao te ver continua o mesmo. Amo o nosso eterno clima de conquista e a delícia de namorar você todos os dias da minha vida.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/namorada.jpeg" 
+            },
+            "AMANTE": {
+                titulo: "Ponto de Retorno",
+                data: "Sempre",
+                texto: "Nossa química é única e o meu desejo por você só cresce. Em seus braços encontro a paixão que incendeia minha rotina e me faz te querer cada vez mais.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/amante.jpeg" 
+            },
+            "ESPOSA": {
+                titulo: "Singularidade",
+                data: "Nossos Detalhes",
+                texto: "Escolher você para construir um lar foi a melhor decisão da minha vida. Minha parceira de sonhos, meu presente mais sagrado e o amor para toda a minha eternidade.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/esposa.jpeg" 
+            },
+            "VOCÊ ME INSPIRA": {
+                titulo: "Singularidade",
+                data: "Nossos Detalhes",
+                texto: "Você me faz querer ser melhor, melhor para você, melhor para nosso filho, melhor como homem, me faz crescer e cresce junto comigo.",
+                foto: "https://juliomelosilva.github.io/Projetos/SiteValentines/Fotos/voce-me-inspira.jpeg" 
             }
         };
 
@@ -245,12 +293,6 @@
         let travelProgress = 0;
 
         function startSpaceTravel() {
-            // Tenta reproduzir a música imediatamente após a primeira ação consciente do usuário
-            const music = document.getElementById('bg-music');
-            if (music) {
-                music.play().catch(e => console.log("A reprodução foi bloqueada temporariamente:", e));
-            }
-
             document.getElementById('card-1').classList.remove('active');
             document.getElementById('card-1').style.display = 'none';
             travelAnimation = true; 
@@ -309,7 +351,7 @@
         controls.minDistance = 20;
         controls.enabled = false;
 
-        // --- ENGINE DE NEBULA/ESPIRAL ---
+        // --- ENGINE DE NEBULA/ESPIRAL PREENCHIDA E AMPLA ---
         const particleCount = 25000; 
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
@@ -319,16 +361,6 @@
         const colorPink = new THREE.Color('#ff1493'); 
         const colorPurple = new THREE.Color('#3a0066'); 
         const colorWhite = new THREE.Color('#ffffff'); 
-
-        // Textura redonda padrão para a galáxia de fundo
-        const canvasParticle = document.createElement('canvas');
-        canvasParticle.width = 16; canvasParticle.height = 16;
-        const ctx = canvasParticle.getContext('2d');
-        const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
-        grad.addColorStop(0, 'rgba(255,255,255,1)');
-        grad.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = grad; ctx.fillRect(0, 0, 16, 16);
-        const texture = new THREE.CanvasTexture(canvasParticle);
 
         for (let i = 0; i < particleCount; i++) {
             const r = Math.sqrt(Math.random()) * 80 + 2; 
@@ -373,6 +405,15 @@
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+        const canvasParticle = document.createElement('canvas');
+        canvasParticle.width = 16; canvasParticle.height = 16;
+        const ctx = canvasParticle.getContext('2d');
+        const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+        grad.addColorStop(0, 'rgba(255,255,255,1)');
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, 16, 16);
+        const texture = new THREE.CanvasTexture(canvasParticle);
+
         const material = new THREE.PointsMaterial({
             size: 0.5, 
             map: texture, vertexColors: true,
@@ -381,29 +422,9 @@
         const galaxy = new THREE.Points(geometry, material);
         scene.add(galaxy);
 
-
-        // --- NOVO: GERADOR VETORIAL DE TEXTURA DE ROSA ---
-        const canvasRose = document.createElement('canvas');
-        canvasRose.width = 64; 
-        canvasRose.height = 64;
-        const ctxRose = canvasRose.getContext('2d');
-
-        // Desenhando pétalas espiraladas simples para simular uma rosa vista de cima
-        ctxRose.fillStyle = '#ffffff';
-        ctxRose.translate(32, 32);
-        for (let j = 0; j < 30; j++) {
-            ctxRose.rotate(0.4);
-            ctxRose.beginPath();
-            // Cria pequenos elipses/pétalas que expandem em espiral
-            ctxRose.arc(j * 0.7, 0, Math.max(1, j * 0.6), 0, Math.PI * 2);
-            ctxRose.fill();
-        }
-        const roseTexture = new THREE.CanvasTexture(canvasRose);
-
-
-        // --- CORAÇÃO DE ROSAS VERMELHAS ---
+        // --- CORAÇÃO VERMELHO ALTO ---
         const heartGeometry = new THREE.BufferGeometry();
-        const heartCount = 700; // Reduzido ligeiramente para dar mais definição individual a cada rosa
+        const heartCount = 1200; 
         const heartPositions = new Float32Array(heartCount * 3);
 
         for(let i=0; i<heartCount; i++) {
@@ -411,41 +432,20 @@
             const scale = 0.6; 
             const x = 16 * Math.pow(Math.sin(t), 3) * scale;
             const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale;
-            const z = (Math.random() - 0.5) * 4; // Um pouco mais de profundidade tridimensional
+            const z = (Math.random() - 0.5) * 3;
             heartPositions[i*3] = x;
             heartPositions[i*3+1] = y + 14; 
             heartPositions[i*3+2] = z;
         }
         heartGeometry.setAttribute('position', new THREE.BufferAttribute(heartPositions, 3));
-        
-        // Substituída a textura comum pela roseTexture e tamanho ligeiramente aumentado (size: 2.2) para ver as pétalas
-        const heartMat = new THREE.PointsMaterial({ 
-            size: 2.2, 
-            color: 0xff1a1a, 
-            map: roseTexture, 
-            blending: THREE.AdditiveBlending, 
-            transparent: true,
-            depthWrite: false
-        }); 
+        const heartMat = new THREE.PointsMaterial({ size: 0.6, color: 0xff0000, map: texture, blending: THREE.AdditiveBlending, transparent: true }); 
         const centerHeart = new THREE.Points(heartGeometry, heartMat);
         scene.add(centerHeart);
 
         // --- TEXTOS EM PORTUGUÊS ---
         const frasesMesh = [
-            "EU TE AMO",
-            "INFINITO ∞",
-            "AMOR ETERNO",
-            "MINHA VIDA",
-            "MINHA GRAVIDADE",
-            "VOCÊ ME FASCINA",
-            "COMPANHEIRA",
-            "CARINHOSA",
-            "ATENCIOSA",
-            "AMIGA",
-            "NAMORADA",
-            "AMANTE",
-            "ESPOSA"
-
+            "EU TE AMO", "INFINITO ∞", "AMOR ETERNO", "MINHA VIDA", "MINHA GRAVIDADE", "VOCÊ ME FASCINA",
+            "COMPANHEIRA", "CARINHOSA", "ATENCIOSA", "AMIGA", "NAMORADA", "AMANTE", "ESPOSA", "VOCÊ ME INSPIRA"
         ];
         const textMeshes = [];
 
