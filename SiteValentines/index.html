@@ -307,14 +307,20 @@
         function startSpaceTravel() {
             document.getElementById('card-1').classList.remove('active');
             document.getElementById('card-1').style.display = 'none';
-            
-            // Garante o play forçado no clique
-            if(videoElement) {
-                videoElement.play().catch(err => console.log("O navegador bloqueou a reprodução automática, tentando forçar."));
-            }
-            
-            travelAnimation = true; 
-        }
+    
+    // 1. Força o Play no Vídeo de Fundo
+        if(videoElement) {
+            videoElement.play().catch(err => console.log("Erro ao tocar vídeo"));
+    }
+    
+    // 2. CORREÇÃO DA MÚSICA: Força o Play no clique do usuário
+        let audio = document.getElementById('bg-music');
+        if (audio) {
+        audio.play().catch(err => console.log("O mobile tentou bloquear a música, mas o clique deve liberar."));
+    }
+    
+        travelAnimation = true; 
+}
 
         function goToCard3() {
             document.getElementById('card-2').classList.remove('active');
