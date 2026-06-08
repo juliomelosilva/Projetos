@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Universo - Espiral do Amor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            cursor: grab;
+        }
+        #canvas-container:active {
+            cursor: grabbing;
+        }
+
+        .ui-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .card {
+            background: rgba(15, 2, 8, 0.85);
+            border: 2px solid #ff0000; /* Borda Vermelha */
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); /* Brilho Vermelho */
+            border-radius: 20px;
+            padding: 25px;
+            width: 350px;
+            text-align: center;
+            color: #fff;
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        /* CARD 1 TOTALMENTE PRETO */
+        .card-fullscreen {
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .card.active {
+            display: block;
+        }
+        .card-fullscreen.active {
+            display: flex;
+        }
+
+        /* --- [EDITÁVEL] Estilo dos Textos e Títulos dos Cards --- */
+        .card h1 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: #ff4d4d; /* Titulo Vermelho Claro */
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #ffe6e6; /* Texto quase branco/rosado */
+            margin-bottom: 25px;
+            line-height: 1.5;
+            max-width: 400px;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .card-date {
+            font-size: 0.8rem;
+            color: #ff4d4d;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff0000, #ff4d4d); /* Botão Vermelho */
+            border: none;
+            color: white;
+            padding: 12px 35px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.7);
+        }
+
+        #hint-overlay {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 128, 128, 0.7);
+            font-size: 0.85rem;
+            z-index: 5;
+            pointer-events: none;
+            text-align: center;
+            animation: pulse 2s infinite;
+            display: none;
+            text-shadow: 0 0 5px #000;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <div id="hint-overlay">✨ Arraste a tela para navegar em 3D • Clique nas mensagens flutuantes ✨</div>
+
+    <div class="ui-container">
+        <div class="card card-fullscreen active" id="card-1">
+            <h1>Para Você...</h1>
+            <p style="margin-top: 15px;">Aperte o botão abaixo para iniciar uma viagem pelo nosso próprio universo privado.</p>
+            <button class="btn" onclick="startSpaceTravel()">Iniciar Viagem ♥</button>
+        </div>
+
+        <div class="card" id="card-2">
+            <h1>O Centro da Minha Órbita</h1>
+            <p>Atravessaria qualquer buraco negro ou distorção no espaço só para garantir que terminaríamos juntos.</p>
+            <button class="btn" onclick="goToCard3()">Avançar</button>
+        </div>
+
+        <div class="card" id="card-3">
+            <h1>Nosso Destino</h1>
+            <p>Seja bem-vinda ao centro da nossa própria galáxia. Agora, o universo inteiro é seu para explorar.</p>
+            <button class="btn" onclick="releaseUniverseControls()">Explorar Livremente</button>
+        </div>
+
+        <div class="card" id="memory-card">
+            <h1 id="mem-title">Título da Memória</h1>
+            <div class="card-date" id="mem-date">Data Especial</div>
+            <img src="" alt="Foto Memorável" class="card-img" id="mem-img">
+            <p id="mem-text">Mensagem detalhada sobre este momento.</p>
+            <button class="btn" onclick="closeMemoryCard()">Voltar ao Espaço</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- [EDITÁVEL] BANCO DE DADOS DOS TEXTOS E IMAGENS CLICÁVEIS (ÓRBITA 3D) ---
+        // Altere os links de fotos, títulos, datas e mensagens abaixo para personalizar.
+        // A chave (ex: "TE AMO") deve corresponder exatamente ao texto que você quer que apareça na tela 3D.
+        const dadosMemorias = {
+            "TE AMO": {
+                titulo: "Além das Estrelas",
+                data: "Hoje e Sempre",
+                texto: "Meu amor por você é uma força gravitacional: constante, forte e impossível de escapar.",
+                foto: "https://picsum.photos/id/1004/400/300" // Link da Foto 1
+            },
+            "INFINITO ∞": {
+                titulo: "Sem Fim",
+                data: "Nosso Tempo",
+                texto: "Nem todas as estrelas do céu poderiam contar as vezes que eu sorri pensando em você.",
+                foto: "https://picsum.photos/id/1029/400/300" // Link da Foto 2
+            },
+            "AMOR ETERNO": {
+                titulo: "Distorção Temporal",
+                data: "Para Sempre",
+                texto: "Perto de você o tempo corre diferente. Um minuto parece um segundo, e a saudade vira uma eternidade.",
+                foto: "https://picsum.photos/id/1043/400/300" // Link da Foto 3
+            },
+            "MINHA VIDA": {
+                titulo: "Meu Ponto de Luz",
+                data: "Desde o Início",
+                texto: "Você clareia toda a imensidão do meu peito e dá sentido a cada dia.",
+                foto: "https://picsum.photos/id/1057/400/300" // Link da Foto 4
+            },
+            "MINHA GRAVIDADE": {
+                titulo: "Ponto de Retorno",
+                data: "Sempre",
+                texto: "Não importa para onde eu vá, todos os meus caminhos misteriosamente me puxam de volta para você.",
+                foto: "https://picsum.photos/id/1062/400/300" // Link da Foto 5
+            },
+            "VOCÊ ME FASCINA": {
+                titulo: "Singularidade",
+                data: "Nossos Detalhes",
+                texto: "Seu sorriso brilha mais forte do que qualquer supernova que a ciência já registrou.",
+                foto: "https://picsum.photos/id/1081/400/300" // Link da Foto 6
+            }
+        };
+
+        // --- SISTEMA DE INTERFACES E ANIMAÇÃO DOS CARDS ---
+        let initialPhase = true;
+        let travelAnimation = false;
+        let travelProgress = 0;
+
+        function startSpaceTravel() {
+            document.getElementById('card-1').classList.remove('active');
+            document.getElementById('card-1').style.display = 'none';
+            travelAnimation = true; 
+        }
+
+        function goToCard3() {
+            document.getElementById('card-2').classList.remove('active');
+            document.getElementById('card-2').style.display = 'none';
+            document.getElementById('card-3').classList.add('active');
+        }
+
+        function releaseUniverseControls() {
+            document.getElementById('card-3').classList.remove('active');
+            document.getElementById('card-3').style.display = 'none';
+            initialPhase = false;
+            document.getElementById('hint-overlay').style.display = 'block';
+            controls.enabled = true; 
+        }
+
+        function openMemoryCard(palavra) {
+            if (initialPhase) return;
+            const dados = dadosMemorias[palavra];
+            if (!dados) return;
+
+            document.getElementById('mem-title').innerText = dados.titulo;
+            document.getElementById('mem-date').innerText = dados.data;
+            document.getElementById('mem-text').innerText = dados.texto;
+            document.getElementById('mem-img').src = dados.foto;
+
+            document.getElementById('memory-card').classList.add('active');
+            controls.enabled = false;
+        }
+
+        function closeMemoryCard() {
+            document.getElementById('memory-card').classList.remove('active');
+            if(!initialPhase) controls.enabled = true;
+        }
+
+        // --- THREE.JS CONFIG ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.012); // Fog mais suave para visão ampla
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 15, 250); // Começa bem longe
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxDistance = 150; // Aumentado para visão ampla
+        controls.minDistance = 15;
+        controls.enabled = false;
+
+        // --- PARTÍCULAS EM ESPIRAL (AMPLA E VOLUMOSA) ---
+        const particleCount = 15000; // Triplicado o número de partículas
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const pUserData = [];
+
+        // --- [EDITÁVEL] Cores da Galáxia/Espiral (Pontos Rosa/Roxo) ---
+        const colorPink = new THREE.Color('#ff3399'); // Rosa Vibrante
+        const colorPurple = new THREE.Color('#4d0099'); // Roxo Escuro
+        const colorWhite = new THREE.Color('#ffffff'); // Centro Branco
+
+        for (let i = 0; i < particleCount; i++) {
+            // --- [EDITÁVEL] Física da Espiral: Aumente o raio (r) para ampliar ---
+            const r = Math.pow(Math.random(), 1.4) * 85 + 3; // Raio máximo aumentado para 85 (antes ~55)
+            const angleOffset = (i % 5) * (Math.PI * 2 / 5); // 5 braços espirais
+            const theta = (r * -0.09) + angleOffset; // Rotação espiral
+            const y = (Math.random() - 0.5) * (6 / (r * 0.06 + 1)); // Mais espesso nas bordas
+
+            positions[i * 3] = Math.cos(theta) * r;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = Math.sin(theta) * r;
+
+            pUserData.push({
+                radius: r,
+                angle: theta,
+                speed: 0.008 + (1 / r) * 0.2, // Rotação contínua
+                yOffset: y
+            });
+
+            let mixedColor = colorPink.clone();
+            if (r < 12) {
+                mixedColor.lerp(colorWhite, 1 - (r/12)); // Centro mais branco
+            } else {
+                mixedColor.lerp(colorPurple, Math.min((r-12)/73, 1)); // Transição para roxo nas bordas
+            }
+            colors[i * 3] = mixedColor.r;
+            colors[i * 3 + 1] = mixedColor.g;
+            colors[i * 3 + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const canvasParticle = document.createElement('canvas');
+        canvasParticle.width = 16; canvasParticle.height = 16;
+        const ctx = canvasParticle.getContext('2d');
+        const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+        grad.addColorStop(0, 'rgba(255,255,255,1)');
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, 16, 16);
+        const texture = new THREE.CanvasTexture(canvasParticle);
+
+        const material = new THREE.PointsMaterial({
+            size: 0.5, // Pontos levemente maiores
+            map: texture, vertexColors: true,
+            blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
+        });
+        const galaxy = new THREE.Points(geometry, material);
+        scene.add(galaxy);
+
+        // --- CORAÇÃO VERMELHO E SUBIDO ---
+        const heartGeometry = new THREE.BufferGeometry();
+        const heartCount = 1000; // Mais partículas no coração
+        const heartPositions = new Float32Array(heartCount * 3);
+
+        for(let i=0; i<heartCount; i++) {
+            const t = Math.random() * Math.PI * 2;
+            const scale = 0.5; // Tamanho do coração
+            const x = 16 * Math.pow(Math.sin(t), 3) * scale;
+            const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale;
+            const z = (Math.random() - 0.5) * 3;
+            heartPositions[i*3] = x;
+            // --- [EDITÁVEL] Posição do Coração: Aumente o valor (+12) para subir mais ---
+            heartPositions[i*3+1] = y + 12; // Heart SUBIU (estava +1)
+            heartPositions[i*3+2] = z;
+        }
+        heartGeometry.setAttribute('position', new THREE.BufferAttribute(heartPositions, 3));
+        // --- [EDITÁVEL] Cor do Coração (Vermelho) ---
+        const heartMat = new THREE.PointsMaterial({ size: 0.6, color: 0xff0000, map: texture, blending: THREE.AdditiveBlending, transparent: true }); // VERMELHO Puro
+        const centerHeart = new THREE.Points(heartGeometry, heartMat);
+        scene.add(centerHeart);
+
+        // --- TEXTOS EM PORTUGUÊS (ÓRBITA 3D) ---
+        // As chaves aqui devem bater com as do objeto `dadosMemorias` acima.
+        const frasesMesh = [
+            "TE AMO",
+            "INFINITO ∞",
+            "AMOR ETERNO",
+            "MINHA VIDA",
+            "MINHA GRAVIDADE",
+            "VOCÊ ME FASCINA"
+        ];
+        const textMeshes = [];
+
+        frasesMesh.forEach((texto, index) => {
+            const textCanvas = document.createElement('canvas');
+            textCanvas.width = 256; textCanvas.height = 64;
+            const tCtx = textCanvas.getContext('2d');
+            tCtx.font = 'Bold 25px Arial';
+            tCtx.fillStyle = '#ffffff';
+            // Brilho do texto
+            tCtx.shadowColor = '#ff4d4d'; tCtx.shadowBlur = 12;
+            tCtx.textAlign = 'center';
+            tCtx.fillText(texto, 128, 42);
+
+            const textTex = new THREE.CanvasTexture(textCanvas);
+            const textMat = new THREE.MeshBasicMaterial({ map: textTex, transparent: true, side: THREE.DoubleSide });
+            const textGeo = new THREE.PlaneGeometry(10, 2.5); // Planos de texto levemente maiores
+            const mesh = new THREE.Mesh(textGeo, textMat);
+
+            const angle = (index / frasesMesh.length) * Math.PI * 2;
+            mesh.userData = {
+                name: texto,
+                angle: angle,
+                // --- [EDITÁVEL] Órbita das Frases: Raio aumentado para acompanhar a espiral ampla ---
+                radius: 35 + Math.random() * 10, // Mais afastados (estava 18)
+                speed: 0.003 + Math.random() * 0.003, // Mais lento e majestoso
+                yPos: 5 + (Math.random() - 0.5) * 5 // Flutuando em alturas variadas
+            };
+
+            scene.add(mesh);
+            textMeshes.push(mesh);
+        });
+
+        // --- RAYCASTER (CLIQUES EM 3D) ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('click', (event) => {
+            if (initialPhase || document.getElementById('memory-card').classList.contains('active')) return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(textMeshes);
+            if (intersects.length > 0) {
+                openMemoryCard(intersects[0].object.userData.name);
+            }
+        });
+
+        window.addEventListener('mousemove', (event) => {
+            if (initialPhase) return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(textMeshes);
+            if (intersects.length > 0 && !document.getElementById('memory-card').classList.contains('active')) {
+                document.body.style.cursor = 'pointer';
+            } else {
+                document.body.style.cursor = 'default';
+            }
+        });
+
+        // --- LOOP PRINCIPAL DE ANIMAÇÃO ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+            const posArray = galaxy.geometry.attributes.position.array;
+
+            // Movimento da espiral contínua
+            for (let i = 0; i < particleCount; i++) {
+                pUserData[i].angle += pUserData[i].speed * 0.2; 
+                posArray[i * 3] = Math.cos(pUserData[i].angle) * pUserData[i].radius;
+                posArray[i * 3 + 2] = Math.sin(pUserData[i].angle) * pUserData[i].radius;
+                posArray[i * 3 + 1] = pUserData[i].yOffset + Math.sin(time + pUserData[i].radius) * 0.1;
+            }
+            galaxy.geometry.attributes.position.needsUpdate = true;
+            galaxy.rotation.y = time * 0.01; // Rotação de conjunto sutil
+            
+            // Pulsação Orgânica do Coração (Vagarosa e Majestosa)
+            const pulse = 1 + Math.sin(time * 3) * 0.05;
+            centerHeart.scale.set(pulse, pulse, pulse);
+            centerHeart.rotation.y = time * 0.08;
+
+            // Rotação das mensagens flutuantes
+            textMeshes.forEach(mesh => {
+                mesh.userData.angle += mesh.userData.speed;
+                mesh.position.x = Math.cos(mesh.userData.angle) * mesh.userData.radius;
+                mesh.position.z = Math.sin(mesh.userData.angle) * mesh.userData.radius;
+                mesh.position.y = mesh.userData.yPos + Math.sin(time + mesh.userData.radius) * 0.4;
+                mesh.lookAt(camera.position); // Sempre de frente para a câmera
+            });
+
+            // Lógica de câmera e cinemática de entrada
+            if (travelAnimation) {
+                travelProgress += 0.01; // Velocidade da viagem (levemente mais lenta)
+                camera.position.z = THREE.MathUtils.lerp(250, 75, travelProgress); // Posição final mais afastada (75)
+                camera.position.y = THREE.MathUtils.lerp(15, 35, travelProgress);
+                camera.position.x = 0;
+                camera.lookAt(0, 5, 0); // Foca um pouco acima do plano
+
+                if (travelProgress >= 1) {
+                    travelAnimation = false;
+                    document.getElementById('card-2').classList.add('active');
+                }
+            } else if (controls.enabled) {
+                controls.update(); 
+            } else if (initialPhase) {
+                // Efeito orbital passivo enquanto os cards estão ativos
+                camera.position.x = Math.sin(time * 0.15) * 8;
+                camera.position.z = 75;
+                camera.position.y = 35;
+                camera.lookAt(0, 5, 0);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
