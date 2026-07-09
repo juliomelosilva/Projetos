@@ -1,0 +1,141 @@
+import tkinter as tk
+from tkinter import messagebox
+import random
+
+
+class BingoApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Sistema de Bingo")
+        self.root.geometry("600x500")
+        self.root.resizable(False, False)
+
+        self.numeros_disponiveis = []
+        self.numeros_sorteados = []
+
+        # Configurações
+        frame_config = tk.LabelFrame(root, text="Configuração do Bingo")
+        frame_config.pack(fill="x", padx=10, pady=10)
+
+        tk.Label(frame_config, text="Número Mínimo:").grid(row=0, column=0, padx=5, pady=5)
+
+        self.min_entry = tk.Entry(frame_config, width=10)
+        self.min_entry.insert(0, "1")
+        self.min_entry.grid(row=0, column=1)
+
+        tk.Label(frame_config, text="Número Máximo:").grid(row=0, column=2, padx=5, pady=5)
+
+        self.max_entry = tk.Entry(frame_config, width=10)
+        self.max_entry.insert(0, "75")
+        self.max_entry.grid(row=0, column=3)
+
+        self.btn_iniciar = tk.Button(
+            frame_config,
+            text="Criar Bingo",
+            command=self.criar_bingo,
+            bg="green",
+            fg="white"
+        )
+        self.btn_iniciar.grid(row=0, column=4, padx=10)
+
+        # Número sorteado
+        self.numero_label = tk.Label(
+            root,
+            text="-",
+            font=("Arial", 60, "bold"),
+            fg="blue"
+        )
+        self.numero_label.pack(pady=20)
+
+        # Botão sortear
+        self.btn_sortear = tk.Button(
+            root,
+            text="SORTEAR",
+            font=("Arial", 16, "bold"),
+            bg="orange",
+            command=self.sortear_numero,
+            state="disabled"
+        )
+        self.btn_sortear.pack(pady=10)
+
+        # Lista de sorteados
+        frame_lista = tk.LabelFrame(root, text="Números Sorteados")
+        frame_lista.pack(fill="both", expand=True, padx=10, pady=10)
+
+        self.lista_sorteados = tk.Text(
+            frame_lista,
+            height=10,
+            font=("Arial", 12)
+        )
+        self.lista_sorteados.pack(fill="both", expand=True)
+
+        # Reiniciar
+        self.btn_reiniciar = tk.Button(
+            root,
+            text="Reiniciar",
+            command=self.reiniciar
+        )
+        self.btn_reiniciar.pack(pady=10)
+
+    def criar_bingo(self):
+        try:
+            minimo = int(self.min_entry.get())
+            maximo = int(self.max_entry.get())
+
+            if minimo >= maximo:
+                raise ValueError
+
+            self.numeros_disponiveis = list(range(minimo, maximo + 1))
+            self.numeros_sorteados = []
+
+            self.lista_sorteados.delete("1.0", tk.END)
+            self.numero_label.config(text="-")
+            self.btn_sortear.config(state="normal")
+
+            messagebox.showinfo(
+                "Sucesso",
+                f"Bingo criado com números de {minimo} até {maximo}"
+            )
+
+        except:
+            messagebox.showerror(
+                "Erro",
+                "Informe valores válidos."
+            )
+
+    def sortear_numero(self):
+        if not self.numeros_disponiveis:
+            messagebox.showinfo(
+                "Fim",
+                "Todos os números já foram sorteados!"
+            )
+            self.btn_sortear.config(state="disabled")
+            return
+
+        numero = random.choice(self.numeros_disponiveis)
+        self.numeros_disponiveis.remove(numero)
+        self.numeros_sorteados.append(numero)
+
+        self.numero_label.config(text=str(numero))
+
+        self.lista_sorteados.delete("1.0", tk.END)
+
+        texto = ", ".join(
+            map(str, sorted(self.numeros_sorteados))
+        )
+
+        self.lista_sorteados.insert(tk.END, texto)
+
+    def reiniciar(self):
+        self.numeros_disponiveis = []
+        self.numeros_sorteados = []
+
+        self.numero_label.config(text="-")
+        self.lista_sorteados.delete("1.0", tk.END)
+        self.btn_sortear.config(state="disabled")
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = BingoApp(root)
+    root.mainloop()
