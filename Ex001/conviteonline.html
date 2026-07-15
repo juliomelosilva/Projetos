@@ -468,7 +468,7 @@
         const SPREADSHEET_ID = '1iJjjLvX1H7tgYGFIy5EH9XcHBQ0TDAsWWHx2TpGaagw';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
 
-        // URL DE ESCRITA (Cole aqui a URL que você gerou na Implantação do Apps Script no Passo 1)
+        // URL DE ESCRITA (Utilizando seu Web App gerado no Google Sheets)
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU5Py8307_X3aX-zpuIgHXIqIVfqd01v13L8Qc5mTjiNWPTNtiYaiOiOpn2Tl2e6Jgtg/exec";
 
         // Lista de presentes dinâmica
@@ -487,7 +487,8 @@
 
         async function fetchGiftsFromSpreadsheet() {
             try {
-                const response = await fetch(SHEET_URL);
+                // Adicionamos o parâmetro de cache-busting para garantir que traga sempre o dado mais recente
+                const response = await fetch(`${SHEET_URL}&nocache=${new Date().getTime()}`);
                 const text = await response.text();
                 
                 const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
@@ -516,7 +517,13 @@
             } catch (error) {
                 console.error("Erro ao carregar dados da planilha: ", error);
                 const container = document.getElementById('gifts-container');
-                container.innerHTML = `<div class="loading-text" style="color: red;">Não foi possível sincronizar com a planilha.</div>`;
+                container.innerHTML = `
+                    <div class="loading-text" style="color: #e53e3e; font-weight: 600;">
+                        Não foi possível carregar os presentes.<br>
+                        <span style="font-size: 12px; font-weight: 400; color: #718096;">
+                            Verifique se a planilha está compartilhada como "Qualquer pessoa com o link".
+                        </span>
+                    </div>`;
             }
         }
 
@@ -732,23 +739,21 @@
         // =========================================================================
 
         async function updateGiftAvailabilityInSpreadsheet(giftName) {
-            if (APPS_SCRIPT_URL === "COLE_AQUI_A_URL_DO_SEU_WEB_APP") {
+            if (APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwU5Py8307_X3aX-zpuIgHXIqIVfqd01v13L8Qc5mTjiNWPTNtiYaiOiOpn2Tl2e6Jgtg/exec" || !APPS_SCRIPT_URL) {
                 console.warn("URL do Apps Script não configurada. A planilha não será atualizada.");
-                return true; // Se não configurado, ignora para não travar o fluxo
+                return true;
             }
 
             try {
-                const response = await fetch(APPS_SCRIPT_URL, {
+                // Enviamos no formato URL-encoded seguro para evitar erros de CORS local do Google Apps Script
+                await fetch(APPS_SCRIPT_URL, {
                     method: "POST",
-                    mode: "no-cors", // Necessário para evitar restrições de CORS locais em requisições Web App básicas do Google
+                    mode: "no-cors",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "text/plain" 
                     },
                     body: JSON.stringify({ giftName: giftName })
                 });
-                
-                // No modo "no-cors" não conseguimos ler o corpo do JSON de resposta por restrição do navegador,
-                // mas a gravação na planilha pelo Google Apps Script é efetuada com sucesso de forma assíncrona.
                 return true; 
             } catch (error) {
                 console.error("Erro ao enviar comando de atualização para a planilha:", error);
@@ -756,7 +761,7 @@
             }
         }
 
-        // Finalizar, bloquear concorrência dupla, gravar e enviar WhatsApp
+        // Finalizar, bloquear concorrência dupla, gravar, enviar WhatsApp e resetar o site
         async function finishAndSend() {
             if (!guestData.selectedStore) {
                 alert("Por favor, selecione qual das opções de loja você prefere antes de finalizar.");
@@ -768,9 +773,8 @@
             button.innerText = "Verificando disponibilidade...";
 
             // --- VERIFICAÇÃO ANTI-CONCORRÊNCIA EM TEMPO REAL ---
-            // Fazemos uma consulta rápida na planilha para ver se alguém pegou o item enquanto este usuário avançava nas telas
             try {
-                const response = await fetch(SHEET_URL);
+                const response = await fetch(`${SHEET_URL}&nocache=${new Date().getTime()}`);
                 const text = await response.text();
                 const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
                 const data = JSON.parse(jsonString);
@@ -814,14 +818,40 @@
                 nomesTexto += `, acompanhado(a) de: ${listCompanions}`;
             }
 
-            const mensagem = `Olá, estou confirmando minha presença no evento, Nomes: ${nomesTexto} e nosso presente será: ${guestData.selectedGift.name}`;
-            const urlFormatada = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagem)}`;
+            const message = `Olá, estou confirmando minha presença no evento, Nomes: ${nomesTexto} e nosso presente será: ${guestData.selectedGift.name}`;
+            const formattedUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
 
-            // Restaura estado do botão e abre o WhatsApp
+            // Restaura o estado original do botão
             button.disabled = false;
             button.innerText = "Finalizar e Confirmar no WhatsApp";
 
-            window.open(urlFormatada, '_blank');
+            // 1. Abre a nova janela do WhatsApp
+            window.open(formattedUrl, '_blank');
+
+            // 2. Exibe o feedback visual na tela do usuário
+            alert("Agradecemos sua confirmação, esperamos por você!");
+
+            // 3. Limpa todas as informações e volta ao menu principal
+            resetSiteToBeginning();
+        }
+
+        // Função auxiliar para limpar os campos e voltar para o Início
+        function resetSiteToBeginning() {
+            // Limpa dados de convidados e presentes selecionados
+            guestData = {
+                name: "",
+                companions: [],
+                selectedGift: null,
+                selectedStore: ""
+            };
+            
+            // Limpa os inputs de texto da tela
+            document.getElementById('guest-name').value = "";
+            document.getElementById('companions-wrapper').innerHTML = "";
+            companionCount = 0;
+
+            // Volta para o Passo 1 (Tela de Início)
+            goToStep(1);
         }
     </script>
 </body>
