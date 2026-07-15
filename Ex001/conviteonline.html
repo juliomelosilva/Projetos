@@ -762,6 +762,7 @@
         }
 
         // Finalizar, bloquear concorrência dupla, gravar, enviar WhatsApp e resetar o site
+        // Finalizar, bloquear concorrência dupla, gravar, enviar WhatsApp e resetar o site
         async function finishAndSend() {
             if (!guestData.selectedStore) {
                 alert("Por favor, selecione qual das opções de loja você prefere antes de finalizar.");
@@ -818,20 +819,24 @@
                 nomesTexto += `, acompanhado(a) de: ${listCompanions}`;
             }
 
-            const message = `Olá, estou confirmando minha presença no evento, Nomes: ${nomesTexto} e nosso presente será: ${guestData.selectedGift.name}`;
-            const formattedUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
+            const message = `Olá, estou confirmando *Minha Presença* no evento, Nomes: ${nomesTexto} e nosso presente será: ${guestData.selectedGift.name}`;
+            
+            // Usamos 'wa.me' que possui melhor compatibilidade de redirecionamento direto em celulares
+            const formattedUrl = `https://wa.me/${5582920004574}?text=${encodeURIComponent(message)}`;
 
             // Restaura o estado original do botão
             button.disabled = false;
             button.innerText = "Finalizar e Confirmar no WhatsApp";
 
-            // 1. Abre a nova janela do WhatsApp
-            window.open(formattedUrl, '_blank');
-
-            // 2. Exibe o feedback visual na tela do usuário
+            // 1. Primeiro exibe o feedback visual na tela do usuário (trava a execução)
             alert("Agradecemos sua confirmação, esperamos por você!");
 
-            // 3. Limpa todas as informações e volta ao menu principal
+            // 2. Quando o usuário clica em "OK" no alerta, o código continua:
+            // Abrimos o link utilizando '_self' (ou mudando o location) para garantir que o navegador mobile
+            // abra diretamente o aplicativo do WhatsApp sem que o bloqueador de pop-ups impeça.
+            window.location.href = formattedUrl;
+
+            // 3. Limpa todas as informações e volta ao menu principal após iniciar o redirecionamento
             resetSiteToBeginning();
         }
 
