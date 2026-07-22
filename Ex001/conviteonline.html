@@ -205,11 +205,18 @@
             transition: all 0.2s ease;
         }
 
-        .btn-add-companion:hover {
+        .btn-add-companion:hover:not(:disabled) {
             background-color: #2ed573;
             color: white;
             border-color: #2ed573;
             box-shadow: 0 4px 10px rgba(46, 213, 115, 0.2);
+        }
+
+        .btn-add-companion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #e2e8f0;
+            border-color: #cbd5e0;
         }
 
         /* --- LISTA DE PRESENTES --- */
@@ -414,7 +421,7 @@
         <div id="step-2" class="step">
             <h1>Quem vai com a gente?</h1>
             <p>Por favor, nos informe quem irá ao evento.</p>
-            <p>Em caso de acompanhante(s) aperte no botão</p>
+            <p style="font-size: 12px; color: #a0aec0; margin-bottom: 15px;">(Máximo de 7 acompanhantes)</p>
             
             <div class="input-group">
                 <label for="guest-name">Seu Nome Completo</label>
@@ -422,7 +429,7 @@
             </div>
 
             <!-- Botão +1 Dinâmico -->
-            <button type="button" class="btn-add-companion" onclick="addCompanionField()">
+            <button type="button" id="btn-add-companion" class="btn-add-companion" onclick="addCompanionField()">
                 <span>Acompanhante? +1</span>
             </button>
 
@@ -470,7 +477,7 @@
         const SPREADSHEET_ID = '1iJjjLvX1H7tgYGFIy5EH9XcHBQ0TDAsWWHx2TpGaagw';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
 
-        // URL DE ESCRITA (Utilizando seu Web App gerado no Google Sheets)
+        // URL DE ESCRITA
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU5Py8307_X3aX-zpuIgHXIqIVfqd01v13L8Qc5mTjiNWPTNtiYaiOiOpn2Tl2e6Jgtg/exec";
 
         // Lista de presentes dinâmica
@@ -483,13 +490,15 @@
             { store: "Mercado Livre", searchUrl: "https://lista.mercadolivre.com.br/" }
         ];
 
+        // Constante de limite de acompanhantes
+        const MAX_COMPANIONS = 7;
+
         // =========================================================================
         // 2. LÓGICA DE CAPTURA DO GOOGLE SHEETS (LEITURA)
         // =========================================================================
 
         async function fetchGiftsFromSpreadsheet() {
             try {
-                // Adicionamos o parâmetro de cache-busting para garantir que traga sempre o dado mais recente
                 const response = await fetch(`${SHEET_URL}&nocache=${new Date().getTime()}`);
                 const text = await response.text();
                 
@@ -529,7 +538,6 @@
             }
         }
 
-        // Executa busca inicial
         fetchGiftsFromSpreadsheet();
 
         // =========================================================================
@@ -579,8 +587,13 @@
             }
         }
 
-        // Acompanhantes
+        // Acompanhantes limitados em até 7
         function addCompanionField() {
+            if (companionCount >= MAX_COMPANIONS) {
+                alert(`Você atingiu o limite máximo de ${MAX_COMPANIONS} acompanhantes.`);
+                return;
+            }
+
             companionCount++;
             const wrapper = document.getElementById('companions-wrapper');
             
@@ -588,12 +601,19 @@
             newField.className = 'input-group';
             newField.id = `group-companion-${companionCount}`;
             newField.innerHTML = `
-                <label for="companion-${companionCount}">Nome do Acompanhante #${companionCount}</label>
+                <label for="companion-${companionCount}">Acompanhante ${companionCount}</label>
                 <input type="text" id="companion-${companionCount}" class="companion-input" placeholder="Nome completo do acompanhante">
             `;
             
             wrapper.appendChild(newField);
             document.getElementById(`companion-${companionCount}`).focus();
+
+            // Desativa botão se atingir o limite de 7
+            if (companionCount >= MAX_COMPANIONS) {
+                const btnAdd = document.getElementById('btn-add-companion');
+                btnAdd.disabled = true;
+                btnAdd.querySelector('span').innerText = "Limite atingido (7/7)";
+            }
         }
 
         // Validar etapa 2
@@ -627,7 +647,7 @@
             goToStep(3);
         }
 
-        // Renderização dos Presentes obtidos da Planilha
+        // Renderização dos Presentes
         function renderGifts() {
             const container = document.getElementById('gifts-container');
             container.innerHTML = "";
@@ -737,34 +757,26 @@
         }
 
         // =========================================================================
-        // 4. LÓGICA DE ESCRITA DA DISPONIBILIDADE NA PLANILHA E VALIDAÇÃO DE CONCORRÊNCIA
+        // 4. LÓGICA DE ESCRITA E MENSAGEM DO WHATSAPP
         // =========================================================================
 
         async function updateGiftAvailabilityInSpreadsheet(giftName) {
-            if (APPS_SCRIPT_URL === "COLE_AQUI_A_URL_DO_SEU_WEB_APP" || !APPS_SCRIPT_URL) {
-                console.warn("URL do Apps Script não configurada. A planilha não será atualizada.");
-                return true;
-            }
+            if (!APPS_SCRIPT_URL) return true;
 
             try {
-                // Enviamos no formato URL-encoded seguro para evitar erros de CORS local do Google Apps Script
                 await fetch(APPS_SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: {
-                        "Content-Type": "text/plain" 
-                    },
+                    headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ giftName: giftName })
                 });
                 return true; 
             } catch (error) {
-                console.error("Erro ao enviar comando de atualização para a planilha:", error);
+                console.error("Erro ao enviar comando para a planilha:", error);
                 return false;
             }
         }
 
-        // Finalizar, bloquear concorrência dupla, gravar, enviar WhatsApp e resetar o site
-        // Finalizar, bloquear concorrência dupla, gravar, enviar WhatsApp e resetar o site
         async function finishAndSend() {
             if (!guestData.selectedStore) {
                 alert("Por favor, selecione qual das opções de loja você prefere antes de finalizar.");
@@ -775,7 +787,7 @@
             button.disabled = true;
             button.innerText = "Verificando disponibilidade...";
 
-            // --- VERIFICAÇÃO ANTI-CONCORRÊNCIA EM TEMPO REAL ---
+            // Verificação em Tempo Real
             try {
                 const response = await fetch(`${SHEET_URL}&nocache=${new Date().getTime()}`);
                 const text = await response.text();
@@ -798,53 +810,53 @@
                 }
 
                 if (!stillAvailable) {
-                    alert(`Que pena! O presente "${guestData.selectedGift.name}" foi escolhido por outro convidado alguns instantes atrás. Por favor, escolha outro presente.`);
+                    alert(`Que pena! O presente "${guestData.selectedGift.name}" foi escolhido por outro convidado alguns instantes atrás.`);
                     button.disabled = false;
                     button.innerText = "Finalizar e Confirmar no WhatsApp";
-                    goToStep(3); // Volta para a tela de presentes e re-sincroniza a tela
+                    goToStep(3);
                     return;
                 }
 
             } catch (err) {
-                console.error("Erro ao realizar verificação de concorrência ativa. Continuando fluxo padrão...", err);
+                console.error("Erro na verificação. Continuando fluxo...", err);
             }
 
             button.innerText = "Salvando na planilha...";
 
-            // Se ainda estiver disponível, desativa na planilha
             await updateGiftAvailabilityInSpreadsheet(guestData.selectedGift.name);
 
-            // Montagem de nomes para o WhatsApp
-            let nomesTexto = guestData.name;
-            if (guestData.companions.length > 0) {
-                const listCompanions = guestData.companions.join(', ');
-                nomesTexto += `, acompanhado(a) de: ${listCompanions}`;
+            // =========================================================================
+            // LÓGICA DA MENSAGEM DINÂMICA DO WHATSAPP (COM QUEBRAS DE LINHA)
+            // =========================================================================
+            
+            const hasCompanions = guestData.companions.length > 0;
+            const presenceType = hasCompanions ? "*Nossa Presença*" : "*Minha Presença*";
+            
+            let message = `Olá, estamos confirmando ${presenceType} no evento!\n\n`;
+            message += `*Nome:* ${guestData.name}\n`;
+
+            if (hasCompanions) {
+                message += `*Acompanhante(s):*\n`;
+                guestData.companions.forEach(comp => {
+                    message += `- ${comp}\n`;
+                });
             }
 
-            const message = `Olá, estou confirmando *Minha Presença* no evento, Nomes: ${nomesTexto} e nosso presente será: ${guestData.selectedGift.name}`;
+            message += `\n*Presente Escolhido:* ${guestData.selectedGift.name}`;
             
-            // Usamos 'wa.me' que possui melhor compatibilidade de redirecionamento direto em celulares
-            const formattedUrl = `https://wa.me/${5582999676423}?text=${encodeURIComponent(message)}`;
+            const formattedUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
-            // Restaura o estado original do botão
             button.disabled = false;
             button.innerText = "Finalizar e Confirmar no WhatsApp";
 
-            // 1. Primeiro exibe o feedback visual na tela do usuário (trava a execução)
             alert("Agradecemos sua confirmação, esperamos por você!");
 
-            // 2. Quando o usuário clica em "OK" no alerta, o código continua:
-            // Abrimos o link utilizando '_self' (ou mudando o location) para garantir que o navegador mobile
-            // abra diretamente o aplicativo do WhatsApp sem que o bloqueador de pop-ups impeça.
             window.location.href = formattedUrl;
 
-            // 3. Limpa todas as informações e volta ao menu principal após iniciar o redirecionamento
             resetSiteToBeginning();
         }
 
-        // Função auxiliar para limpar os campos e voltar para o Início
         function resetSiteToBeginning() {
-            // Limpa dados de convidados e presentes selecionados
             guestData = {
                 name: "",
                 companions: [],
@@ -852,12 +864,14 @@
                 selectedStore: ""
             };
             
-            // Limpa os inputs de texto da tela
             document.getElementById('guest-name').value = "";
             document.getElementById('companions-wrapper').innerHTML = "";
             companionCount = 0;
 
-            // Volta para o Passo 1 (Tela de Início)
+            const btnAdd = document.getElementById('btn-add-companion');
+            btnAdd.disabled = false;
+            btnAdd.querySelector('span').innerText = "Acompanhante? +1";
+
             goToStep(1);
         }
     </script>
