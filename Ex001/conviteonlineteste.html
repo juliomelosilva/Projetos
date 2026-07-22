@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Presença e Lista de Presentes</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================================================
+           PALETA DE CORES TEMÁTICA
+           ========================================================================= */
+        :root {
+            --color-primary: #30c412;             /* Cor principal */
+            --color-primary-hover: #267017;       /* Cor ao passar o mouse */
+            --btn-radius: 30px;                   /* Arredondamento dos botões */
+            --background-site: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        /* --- ESTILOS GERAIS --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: var(--background-site);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* --- BOTÃO VOLTAR (CABEÇALHO) --- */
+        .header-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+            padding: 5px 0;
+        }
+
+        .btn-back:hover {
+            color: var(--color-primary);
+        }
+
+        /* --- FOTO REDONDA DO TOPO --- */
+        .profile-pic-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 25px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .profile-pic-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- TRANSIÇÕES DE ETAPAS --- */
+        .step {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .step.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- TIPOGRAFIA --- */
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 15px;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* --- FORMULÁRIOS --- */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--color-primary);
+        }
+
+        /* --- BOTÕES --- */
+        .btn {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--btn-radius);
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: var(--color-primary-hover);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* --- BOTÃO ACOMPANHANTE (+1) DINÂMICO --- */
+        .btn-add-companion {
+            background-color: #f1f2f6;
+            color: #57606f;
+            border: 2px dashed #cbd5e0;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-companion:hover:not(:disabled) {
+            background-color: #2ed573;
+            color: white;
+            border-color: #2ed573;
+            box-shadow: 0 4px 10px rgba(46, 213, 115, 0.2);
+        }
+
+        .btn-add-companion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #e2e8f0;
+            border-color: #cbd5e0;
+        }
+
+        /* --- LISTA DE PRESENTES --- */
+        .gifts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .gifts-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        .gifts-grid::-webkit-scrollbar-thumb {
+            background-color: #cbd5e0;
+            border-radius: 4px;
+        }
+
+        .gift-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .gift-item input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--color-primary);
+        }
+
+        .gift-info {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .gift-item:hover:not(.unavailable) {
+            border-color: var(--color-primary);
+            background-color: #f0f8ff;
+        }
+
+        .gift-item.selected {
+            border-color: var(--color-primary);
+            background-color: #ebf8ff;
+        }
+
+        .gift-item.unavailable {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .gift-item.unavailable input {
+            pointer-events: none;
+        }
+
+        .unavailable-badge {
+            background-color: #e53e3e;
+            color: white;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* --- FEEDBACK DE CARREGAMENTO --- */
+        .loading-text {
+            font-size: 14px;
+            color: #718096;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* --- TELA DE COMPARATIVO DE PREÇOS (TOP 3) --- */
+        .offers-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .offer-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .offer-card:hover {
+            border-color: var(--color-primary);
+            background-color: #fcf9f5;
+        }
+
+        .offer-card.selected {
+            border-color: var(--color-primary);
+            background-color: #fdf6ee;
+            box-shadow: 0 4px 12px rgba(212, 163, 115, 0.15);
+        }
+
+        .offer-card input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--color-primary);
+        }
+
+        .offer-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .offer-store {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .offer-label {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 2px;
+        }
+
+        .btn-buy {
+            background-color: #2ed573;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-buy:hover {
+            background-color: #26af5f;
+        }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 30px 20px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- CABEÇALHO COM NAVEGAÇÃO INTERNA -->
+        <div class="header-navigation">
+            <button id="global-back-btn" class="btn-back" style="display: none;" onclick="goBack()">
+                ← Voltar
+            </button>
+        </div>
+
+        <!-- FOTO CIRCULAR DO TOPO -->
+        <div class="profile-pic-container">
+            <img src="https://juliomelosilva.github.io/Projetos/Ex001/FotoCarol03.jpeg" alt="Foto do Evento">
+        </div>
+
+        <!-- ETAPA 1: TELA DE ENTRADA -->
+        <div id="step-1" class="step active">
+            <h1>Carol & Emanoel</h1>
+            <h2>Você foi Convidado!</h2>
+            <p>Ficaríamos muito felizes com a sua presença. Confirme sua participação clicando no botão abaixo.</p>
+            <button class="btn" onclick="goToStep(2)">Confirmar Presença</button>
+        </div>
+
+        <!-- ETAPA 2: PREENCHIMENTO DOS NOMES -->
+        <div id="step-2" class="step">
+            <h1>Quem vai com a gente?</h1>
+            <p>Por favor, nos informe quem irá ao evento.</p>
+            <p style="font-size: 12px; color: #a0aec0; margin-bottom: 15px;">(Máximo de 7 acompanhantes)</p>
+            
+            <div class="input-group">
+                <label for="guest-name">Seu Nome Completo</label>
+                <input type="text" id="guest-name" placeholder="Digite seu nome">
+            </div>
+
+            <!-- Botão +1 Dinâmico -->
+            <button type="button" id="btn-add-companion" class="btn-add-companion" onclick="addCompanionField()">
+                <span>Acompanhante? +1</span>
+            </button>
+
+            <!-- Container dos inputs dinâmicos -->
+            <div id="companions-wrapper"></div>
+
+            <button class="btn" onclick="validateStep2()">Avançar para Presentes</button>
+        </div>
+
+        <!-- ETAPA 3: LISTA DE PRESENTES -->
+        <div id="step-3" class="step">
+            <h1>Escolha seu Presente</h1>
+            <p>Selecione abaixo o item com o qual você gostaria de presentear o evento.</p>
+            
+            <div class="gifts-grid" id="gifts-container">
+                <div class="loading-text">Carregando presentes atualizados da planilha...</div>
+            </div>
+
+            <button class="btn" id="btn-advance-gifts" onclick="validateStep3()">Avançar para Ofertas</button>
+        </div>
+
+        <!-- ETAPA 4: MELHORES OFERTAS ENCONTRADAS -->
+        <div id="step-4" class="step">
+            <h1>Melhores Opções Encontradas!</h1>
+            <p>Separamos as melhores opções para este item. Clique em <strong>"Ir para Loja"</strong> para efetuar a compra e selecione de qual loja você escolheu para finalizar.</p>
+            
+            <div class="offers-container" id="offers-container">
+                <!-- Gerado dinamicamente -->
+            </div>
+
+            <button class="btn" id="finish-btn" onclick="finishAndSend()">Finalizar e Confirmar no WhatsApp</button>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. CONFIGURAÇÕES PRINCIPAIS E CONEXÕES
+        // =========================================================================
+        
+        // Seu número de WhatsApp (com DDI e DDD, apenas números)
+        const WHATSAPP_NUMBER = "5582999676423"; 
+
+        // IDs e URLs da Planilha para Leitura
+        const SPREADSHEET_ID = '1iJjjLvX1H7tgYGFIy5EH9XcHBQ0TDAsWWHx2TpGaagw';
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
+
+        // URL DE ESCRITA
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU5Py8307_X3aX-zpuIgHXIqIVfqd01v13L8Qc5mTjiNWPTNtiYaiOiOpn2Tl2e6Jgtg/exec";
+
+        // Lista de presentes dinâmica
+        let giftList = [];
+
+        // Mapeamento de busca por loja
+        const storeSearchTemplates = [
+            { store: "Amazon Brasil", searchUrl: "https://www.amazon.com.br/s?k=" },
+            { store: "Magazine Luiza", searchUrl: "https://www.magazineluiza.com.br/busca/" },
+            { store: "Mercado Livre", searchUrl: "https://lista.mercadolivre.com.br/" }
+        ];
+
+        // Constante de limite de acompanhantes
+        const MAX_COMPANIONS = 7;
+
+        // =========================================================================
+        // 2. LÓGICA DE CAPTURA DO GOOGLE SHEETS (LEITURA)
+        // =========================================================================
+
+        async function fetchGiftsFromSpreadsheet() {
+            try {
+                const response = await fetch(`${SHEET_URL}&nocache=${new Date().getTime()}`);
+                const text = await response.text();
+                
+                const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonString);
+                const rows = data.table.rows;
+                
+                giftList = [];
+
+                rows.forEach((row, index) => {
+                    const giftName = row.c[0] ? row.c[0].v : null;
+                    const availabilityText = row.c[1] ? row.c[1].v : "Sim";
+
+                    if (giftName) {
+                        const isAvailable = String(availabilityText).trim().toLowerCase() !== "não";
+                        giftList.push({
+                            id: `item_${index + 1}`,
+                            name: giftName,
+                            available: isAvailable
+                        });
+                    }
+                });
+
+                if (currentStep === 3) {
+                    renderGifts();
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados da planilha: ", error);
+                const container = document.getElementById('gifts-container');
+                container.innerHTML = `
+                    <div class="loading-text" style="color: #e53e3e; font-weight: 600;">
+                        Não foi possível carregar os presentes.<br>
+                        <span style="font-size: 12px; font-weight: 400; color: #718096;">
+                            Verifique se a planilha está compartilhada como "Qualquer pessoa com o link".
+                        </span>
+                    </div>`;
+            }
+        }
+
+        fetchGiftsFromSpreadsheet();
+
+        // =========================================================================
+        // 3. NAVEGAÇÃO E REGRAS
+        // =========================================================================
+
+        let currentStep = 1;
+        let guestData = {
+            name: "",
+            companions: [],
+            selectedGift: null,
+            selectedStore: ""
+        };
+
+        let companionCount = 0;
+
+        function goToStep(stepNumber) {
+            currentStep = stepNumber;
+
+            const backBtn = document.getElementById('global-back-btn');
+            if (stepNumber > 1) {
+                backBtn.style.display = "inline-flex";
+            } else {
+                backBtn.style.display = "none";
+            }
+
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            setTimeout(() => {
+                const activeStep = document.getElementById(`step-${stepNumber}`);
+                activeStep.classList.add('active');
+                
+                if (stepNumber === 3) {
+                    fetchGiftsFromSpreadsheet();
+                    renderGifts();
+                } else if (stepNumber === 4) {
+                    renderOffers();
+                }
+            }, 150);
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        // Acompanhantes limitados em até 7
+        function addCompanionField() {
+            if (companionCount >= MAX_COMPANIONS) {
+                alert(`Você atingiu o limite máximo de ${MAX_COMPANIONS} acompanhantes.`);
+                return;
+            }
+
+            companionCount++;
+            const wrapper = document.getElementById('companions-wrapper');
+            
+            const newField = document.createElement('div');
+            newField.className = 'input-group';
+            newField.id = `group-companion-${companionCount}`;
+            newField.innerHTML = `
+                <label for="companion-${companionCount}">Acompanhante ${companionCount}</label>
+                <input type="text" id="companion-${companionCount}" class="companion-input" placeholder="Nome completo do acompanhante">
+            `;
+            
+            wrapper.appendChild(newField);
+            document.getElementById(`companion-${companionCount}`).focus();
+
+            // Desativa botão se atingir o limite de 7
+            if (companionCount >= MAX_COMPANIONS) {
+                const btnAdd = document.getElementById('btn-add-companion');
+                btnAdd.disabled = true;
+                btnAdd.querySelector('span').innerText = "Limite atingido (7/7)";
+            }
+        }
+
+        // Validar etapa 2
+        function validateStep2() {
+            const guestName = document.getElementById('guest-name').value.trim();
+            if (!guestName) {
+                alert("Por favor, preencha o seu nome.");
+                return;
+            }
+
+            guestData.name = guestName;
+            guestData.companions = [];
+
+            const companionInputs = document.querySelectorAll('.companion-input');
+            let hasEmptyField = false;
+
+            companionInputs.forEach(input => {
+                const name = input.value.trim();
+                if (name === "") {
+                    hasEmptyField = true;
+                } else {
+                    guestData.companions.push(name);
+                }
+            });
+
+            if (hasEmptyField) {
+                alert("Por favor, preencha ou apague os campos de acompanhante vazios.");
+                return;
+            }
+
+            goToStep(3);
+        }
+
+        // Renderização dos Presentes
+        function renderGifts() {
+            const container = document.getElementById('gifts-container');
+            container.innerHTML = "";
+
+            if (giftList.length === 0) {
+                container.innerHTML = `<div class="loading-text">Buscando presentes atualizados...</div>`;
+                document.getElementById('btn-advance-gifts').disabled = true;
+                return;
+            }
+
+            document.getElementById('btn-advance-gifts').disabled = false;
+
+            giftList.forEach(gift => {
+                const isUnavailable = !gift.available;
+                
+                const giftElement = document.createElement('div');
+                giftElement.className = `gift-item ${isUnavailable ? 'unavailable' : ''}`;
+                giftElement.id = `wrapper-${gift.id}`;
+                
+                const isSelected = guestData.selectedGift && guestData.selectedGift.id === gift.id;
+                if (isSelected && !isUnavailable) {
+                    giftElement.classList.add('selected');
+                }
+                
+                if (!isUnavailable) {
+                    giftElement.onclick = () => selectGift(gift.id);
+                }
+
+                giftElement.innerHTML = `
+                    <div class="gift-info">
+                        <input type="radio" name="gift" id="${gift.id}" ${isUnavailable ? 'disabled' : ''} ${isSelected ? 'checked' : ''}>
+                        <span>${gift.name}</span>
+                    </div>
+                    ${isUnavailable ? '<span class="unavailable-badge">Indisponível</span>' : ''}
+                `;
+
+                container.appendChild(giftElement);
+            });
+        }
+
+        function selectGift(giftId) {
+            document.querySelectorAll('.gift-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            const selectedWrapper = document.getElementById(`wrapper-${giftId}`);
+            selectedWrapper.classList.add('selected');
+
+            const radioButton = document.getElementById(giftId);
+            radioButton.checked = true;
+
+            const chosenGift = giftList.find(g => g.id === giftId);
+            guestData.selectedGift = chosenGift;
+        }
+
+        function validateStep3() {
+            if (!guestData.selectedGift) {
+                alert("Por favor, selecione um presente da lista.");
+                return;
+            }
+            goToStep(4);
+        }
+
+        // Gera ofertas dinâmicas
+        function renderOffers() {
+            const container = document.getElementById('offers-container');
+            container.innerHTML = "";
+
+            const currentGiftName = guestData.selectedGift.name;
+            const encodedSearchTerm = encodeURIComponent(currentGiftName);
+
+            storeSearchTemplates.forEach((template, index) => {
+                const offerCard = document.createElement('div');
+                offerCard.className = `offer-card`;
+                offerCard.id = `offer-card-${index}`;
+                offerCard.onclick = () => selectOffer(index, template.store);
+
+                const customSearchUrl = `${template.searchUrl}${encodedSearchTerm}`;
+
+                offerCard.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <input type="radio" name="selected_offer" id="radio-offer-${index}">
+                        <div class="offer-details">
+                            <span class="offer-store">${template.store}</span>
+                            <span class="offer-label">Ver ofertas de "${currentGiftName}"</span>
+                        </div>
+                    </div>
+                    <a href="${customSearchUrl}" target="_blank" class="btn-buy" onclick="event.stopPropagation();">Ir para Loja</a>
+                `;
+
+                container.appendChild(offerCard);
+            });
+        }
+
+        function selectOffer(index, storeName) {
+            document.querySelectorAll('.offer-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            const card = document.getElementById(`offer-card-${index}`);
+            card.classList.add('selected');
+
+            const radioButton = document.getElementById(`radio-offer-${index}`);
+            radioButton.checked = true;
+
+            guestData.selectedStore = storeName;
+        }
+
+        // =========================================================================
+        // 4. LÓGICA DE ESCRITA E MENSAGEM DO WHATSAPP
+        // =========================================================================
+
+        async function updateGiftAvailabilityInSpreadsheet(giftName) {
+            if (!APPS_SCRIPT_URL) return true;
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ giftName: giftName })
+                });
+                return true; 
+            } catch (error) {
+                console.error("Erro ao enviar comando para a planilha:", error);
+                return false;
+            }
+        }
+
+        async function finishAndSend() {
+            if (!guestData.selectedStore) {
+                alert("Por favor, selecione qual das opções de loja você prefere antes de finalizar.");
+                return;
+            }
+
+            const button = document.getElementById('finish-btn');
+            button.disabled = true;
+            button.innerText = "Verificando disponibilidade...";
+
+            // Verificação em Tempo Real
+            try {
+                const response = await fetch(`${SHEET_URL}&nocache=${new Date().getTime()}`);
+                const text = await response.text();
+                const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonString);
+                const rows = data.table.rows;
+                
+                let stillAvailable = true;
+
+                for (let row of rows) {
+                    const giftName = row.c[0] ? row.c[0].v : null;
+                    const availabilityText = row.c[1] ? row.c[1].v : "Sim";
+                    
+                    if (giftName && giftName.toString().trim().toLowerCase() === guestData.selectedGift.name.toString().trim().toLowerCase()) {
+                        if (String(availabilityText).trim().toLowerCase() === "não") {
+                            stillAvailable = false;
+                        }
+                        break;
+                    }
+                }
+
+                if (!stillAvailable) {
+                    alert(`Que pena! O presente "${guestData.selectedGift.name}" foi escolhido por outro convidado alguns instantes atrás.`);
+                    button.disabled = false;
+                    button.innerText = "Finalizar e Confirmar no WhatsApp";
+                    goToStep(3);
+                    return;
+                }
+
+            } catch (err) {
+                console.error("Erro na verificação. Continuando fluxo...", err);
+            }
+
+            button.innerText = "Salvando na planilha...";
+
+            await updateGiftAvailabilityInSpreadsheet(guestData.selectedGift.name);
+
+            // =========================================================================
+            // LÓGICA DA MENSAGEM DINÂMICA DO WHATSAPP (COM QUEBRAS DE LINHA)
+            // =========================================================================
+            
+            const hasCompanions = guestData.companions.length > 0;
+            const presenceType = hasCompanions ? "*Nossa Presença*" : "*Minha Presença*";
+            
+            let message = `Olá, estamos confirmando ${presenceType} no evento!\n\n`;
+            message += `*Nome:* ${guestData.name}\n`;
+
+            if (hasCompanions) {
+                message += `*Acompanhante(s):*\n`;
+                guestData.companions.forEach(comp => {
+                    message += `- ${comp}\n`;
+                });
+            }
+
+            message += `\n*Presente Escolhido:* ${guestData.selectedGift.name}`;
+            
+            const formattedUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+            button.disabled = false;
+            button.innerText = "Finalizar e Confirmar no WhatsApp";
+
+            alert("Agradecemos sua confirmação, esperamos por você!");
+
+            window.location.href = formattedUrl;
+
+            resetSiteToBeginning();
+        }
+
+        function resetSiteToBeginning() {
+            guestData = {
+                name: "",
+                companions: [],
+                selectedGift: null,
+                selectedStore: ""
+            };
+            
+            document.getElementById('guest-name').value = "";
+            document.getElementById('companions-wrapper').innerHTML = "";
+            companionCount = 0;
+
+            const btnAdd = document.getElementById('btn-add-companion');
+            btnAdd.disabled = false;
+            btnAdd.querySelector('span').innerText = "Acompanhante? +1";
+
+            goToStep(1);
+        }
+    </script>
+</body>
+</html>
