@@ -18,57 +18,15 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
     
-    body { 
-      background-color: var(--bg); 
-      color: var(--text); 
-      padding: 12px; 
-      display: flex; 
-      justify-content: center; 
-      overflow-x: hidden; 
-    }
+    body { background-color: var(--bg); color: var(--text); padding: 12px; display: flex; justify-content: center; overflow-x: hidden; }
+    .container { width: 100%; max-width: 800px; margin: 0 auto; }
+    .card { background: var(--card-bg); padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid var(--border); width: 100%; }
 
-    .container { 
-      width: 100%; 
-      max-width: 800px; 
-      margin: 0 auto;
-    }
-    
-    .card { 
-      background: var(--card-bg); 
-      padding: 16px; 
-      border-radius: 12px; 
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
-      margin-bottom: 16px; 
-      border: 1px solid var(--border); 
-      width: 100%;
-    }
-
-    /* Estilo de Módulos Sanfona (Accordion) */
-    .accordion-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .accordion-header h2, .accordion-header h3 {
-      margin: 0;
-      font-size: 1.1rem;
-    }
-
-    .accordion-icon {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--primary);
-      transition: transform 0.2s;
-    }
-
-    .accordion-content {
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
+    /* Accordion */
+    .accordion-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+    .accordion-header h2, .accordion-header h3 { margin: 0; font-size: 1.1rem; }
+    .accordion-icon { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+    .accordion-content { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border); }
 
     h2 { margin-bottom: 14px; color: #0f172a; font-size: 1.25rem; }
     h3 { margin-bottom: 10px; color: #334155; font-size: 1rem; }
@@ -87,26 +45,11 @@
     .btn-danger { background: var(--danger); width: auto; padding: 6px 10px; font-size: 12px; }
     
     .hidden { display: none !important; }
-    
-    .nav-bar { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      gap: 10px; 
-    }
-
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .user-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .badge { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
     
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin-top: 8px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-    }
-
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; border: 1px solid var(--border); border-radius: 6px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
     th, td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; }
     th { background: #f1f5f9; font-weight: 600; }
@@ -115,25 +58,15 @@
     .saldo-negativo { color: var(--danger); font-weight: bold; }
     .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; }
     
-    .notif-container {
-      position: relative;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px;
-    }
-    .notif-badge {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      background: var(--danger);
-      color: white;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 10px;
-      font-weight: bold;
-    }
+    /* Notificações */
+    .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
+    .notif-badge { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
+
+    /* Modal Pop-up */
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index: 1000; }
+    .modal-card { background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    .notif-item { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .notif-item:last-child { border-bottom: none; }
   </style>
 </head>
 <body>
@@ -146,11 +79,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="admin@admin.com">
+        <input type="email" id="loginEmail" required placeholder="Seu E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="123456">
+        <input type="password" id="loginSenha" required placeholder="Sua Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -165,8 +98,8 @@
       </div>
       
       <div style="display: flex; align-items: center; gap: 12px;">
-        <div id="notifBtn" class="notif-container hidden" onclick="focarSolicitacoes()" title="Solicitações Pendentes">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <div id="notifBtn" class="notif-container hidden" onclick="abrirModalNotificacoes()" title="Notificações">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
           <span id="notifBadge" class="notif-badge hidden">0</span>
         </div>
         
@@ -174,7 +107,7 @@
       </div>
     </div>
 
-    <!-- MÓDULO: REGISTRO DE PONTO (Sempre Visível) -->
+    <!-- MÓDULO: REGISTRO DE PONTO -->
     <div class="card">
       <h2>Registrar Ponto</h2>
       <p id="clock" style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: var(--primary);"></p>
@@ -228,28 +161,28 @@
       </div>
     </div>
 
-    <!-- MÓDULO GERENTE: CADASTRO E RELATÓRIOS (EXPANSÍVEIS) -->
+    <!-- PAINEL EXCLUSIVO DO GERENTE -->
     <div id="adminSection" class="hidden">
       
       <!-- Cadastrar Colaborador -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('cadContent', 'cadIcon')">
-          <h2>Painel do Gerente: Cadastrar Colaborador</h2>
+          <h2>Painel do Gerente: Cadastrar Novo Usuário</h2>
           <span id="cadIcon" class="accordion-icon">+</span>
         </div>
         <div id="cadContent" class="accordion-content hidden">
           <form id="cadastroForm">
             <div class="form-group">
               <label>Nome Completo</label>
-              <input type="text" id="cadNome" required>
+              <input type="text" id="cadNome" required placeholder="Ex: Vinicius">
             </div>
             <div class="form-group">
               <label>E-mail</label>
-              <input type="email" id="cadEmail" required>
+              <input type="email" id="cadEmail" required placeholder="vinicius@empresa.com">
             </div>
             <div class="form-group">
               <label>Senha Inicial</label>
-              <input type="password" id="cadSenha" required>
+              <input type="password" id="cadSenha" required placeholder="123456">
             </div>
             <div class="form-group">
               <label>Função / Nível de Acesso</label>
@@ -263,6 +196,38 @@
         </div>
       </div>
 
+      <!-- Lançamento / Ajuste Manual de Horas -->
+      <div class="card">
+        <div class="accordion-header" onclick="toggleAccordion('ajusteContent', 'ajusteIcon')">
+          <h2>Ajuste Manual de Banco de Horas</h2>
+          <span id="ajusteIcon" class="accordion-icon">+</span>
+        </div>
+        <div id="ajusteContent" class="accordion-content hidden">
+          <form id="ajusteForm">
+            <div class="form-group">
+              <label>Selecione o Colaborador</label>
+              <select id="ajusteColaboradorSelect" class="dinamico-usuarios" required></select>
+            </div>
+            <div class="form-group">
+              <label>Tipo de Ajuste</label>
+              <select id="ajusteTipo" required>
+                <option value="adicionar">Adicionar Horas (Crédito)</option>
+                <option value="retirar">Retirar / Abater Horas (Débito)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantidade de Horas</label>
+              <input type="number" step="0.5" id="ajusteHoras" required placeholder="Ex: 2 ou 1.5">
+            </div>
+            <div class="form-group">
+              <label>Motivo / Justificativa</label>
+              <input type="text" id="ajusteMotivo" required placeholder="Ex: Hora extra presencial realizada fora do sistema">
+            </div>
+            <button type="submit">Aplicar Ajuste</button>
+          </form>
+        </div>
+      </div>
+
       <!-- Relatório de Banco de Horas -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('relContent', 'relIcon')">
@@ -272,9 +237,7 @@
         <div id="relContent" class="accordion-content hidden">
           <div class="form-group">
             <label>Selecione o Colaborador</label>
-            <select id="relColaboradorSelect">
-              <option value="todos">Todos os Colaboradores</option>
-            </select>
+            <select id="relColaboradorSelect" class="dinamico-usuarios"></select>
           </div>
 
           <div class="flex-gap" style="margin-bottom: 12px;">
@@ -298,7 +261,8 @@
                   <th>Trabalhadas</th>
                   <th>Esperadas</th>
                   <th>Abonadas</th>
-                  <th>Saldo Banco de Horas</th>
+                  <th>Ajustes Manuais</th>
+                  <th>Saldo Final</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -309,24 +273,22 @@
 
     </div>
 
-    <!-- MÓDULO: HISTÓRICO E REGISTROS (Sempre Visível) -->
+    <!-- MÓDULO: HISTÓRICO E REGISTROS -->
     <div class="card" id="historicoCard">
       <h2>Histórico e Registros</h2>
 
       <div id="filtroHistoricoGerente" class="form-group hidden">
         <label>Filtrar Histórico por Colaborador</label>
-        <select id="histColaboradorSelect" onchange="renderizarTabelasFiltradas()">
-          <option value="todos">Todos os Colaboradores</option>
-        </select>
+        <select id="histColaboradorSelect" class="dinamico-usuarios" onchange="renderizarTabelasFiltradas()"></select>
       </div>
 
-      <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 16px;">Atualizar Dados</button>
+      <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 16px;">Atualizar Registros</button>
       
       <h3>Solicitações de Folgas</h3>
       <div class="table-responsive">
         <table id="tabelaFolgas">
           <thead>
-            <tr><th>Nome</th><th>Data</th><th>Motivo</th><th>Status</th><th>Ação (Gerente)</th></tr>
+            <tr><th>Nome</th><th>Data</th><th>Motivo</th><th>Status / Justificativa</th><th>Ação (Gerente)</th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -354,6 +316,17 @@
     </div>
   </div>
 
+</div>
+
+<!-- MODAL POP-UP DE NOTIFICAÇÕES -->
+<div id="modalNotificacoes" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div style="display:flex; justify-size: space-between; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="margin:0;">Notificações e Avisos</h3>
+      <button onclick="fecharModalNotificacoes()" style="width: auto; padding: 4px 8px;" class="btn-secondary">X</button>
+    </div>
+    <div id="listaNotificacoes"></div>
+  </div>
 </div>
 
 <script>
@@ -389,7 +362,7 @@
       });
       return await response.json();
     } catch (err) {
-      alert("Erro na conexão com o Apps Script.");
+      alert("Erro na conexão com o servidor.");
       console.error(err);
     }
   }
@@ -421,9 +394,11 @@
       document.getElementById("adminSection").classList.remove("hidden");
       document.getElementById("notifBtn").classList.remove("hidden");
       document.getElementById("filtroHistoricoGerente").classList.remove("hidden");
+      await carregarListaUsuariosDinamica();
+    } else {
+      document.getElementById("notifBtn").classList.remove("hidden");
     }
 
-    await carregarListaUsuarios();
     carregarHistorico();
   }
 
@@ -432,23 +407,26 @@
     location.reload();
   }
 
-  async function carregarListaUsuarios() {
+  // Preenche todos os <select> com os colaboradores/gerentes da empresa
+  async function carregarListaUsuariosDinamica() {
     const res = await apiCall({ action: "obterUsuarios" });
     if (res && res.status === "sucesso") {
-      const selectRel = document.getElementById("relColaboradorSelect");
-      const selectHist = document.getElementById("histColaboradorSelect");
-
-      let options = `<option value="todos">Todos os Colaboradores</option>`;
-      res.usuarios.forEach(u => {
-        options += `<option value="${u.id}">${u.nome}</option>`;
+      const selects = document.querySelectorAll(".dinamico-usuarios");
+      
+      selects.forEach(select => {
+        let isFiltro = select.id === "relColaboradorSelect" || select.id === "histColaboradorSelect";
+        let options = isFiltro ? `<option value="todos">Todos os Colaboradores</option>` : `<option value="">Selecione o Colaborador</option>`;
+        
+        res.usuarios.forEach(u => {
+          options += `<option value="${u.id}">${u.nome} (${u.funcao === 'admin' ? 'Gerente' : 'Colaborador'})</option>`;
+        });
+        
+        select.innerHTML = options;
       });
-
-      selectRel.innerHTML = options;
-      selectHist.innerHTML = options;
     }
   }
 
-  // Registros
+  // Bater Ponto
   async function baterPonto(tipo) {
     if (!confirm(`Confirmar ponto: ${tipo}?`)) return;
     const res = await apiCall({ action: "registrarPonto", id_usuario: currentUser.id, nome: currentUser.nome, tipo });
@@ -456,6 +434,7 @@
     carregarHistorico();
   }
 
+  // Enviar Folga
   document.getElementById("folgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -470,6 +449,7 @@
     carregarHistorico();
   });
 
+  // Enviar Atestado
   document.getElementById("atestadoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -484,6 +464,7 @@
     carregarHistorico();
   });
 
+  // Cadastrar Novo Usuário
   document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -496,28 +477,98 @@
     if (res) alert(res.message);
     if (res && res.status === "sucesso") {
       document.getElementById("cadastroForm").reset();
-      carregarListaUsuarios();
+      await carregarListaUsuariosDinamica();
     }
   });
 
+  // Ajuste Manual de Banco de Horas
+  document.getElementById("ajusteForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const res = await apiCall({
+      action: "ajustarHoras",
+      id_usuario: document.getElementById("ajusteColaboradorSelect").value,
+      tipo: document.getElementById("ajusteTipo").value,
+      horas: document.getElementById("ajusteHoras").value,
+      motivo: document.getElementById("ajusteMotivo").value
+    });
+    if (res) alert(res.message);
+    if (res && res.status === "sucesso") {
+      document.getElementById("ajusteForm").reset();
+    }
+  });
+
+  // Aceitar / Negar Folga (Com Justificativa OBRIGATÓRIA ao Negar)
   async function responderFolga(idFolga, status) {
-    const res = await apiCall({ action: "responderFolga", id_folga: idFolga, status });
+    let motivoNegativa = "";
+    if (status === "Negado") {
+      motivoNegativa = prompt("Por favor, digite a justificativa para NEGAR a folga:");
+      if (!motivoNegativa || motivoNegativa.trim() === "") {
+        alert("A justificativa é obrigatória para negar a folga.");
+        return;
+      }
+    }
+
+    const res = await apiCall({ action: "responderFolga", id_folga: idFolga, status: status, motivoNegativa: motivoNegativa });
     if (res) alert(res.message);
     carregarHistorico();
   }
 
-  function focarSolicitacoes() {
-    document.getElementById("historicoCard").scrollIntoView({ behavior: 'smooth' });
+  // Notificações em Pop-up Modal
+  function abrirModalNotificacoes() {
+    const modal = document.getElementById("modalNotificacoes");
+    const container = document.getElementById("listaNotificacoes");
+    let html = "";
+
+    if (currentUser.funcao === "admin") {
+      const folgasPendentes = historicoCache.folgas.filter(f => f.status === "Pendente");
+      const ultimosPontos = historicoCache.pontos.slice(0, 5);
+
+      if (folgasPendentes.length > 0) {
+        html += `<strong>Solicitações de Folga Pendentes:</strong><br>`;
+        folgasPendentes.forEach(f => {
+          html += `<div class="notif-item">📌 <b>${f.nome}</b> solicitou folga para <b>${f.data}</b>.<br><i>Motivo:</i> ${f.motivo}</div>`;
+        });
+      }
+
+      if (ultimosPontos.length > 0) {
+        html += `<br><strong>Últimos Registros de Ponto:</strong><br>`;
+        ultimosPontos.forEach(p => {
+          html += `<div class="notif-item">🕒 <b>${p.nome}</b> registrou <b>${p.tipo}</b> em ${p.dataHora}</div>`;
+        });
+      }
+    } else {
+      const minhasFolgas = historicoCache.folgas.filter(f => f.status !== "Pendente");
+      if (minhasFolgas.length > 0) {
+        html += `<strong>Suas Respostas de Folga:</strong><br>`;
+        minhasFolgas.forEach(f => {
+          let detalhe = f.status === "Negado" ? `<br><span style="color:var(--danger)">Motivo: ${f.motivoNegativa}</span>` : "";
+          html += `<div class="notif-item">📌 Sua folga para <b>${f.data}</b> foi <b>${f.status}</b>.${detalhe}</div>`;
+        });
+      } else {
+        html = "<p class='notif-item'>Nenhuma nova notificação para exibir.</p>";
+      }
+    }
+
+    container.innerHTML = html || "<p class='notif-item'>Nenhuma nova notificação no momento.</p>";
+    modal.classList.remove("hidden");
+  }
+
+  function fecharModalNotificacoes() {
+    document.getElementById("modalNotificacoes").classList.add("hidden");
   }
 
   async function carregarHistorico() {
-    const res = await apiCall({ action: "obterHistorico", id_usuario: currentUser.id, funcao: currentUser.funcao });
+    const res = await apiCall({ 
+      action: "obterHistorico", 
+      id_usuario: currentUser.id, 
+      funcao: currentUser.funcao 
+    });
 
     if (res && res.status === "sucesso") {
       historicoCache = { pontos: res.pontos, folgas: res.folgas, atestados: res.atestados };
 
+      const notifBadge = document.getElementById("notifBadge");
       if (currentUser.funcao === "admin") {
-        const notifBadge = document.getElementById("notifBadge");
         if (res.pendentesCount > 0) {
           notifBadge.innerText = res.pendentesCount;
           notifBadge.classList.remove("hidden");
@@ -533,29 +584,39 @@
   function renderizarTabelasFiltradas() {
     const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
 
+    // Pontos
     const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
     document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.map(p => 
       `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
     ).join('');
 
+    // Atestados
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
     document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => 
       `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
     ).join('');
 
+    // Folgas
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
     document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
       let acoes = "--";
+      let statusExibicao = f.status;
+
+      if (f.status === "Negado" && f.motivoNegativa) {
+        statusExibicao += `<br><small style="color:var(--danger)"><b>Justificativa:</b> ${f.motivoNegativa}</small>`;
+      }
+
       if (currentUser.funcao === "admin" && f.status === "Pendente") {
         acoes = `
           <button class="btn-success" onclick="responderFolga(${f.id_folga}, 'Aprovado')">Aceitar</button>
           <button class="btn-danger" onclick="responderFolga(${f.id_folga}, 'Negado')">Negar</button>
         `;
       }
-      return `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${f.status}</td><td>${acoes}</td></tr>`;
+      return `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${statusExibicao}</td><td>${acoes}</td></tr>`;
     }).join('');
   }
 
+  // Gerar Relatório de Banco de Horas
   async function gerarRelatorioHoras() {
     const dataInicio = document.getElementById("relDataInicio").value;
     const dataFim = document.getElementById("relDataFim").value;
@@ -577,6 +638,7 @@
           <td>${r.horasTrabalhadas}h</td>
           <td>${r.horasEsperadas}h</td>
           <td>${r.horasAbonadas}h</td>
+          <td>${r.ajustes}h</td>
           <td class="${saldoClass}">${r.saldo}h</td>
         </tr>`;
       }).join('');
@@ -589,9 +651,9 @@
       return;
     }
 
-    let csvContent = "data:text/csv;charset=utf-8,Colaborador,Horas Trabalhadas,Horas Esperadas,Horas Abonadas,Saldo Banco de Horas\n";
+    let csvContent = "data:text/csv;charset=utf-8,Colaborador,Horas Trabalhadas,Horas Esperadas,Horas Abonadas,Ajustes Manuais,Saldo Final\n";
     relatorioUltimoResultado.forEach(r => {
-      csvContent += `${r.nome},${r.horasTrabalhadas},${r.horasEsperadas},${r.horasAbonadas},${r.saldo}\n`;
+      csvContent += `${r.nome},${r.horasTrabalhadas},${r.horasEsperadas},${r.horasAbonadas},${r.ajustes},${r.saldo}\n`;
     });
 
     const encodedUri = encodeURI(csvContent);
