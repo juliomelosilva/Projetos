@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Avançado de Gestão de Ponto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sistema de Gestão de Ponto</title>
   <style>
     :root {
       --primary: #af09fc;
@@ -17,37 +17,98 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 900px; }
     
-    .card { background: var(--card-bg); padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid var(--border); }
-    h2 { margin-bottom: 16px; color: #0f172a; }
-    h3 { margin-bottom: 10px; color: #334155; }
+    body { 
+      background-color: var(--bg); 
+      color: var(--text); 
+      padding: 12px; 
+      display: flex; 
+      justify-content: center; 
+      overflow-x: hidden; 
+    }
+
+    .container { 
+      width: 100%; 
+      max-width: 800px; 
+      margin: 0 auto;
+    }
+    
+    .card { 
+      background: var(--card-bg); 
+      padding: 16px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+      margin-bottom: 16px; 
+      border: 1px solid var(--border); 
+      width: 100%;
+    }
+
+    h2 { margin-bottom: 14px; color: #0f172a; font-size: 1.25rem; }
+    h3 { margin-bottom: 10px; color: #334155; font-size: 1rem; }
     
     .form-group { margin-bottom: 12px; }
-    label { display: block; margin-bottom: 4px; font-weight: 500; font-size: 14px; }
+    label { display: block; margin-bottom: 4px; font-weight: 500; font-size: 13px; }
     input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
     
-    button { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; }
+    button { background: var(--primary); color: white; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; font-size: 14px; }
     button:hover { background: var(--primary-hover); }
     
-    .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 10px; }
+    .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 10px; }
     .btn-secondary { background: #475569; }
     .btn-secondary:hover { background: #334155; }
-    .btn-success { background: var(--success); width: auto; padding: 6px 12px; }
-    .btn-danger { background: var(--danger); width: auto; padding: 6px 12px; }
+    .btn-success { background: var(--success); width: auto; padding: 6px 10px; font-size: 12px; }
+    .btn-danger { background: var(--danger); width: auto; padding: 6px 10px; font-size: 12px; }
     
-    .hidden { display: none; }
-    .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .badge { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .hidden { display: none !important; }
     
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-    th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
-    th { background: #f1f5f9; }
+    .nav-bar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: 10px; 
+    }
+
+    .user-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    
+    /* Container para permitir rolagem horizontal em telas pequenas */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+    th, td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; }
     
     .saldo-positivo { color: var(--success); font-weight: bold; }
     .saldo-negativo { color: var(--danger); font-weight: bold; }
-    .flex-gap { display: flex; gap: 10px; }
+    .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; }
+    
+    /* Ícone de Notificação */
+    .notif-container {
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+    }
+    .notif-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -73,17 +134,26 @@
   <!-- PAINEL PRINCIPAL -->
   <div id="appSection" class="hidden">
     <div class="nav-bar card">
-      <div>
+      <div class="user-info">
         <strong id="userNome">--</strong> 
         <span id="userBadge" class="badge">--</span>
       </div>
-      <button onclick="logout()" class="btn-secondary" style="width: auto;">Sair</button>
+      
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Ícone de Notificação (Sino) -->
+        <div id="notifBtn" class="notif-container hidden" onclick="focarSolicitacoes()" title="Solicitações Pendentes">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span id="notifBadge" class="notif-badge hidden">0</span>
+        </div>
+        
+        <button onclick="logout()" class="btn-secondary" style="width: auto; padding: 6px 12px;">Sair</button>
+      </div>
     </div>
 
     <!-- MÓDULO: REGISTRO DE PONTO -->
     <div class="card">
       <h2>Registrar Ponto</h2>
-      <p id="clock" style="font-size: 24px; font-weight: bold; margin-bottom: 12px; color: var(--primary);"></p>
+      <p id="clock" style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: var(--primary);"></p>
       <div class="btn-grid">
         <button onclick="baterPonto('Entrada')">Entrada</button>
         <button onclick="baterPonto('Saída Almoço')">Saída Almoço</button>
@@ -118,19 +188,18 @@
         </div>
         <div class="form-group">
           <label>CID / Motivo</label>
-          <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica / Atestado 1 dia">
+          <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica">
         </div>
         <button type="submit" class="btn-secondary">Enviar Atestado</button>
       </form>
     </div>
 
-    <!-- MÓDULO GERENTE: APROVAÇÕES, CADASTROS E BANCO DE HORAS -->
+    <!-- MÓDULO GERENTE: CADASTRO E BANCO DE HORAS -->
     <div id="adminSection" class="card hidden">
       <h2>Painel do Gerente</h2>
       
-      <!-- Cadastrar Colaborador -->
       <h3>Cadastrar Colaborador</h3>
-      <form id="cadastroForm" style="margin-bottom: 24px;">
+      <form id="cadastroForm" style="margin-bottom: 20px;">
         <div class="form-group">
           <label>Nome Completo</label>
           <input type="text" id="cadNome" required>
@@ -153,65 +222,89 @@
         <button type="submit">Cadastrar Usuário</button>
       </form>
 
-      <hr style="margin: 20px 0;">
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);">
 
-      <!-- Relatório de Banco de Horas -->
+      <!-- Relatório com Seleção de Colaboradores -->
       <h3>Relatório de Cálculo de Horas / Banco de Horas</h3>
+      <div class="form-group">
+        <label>Selecione o Colaborador</label>
+        <select id="relColaboradorSelect">
+          <option value="todos">Todos os Colaboradores</option>
+        </select>
+      </div>
+
       <div class="flex-gap" style="margin-bottom: 12px;">
-        <div style="flex:1">
+        <div style="flex:1; min-width: 130px;">
           <label>Data Início</label>
           <input type="date" id="relDataInicio">
         </div>
-        <div style="flex:1">
+        <div style="flex:1; min-width: 130px;">
           <label>Data Fim</label>
           <input type="date" id="relDataFim">
         </div>
       </div>
-      <button onclick="gerarRelatorioHoras()" style="margin-bottom: 12px;">Calcular Banco de Horas</button>
-      <button onclick="exportarRelatorioCSV()" class="btn-secondary" style="margin-bottom: 12px;">Exportar Relatório (CSV)</button>
+      <button onclick="gerarRelatorioHoras()" style="margin-bottom: 8px;">Calcular Banco de Horas</button>
+      <button onclick="exportarRelatorioCSV()" class="btn-secondary">Exportar Relatório (CSV)</button>
 
-      <table id="tabelaRelatorio">
-        <thead>
-          <tr>
-            <th>Colaborador</th>
-            <th>Trabalhadas</th>
-            <th>Esperadas</th>
-            <th>Abonadas</th>
-            <th>Saldo Banco de Horas</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-responsive">
+        <table id="tabelaRelatorio">
+          <thead>
+            <tr>
+              <th>Colaborador</th>
+              <th>Trabalhadas</th>
+              <th>Esperadas</th>
+              <th>Abonadas</th>
+              <th>Saldo Banco de Horas</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- MÓDULO: HISTÓRICO E SOLICITAÇÕES -->
-    <div class="card">
+    <!-- MÓDULO: HISTÓRICO E REGISTROS -->
+    <div class="card" id="historicoCard">
       <h2>Histórico e Registros</h2>
-      <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 12px;">Atualizar Dados</button>
+
+      <!-- Filtro de histórico para Gerente -->
+      <div id="filtroHistoricoGerente" class="form-group hidden">
+        <label>Filtrar Histórico por Colaborador</label>
+        <select id="histColaboradorSelect" onchange="renderizarTabelasFiltradas()">
+          <option value="todos">Todos os Colaboradores</option>
+        </select>
+      </div>
+
+      <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 16px;">Atualizar Dados</button>
       
       <h3>Solicitações de Folgas</h3>
-      <table id="tabelaFolgas">
-        <thead>
-          <tr><th>Nome</th><th>Data</th><th>Motivo</th><th>Status</th><th>Ação (Gerente)</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-responsive">
+        <table id="tabelaFolgas">
+          <thead>
+            <tr><th>Nome</th><th>Data</th><th>Motivo</th><th>Status</th><th>Ação (Gerente)</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
       <h3 style="margin-top: 20px;">Atestados Registrados</h3>
-      <table id="tabelaAtestados">
-        <thead>
-          <tr><th>Nome</th><th>Data</th><th>Motivo</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-responsive">
+        <table id="tabelaAtestados">
+          <thead>
+            <tr><th>Nome</th><th>Data</th><th>Motivo</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
       <h3 style="margin-top: 20px;">Pontos Registrados</h3>
-      <table id="tabelaPontos">
-        <thead>
-          <tr><th>Nome</th><th>Data e Hora</th><th>Tipo</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-responsive">
+        <table id="tabelaPontos">
+          <thead>
+            <tr><th>Nome</th><th>Data e Hora</th><th>Tipo</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -222,6 +315,8 @@
 
   let currentUser = null;
   let relatorioUltimoResultado = [];
+  let historicoCache = { pontos: [], folgas: [], atestados: [] };
+  let listaUsuariosGlobal = [];
 
   setInterval(() => {
     const now = new Date();
@@ -259,7 +354,7 @@
     }
   });
 
-  function iniciarSessao() {
+  async function iniciarSessao() {
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("appSection").classList.remove("hidden");
     document.getElementById("userNome").innerText = currentUser.nome;
@@ -267,6 +362,9 @@
 
     if (currentUser.funcao === "admin") {
       document.getElementById("adminSection").classList.remove("hidden");
+      document.getElementById("notifBtn").classList.remove("hidden");
+      document.getElementById("filtroHistoricoGerente").classList.remove("hidden");
+      await carregarListaUsuarios();
     }
 
     carregarHistorico();
@@ -275,6 +373,25 @@
   function logout() {
     currentUser = null;
     location.reload();
+  }
+
+  async function carregarListaUsuarios() {
+    const res = await apiCall({ action: "obterUsuarios" });
+    if (res && res.status === "sucesso") {
+      listaUsuariosGlobal = res.usuarios;
+      
+      // Preenche os Selects de filtro
+      const selectRel = document.getElementById("relColaboradorSelect");
+      const selectHist = document.getElementById("histColaboradorSelect");
+
+      let options = `<option value="todos">Todos os Colaboradores</option>`;
+      res.usuarios.forEach(u => {
+        options += `<option value="${u.id}">${u.nome}</option>`;
+      });
+
+      selectRel.innerHTML = options;
+      selectHist.innerHTML = options;
+    }
   }
 
   // Registros
@@ -323,14 +440,20 @@
       funcao: document.getElementById("cadFuncao").value
     });
     if (res) alert(res.message);
-    if (res && res.status === "sucesso") document.getElementById("cadastroForm").reset();
+    if (res && res.status === "sucesso") {
+      document.getElementById("cadastroForm").reset();
+      carregarListaUsuarios();
+    }
   });
 
-  // Aceitar / Negar Folgas
   async function responderFolga(idFolga, status) {
     const res = await apiCall({ action: "responderFolga", id_folga: idFolga, status });
     if (res) alert(res.message);
     carregarHistorico();
+  }
+
+  function focarSolicitacoes() {
+    document.getElementById("historicoCard").scrollIntoView({ behavior: 'smooth' });
   }
 
   // Carregar Histórico
@@ -338,41 +461,64 @@
     const res = await apiCall({ action: "obterHistorico", id_usuario: currentUser.id, funcao: currentUser.funcao });
 
     if (res && res.status === "sucesso") {
-      // Tabela de Pontos
-      document.querySelector("#tabelaPontos tbody").innerHTML = res.pontos.map(p => 
-        `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
-      ).join('');
+      historicoCache = { pontos: res.pontos, folgas: res.folgas, atestados: res.atestados };
 
-      // Tabela de Atestados
-      document.querySelector("#tabelaAtestados tbody").innerHTML = res.atestados.map(a => 
-        `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
-      ).join('');
-
-      // Tabela de Folgas com Botões para o Gerente
-      document.querySelector("#tabelaFolgas tbody").innerHTML = res.folgas.map(f => {
-        let acoes = "--";
-        if (currentUser.funcao === "admin" && f.status === "Pendente") {
-          acoes = `
-            <button class="btn-success" onclick="responderFolga(${f.id_folga}, 'Aprovado')">Aceitar</button>
-            <button class="btn-danger" onclick="responderFolga(${f.id_folga}, 'Negado')">Negar</button>
-          `;
+      // Atualiza Badge de Notificações
+      if (currentUser.funcao === "admin") {
+        const notifBadge = document.getElementById("notifBadge");
+        if (res.pendentesCount > 0) {
+          notifBadge.innerText = res.pendentesCount;
+          notifBadge.classList.remove("hidden");
+        } else {
+          notifBadge.classList.add("hidden");
         }
-        return `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${f.status}</td><td>${acoes}</td></tr>`;
-      }).join('');
+      }
+
+      renderizarTabelasFiltradas();
     }
+  }
+
+  function renderizarTabelasFiltradas() {
+    const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
+
+    // Filtrar Pontos
+    const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
+    document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.map(p => 
+      `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
+    ).join('');
+
+    // Filtrar Atestados
+    const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
+    document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => 
+      `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
+    ).join('');
+
+    // Filtrar Folgas
+    const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
+    document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
+      let acoes = "--";
+      if (currentUser.funcao === "admin" && f.status === "Pendente") {
+        acoes = `
+          <button class="btn-success" onclick="responderFolga(${f.id_folga}, 'Aprovado')">Aceitar</button>
+          <button class="btn-danger" onclick="responderFolga(${f.id_folga}, 'Negado')">Negar</button>
+        `;
+      }
+      return `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${f.status}</td><td>${acoes}</td></tr>`;
+    }).join('');
   }
 
   // Gerar e Exportar Relatórios
   async function gerarRelatorioHoras() {
     const dataInicio = document.getElementById("relDataInicio").value;
     const dataFim = document.getElementById("relDataFim").value;
+    const idUsuarioFiltro = document.getElementById("relColaboradorSelect").value;
 
     if (!dataInicio || !dataFim) {
       alert("Selecione a data de início e fim do relatório.");
       return;
     }
 
-    const res = await apiCall({ action: "gerarRelatorioHoras", dataInicio, dataFim, id_usuario: "todos" });
+    const res = await apiCall({ action: "gerarRelatorioHoras", dataInicio, dataFim, id_usuario: idUsuarioFiltro });
 
     if (res && res.status === "sucesso") {
       relatorioUltimoResultado = res.relatorio;
