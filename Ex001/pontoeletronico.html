@@ -211,8 +211,8 @@
             <div class="form-group">
               <label>Tipo de Ajuste</label>
               <select id="ajusteTipo" required>
-                <option value="adicionar">Adicionar Horas (Crédito)</option>
-                <option value="retirar">Retirar / Abater Horas (Débito)</option>
+                <option value="adicionar">Adicionar Horas (Soma ao Saldo Atual)</option>
+                <option value="retirar">Retirar Horas (Subtrai do Saldo Atual)</option>
               </select>
             </div>
             <div class="form-group">
@@ -221,7 +221,7 @@
             </div>
             <div class="form-group">
               <label>Motivo / Justificativa</label>
-              <input type="text" id="ajusteMotivo" required placeholder="Ex: Hora extra presencial realizada fora do sistema">
+              <input type="text" id="ajusteMotivo" required placeholder="Ex: Ajuste acordado de horas faltantes">
             </div>
             <button type="submit">Aplicar Ajuste</button>
           </form>
@@ -397,7 +397,6 @@
 
     document.getElementById("notifBtn").classList.remove("hidden");
 
-    // Carrega usuários e histórico imediatamente
     await carregarListaUsuariosDinamica();
     await carregarHistorico();
   }
@@ -407,7 +406,6 @@
     location.reload();
   }
 
-  // Carrega dinamicamente a lista de usuários em todas as caixas de seleção
   async function carregarListaUsuariosDinamica() {
     const res = await apiCall({ action: "obterUsuarios" });
     if (res && res.status === "sucesso" && res.usuarios) {
