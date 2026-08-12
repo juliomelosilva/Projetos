@@ -166,10 +166,10 @@
 
   // Requisição Fetch
   async function apiCall(data) {
-    if (!API_URL || API_URL.includes("https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei")) {
-        alert("Insira a URL do Apps Script na variável API_URL do arquivo HTML.");
-        return;
-}
+    if (!API_URL || API_URL === "SUA_URL_DO_APPS_SCRIPT_AQUI") {
+      alert("Insira a URL do Apps Script na variável API_URL do arquivo HTML.");
+      return;
+    }
     
     try {
       const response = await fetch(API_URL, {
