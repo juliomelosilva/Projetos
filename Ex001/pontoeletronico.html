@@ -79,11 +79,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="E-mail">
+        <input type="email" id="loginEmail" required placeholder="Teu E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Senha">
+        <input type="password" id="loginSenha" required placeholder="Tua Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -148,13 +148,19 @@
       </div>
       <div id="atestadoContent" class="accordion-content hidden">
         <form id="atestadoForm">
-          <div class="form-group">
-            <label>Data do Atestado</label>
-            <input type="date" id="atestadoData" required>
+          <div class="flex-gap">
+            <div class="form-group" style="flex: 2; min-width: 140px;">
+              <label>Data de Início do Atestado</label>
+              <input type="date" id="atestadoData" required>
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 100px;">
+              <label>Qtd. Dias</label>
+              <input type="number" id="atestadoDias" min="1" value="1" required placeholder="Ex: 3">
+            </div>
           </div>
           <div class="form-group">
             <label>CID / Motivo</label>
-            <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica">
+            <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica / CID J00">
           </div>
           <button type="submit" class="btn-secondary">Enviar Atestado</button>
         </form>
@@ -298,7 +304,7 @@
       <div class="table-responsive">
         <table id="tabelaAtestados">
           <thead>
-            <tr><th>Nome</th><th>Data</th><th>Motivo</th></tr>
+            <tr><th>Nome</th><th>Data Início</th><th>Qtd. Dias</th><th>Motivo</th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -451,6 +457,7 @@
       id_usuario: currentUser.id,
       nome: currentUser.nome,
       data: document.getElementById("atestadoData").value,
+      dias: document.getElementById("atestadoDias").value,
       motivo: document.getElementById("atestadoMotivo").value
     });
     if (res) alert(res.message);
@@ -581,7 +588,7 @@
 
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
     document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => 
-      `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
+      `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.dias || 1} dia(s)</td><td>${a.motivo}</td></tr>`
     ).join('');
 
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
