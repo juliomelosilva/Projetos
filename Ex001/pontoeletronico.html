@@ -367,7 +367,6 @@
     }
   }
 
-  // Login
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({ 
@@ -424,7 +423,6 @@
     }
   }
 
-  // Bater Ponto
   async function baterPonto(tipo) {
     if (!confirm(`Confirmar ponto: ${tipo}?`)) return;
     const res = await apiCall({ action: "registrarPonto", id_usuario: currentUser.id, nome: currentUser.nome, tipo });
@@ -432,7 +430,6 @@
     carregarHistorico();
   }
 
-  // Enviar Folga
   document.getElementById("folgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -447,7 +444,6 @@
     carregarHistorico();
   });
 
-  // Enviar Atestado
   document.getElementById("atestadoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -462,7 +458,6 @@
     carregarHistorico();
   });
 
-  // Cadastrar Novo Usuário
   document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -479,7 +474,6 @@
     }
   });
 
-  // Ajuste Manual de Banco de Horas
   document.getElementById("ajusteForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await apiCall({
@@ -495,7 +489,6 @@
     }
   });
 
-  // Aceitar / Negar Folga
   async function responderFolga(idFolga, status) {
     let motivoNegativa = "";
     if (status === "Negado") {
@@ -511,7 +504,6 @@
     carregarHistorico();
   }
 
-  // Notificações
   function abrirModalNotificacoes() {
     const modal = document.getElementById("modalNotificacoes");
     const container = document.getElementById("listaNotificacoes");
@@ -582,19 +574,16 @@
   function renderizarTabelasFiltradas() {
     const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
 
-    // Pontos
     const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
     document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.map(p => 
       `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
     ).join('');
 
-    // Atestados
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
     document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => 
       `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
     ).join('');
 
-    // Folgas
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
     document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
       let acoes = "--";
@@ -614,7 +603,6 @@
     }).join('');
   }
 
-  // Gerar Relatório de Banco de Horas
   async function gerarRelatorioHoras() {
     const dataInicio = document.getElementById("relDataInicio").value;
     const dataFim = document.getElementById("relDataFim").value;
