@@ -373,57 +373,69 @@
   }
 
   // Função auxiliar para formatação de datas estendidas em PT-BR
-  function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
-    if (!dataStr) return "--";
+// Função ajustada para ler a data corretamente sem perder o ano atual e o fuso
+function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
+  if (!dataStr) return "--";
+
+  let dataObj;
+
+  // 1. Tratamento para strings de data simples no formato "YYYY-MM-DD"
+  if (typeof dataStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataStr.trim())) {
+    const partes = dataStr.trim().split("-");
+    // Cria usando ano, mês (base 0) e dia no fuso horário LOCAL
+    dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+  } 
+  // 2. Tratamento para objetos Date ou strings completas ISO/Padrão
+  else {
+    dataObj = new Date(dataStr);
+  }
+
+  // Se a conversão falhar, retorna o texto original sem quebrar a tela
+  if (isNaN(dataObj.getTime())) return dataStr;
+
+  const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+  const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+  const diaSemana = diasSemana[dataObj.getDay()];
+  const dia = String(dataObj.getDate()).padStart(2, '0');
+  const mes = meses[dataObj.getMonth()];
+  const ano = dataObj.getFullYear();
+
+  let resultado = `${diaSemana}, ${dia} de ${mes} de ${ano}`;
+
+  // Adiciona a hora apenas se ela existir e for solicitada
+  if (incluirHora) {
+    const horas = String(dataObj.getHours()).padStart(2, '0');
+    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
     
-    let dataObj = new Date(dataStr);
-    
-    // Tratamento para strings de data simples "YYYY-MM-DD" que sofrem com fuso horário UTC
-    if (typeof dataStr === "string" && dataStr.length === 10 && dataStr.includes("-")) {
-      const partes = dataStr.split("-");
-      dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
-    }
-
-    if (isNaN(dataObj.getTime())) return dataStr;
-
-    const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-    const diaSemana = diasSemana[dataObj.getDay()];
-    const dia = String(dataObj.getDate()).padStart(2, '0');
-    const mes = meses[dataObj.getMonth()];
-    const ano = dataObj.getFullYear();
-
-    let resultado = `${diaSemana}, ${dia} de ${mes} de ${ano}`;
-
-    if (incluirHora && (dataObj.getHours() !== 0 || dataObj.getMinutes() !== 0)) {
-      const horas = String(dataObj.getHours()).padStart(2, '0');
-      const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+    // Só exibe a hora se for diferente de 00:00 (evita exibir 00:00 em registros só de data)
+    if (horas !== "00" || minutos !== "00") {
       resultado += ` - ${horas}:${minutos}`;
     }
-
-    return resultado;
   }
 
-  // Função auxiliar para calcular data final com base em dias concedidos
-  function calcularDataFinal(dataInicioStr, dias) {
-    if (!dataInicioStr) return "--";
-    
-    let dataObj;
-    if (typeof dataInicioStr === "string" && dataInicioStr.length === 10 && dataInicioStr.includes("-")) {
-      const partes = dataInicioStr.split("-");
-      dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
-    } else {
-      dataObj = new Date(dataInicioStr);
-    }
+  return resultado;
+}
 
-    if (isNaN(dataObj.getTime())) return "--";
-
-    const qtdDias = parseInt(dias, 10) || 1;
-    dataObj.setDate(dataObj.getDate() + (qtdDias - 1));
-
-    return formatarDataExtensaPTBR(dataObj, false);
+// Função para calcular a Data Final sem perder o fuso e o ano
+function calcularDataFinal(dataInicioStr, dias) {
+  if (!dataInicioStr) return "--";
+  
+  let dataObj;
+  if (typeof dataInicioStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataInicioStr.trim())) {
+    const partes = dataInicioStr.trim().split("-");
+    dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+  } else {
+    dataObj = new Date(dataInicioStr);
   }
+
+  if (isNaN(dataObj.getTime())) return "--";
+
+  const qtdDias = parseInt(dias, 10) || 1;
+  dataObj.setDate(dataObj.getDate() + (qtdDias - 1));
+
+  return formatarDataExtensaPTBR(dataObj, false);
+}
 
   async function apiCall(data) {
     try {
