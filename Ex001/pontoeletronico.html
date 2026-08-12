@@ -77,11 +77,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="Seu E-mail">
+        <input type="email" id="loginEmail" required placeholder="teu E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Sua Senha">
+        <input type="password" id="loginSenha" required placeholder="tua Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -428,14 +428,26 @@
     }
   }
 
+  // Formatação de exibição rigorosa em XXhYY (ex: 01h30, 00h15, 25h30)
   function formatarTempoExibicao(horasNum) {
-    const hrs = parseFloat(horasNum) || 0;
-    if (hrs === 0) return "0h";
-    if (Math.abs(hrs) < 1) {
-      const mins = Math.round(hrs * 60);
-      return `${mins}min`;
+    const valor = parseFloat(horasNum) || 0;
+    const sinal = valor < 0 ? "-" : "";
+    const absVal = Math.abs(valor);
+    
+    const h = Math.floor(absVal);
+    const m = Math.round((absVal - h) * 60);
+    
+    let hrs = h;
+    let mins = m;
+    if (mins >= 60) {
+      hrs += 1;
+      mins = 0;
     }
-    return `${hrs.toFixed(2)}h`;
+    
+    const hStr = String(hrs).padStart(2, '0');
+    const mStr = String(mins).padStart(2, '0');
+    
+    return `${sinal}${hStr}h${mStr}`;
   }
 
   function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
@@ -753,7 +765,7 @@
       return `<tr><td>${a.nome}</td><td>${dataInicioFormatada}</td><td>${dataFinalFormatada}</td><td>${a.dias || 1} dia(s)</td><td>${a.motivo}</td></tr>`;
     }).join('');
 
-    // Folgas (Com exibição formatada de horas/minutos)
+    // Folgas (Formatadas com 00h00)
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
     document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
       const dataFormatada = formatarDataExtensaPTBR(f.data, false);
@@ -776,15 +788,17 @@
     if (res && res.status === "sucesso") {
       relatorioUltimoResultado = res.relatorio;
       document.querySelector("#tabelaRelatorio tbody").innerHTML = res.relatorio.map(r => {
-        const saldoClass = parseFloat(r.saldo) >= 0 ? "saldo-positivo" : "saldo-negativo";
+        // Checa saldo negativo através da propriedade numérica
+        const isNegativo = (typeof r.saldoNum !== "undefined" ? r.saldoNum : parseFloat(r.saldo)) < 0;
+        const saldoClass = !isNegativo ? "saldo-positivo" : "saldo-negativo";
         return `<tr>
           <td>${r.nome}</td>
-          <td>${r.horasTrabalhadas}h</td>
-          <td>${r.horasEsperadas}h</td>
-          <td>${r.horasAbonadas}h</td>
-          <td>-${r.horasFolga}h</td>
-          <td>${r.ajustes}h</td>
-          <td class="${saldoClass}">${r.saldo}h</td>
+          <td>${r.horasTrabalhadas}</td>
+          <td>${r.horasEsperadas}</td>
+          <td>${r.horasAbonadas}</td>
+          <td>-${r.horasFolga}</td>
+          <td>${r.ajustes}</td>
+          <td class="${saldoClass}">${r.saldo}</td>
         </tr>`;
       }).join('');
     }
