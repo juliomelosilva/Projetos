@@ -77,11 +77,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="Seu E-mail">
+        <input type="email" id="loginEmail" required placeholder="E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Sua Senha">
+        <input type="password" id="loginSenha" required placeholder="Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -139,7 +139,7 @@
               </div>
               <div class="form-group" style="flex: 1; min-width: 100px;">
                 <label>Horas Concedidas</label>
-                <input type="number" step="0.5" id="folgaHoras" min="0.5" required placeholder="Ex: 8">
+                <input type="number" step="0.25" id="folgaHoras" min="0.25" required placeholder="Ex: 8 ou 4.5">
               </div>
             </div>
             <div class="form-group">
@@ -235,7 +235,7 @@
             </div>
             <div class="form-group">
               <label>Quantidade de Horas</label>
-              <input type="number" step="0.5" id="ajusteHoras" required placeholder="Ex: 2 ou 1.5">
+              <input type="number" step="0.01" min="0.01" id="ajusteHoras" required placeholder="Ex: 2 ou 1.5">
             </div>
             <div class="form-group">
               <label>Motivo / Justificativa</label>
@@ -372,70 +372,60 @@
     }
   }
 
-  // Função auxiliar para formatação de datas estendidas em PT-BR
-// Função ajustada para ler a data corretamente sem perder o ano atual e o fuso
-function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
-  if (!dataStr) return "--";
+  function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
+    if (!dataStr) return "--";
 
-  let dataObj;
+    let dataObj;
 
-  // 1. Tratamento para strings de data simples no formato "YYYY-MM-DD"
-  if (typeof dataStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataStr.trim())) {
-    const partes = dataStr.trim().split("-");
-    // Cria usando ano, mês (base 0) e dia no fuso horário LOCAL
-    dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
-  } 
-  // 2. Tratamento para objetos Date ou strings completas ISO/Padrão
-  else {
-    dataObj = new Date(dataStr);
-  }
-
-  // Se a conversão falhar, retorna o texto original sem quebrar a tela
-  if (isNaN(dataObj.getTime())) return dataStr;
-
-  const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-  const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-  const diaSemana = diasSemana[dataObj.getDay()];
-  const dia = String(dataObj.getDate()).padStart(2, '0');
-  const mes = meses[dataObj.getMonth()];
-  const ano = dataObj.getFullYear();
-
-  let resultado = `${diaSemana}, ${dia} de ${mes} de ${ano}`;
-
-  // Adiciona a hora apenas se ela existir e for solicitada
-  if (incluirHora) {
-    const horas = String(dataObj.getHours()).padStart(2, '0');
-    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-    
-    // Só exibe a hora se for diferente de 00:00 (evita exibir 00:00 em registros só de data)
-    if (horas !== "00" || minutos !== "00") {
-      resultado += ` - ${horas}:${minutos}`;
+    if (typeof dataStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataStr.trim())) {
+      const partes = dataStr.trim().split("-");
+      dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+    } else {
+      dataObj = new Date(dataStr);
     }
+
+    if (isNaN(dataObj.getTime())) return dataStr;
+
+    const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+    const diaSemana = diasSemana[dataObj.getDay()];
+    const dia = String(dataObj.getDate()).padStart(2, '0');
+    const mes = meses[dataObj.getMonth()];
+    const ano = dataObj.getFullYear();
+
+    let resultado = `${diaSemana}, ${dia} de ${mes} de ${ano}`;
+
+    if (incluirHora) {
+      const horas = String(dataObj.getHours()).padStart(2, '0');
+      const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+      
+      if (horas !== "00" || minutos !== "00") {
+        resultado += ` - ${horas}:${minutos}`;
+      }
+    }
+
+    return resultado;
   }
 
-  return resultado;
-}
+  function calcularDataFinal(dataInicioStr, dias) {
+    if (!dataInicioStr) return "--";
+    
+    let dataObj;
+    if (typeof dataInicioStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataInicioStr.trim())) {
+      const partes = dataInicioStr.trim().split("-");
+      dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+    } else {
+      dataObj = new Date(dataInicioStr);
+    }
 
-// Função para calcular a Data Final sem perder o fuso e o ano
-function calcularDataFinal(dataInicioStr, dias) {
-  if (!dataInicioStr) return "--";
-  
-  let dataObj;
-  if (typeof dataInicioStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataInicioStr.trim())) {
-    const partes = dataInicioStr.trim().split("-");
-    dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
-  } else {
-    dataObj = new Date(dataInicioStr);
+    if (isNaN(dataObj.getTime())) return "--";
+
+    const qtdDias = parseInt(dias, 10) || 1;
+    dataObj.setDate(dataObj.getDate() + (qtdDias - 1));
+
+    return formatarDataExtensaPTBR(dataObj, false);
   }
-
-  if (isNaN(dataObj.getTime())) return "--";
-
-  const qtdDias = parseInt(dias, 10) || 1;
-  dataObj.setDate(dataObj.getDate() + (qtdDias - 1));
-
-  return formatarDataExtensaPTBR(dataObj, false);
-}
 
   async function apiCall(data) {
     try {
@@ -515,7 +505,6 @@ function calcularDataFinal(dataInicioStr, dias) {
     carregarHistorico();
   }
 
-  // Registro de Folga direto pelo Gerente
   document.getElementById("registroFolgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const idUsuario = document.getElementById("folgaColaboradorSelect").value;
@@ -580,13 +569,27 @@ function calcularDataFinal(dataInicioStr, dias) {
 
   document.getElementById("ajusteForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const tipoAjuste = document.getElementById("ajusteTipo").value;
+    let qtdHoras = parseFloat(document.getElementById("ajusteHoras").value);
+
+    if (isNaN(qtdHoras) || qtdHoras <= 0) {
+      alert("Informe uma quantidade de horas válida.");
+      return;
+    }
+
+    // Se o tipo for retirar, envia o valor negativo para o cálculo no backend
+    if (tipoAjuste === "retirar") {
+      qtdHoras = -Math.abs(qtdHoras);
+    }
+
     const res = await apiCall({
       action: "ajustarHoras",
       id_usuario: document.getElementById("ajusteColaboradorSelect").value,
-      tipo: document.getElementById("ajusteTipo").value,
-      horas: document.getElementById("ajusteHoras").value,
+      tipo: tipoAjuste,
+      horas: qtdHoras,
       motivo: document.getElementById("ajusteMotivo").value
     });
+
     if (res) alert(res.message);
     if (res && res.status === "sucesso") {
       document.getElementById("ajusteForm").reset();
@@ -638,7 +641,7 @@ function calcularDataFinal(dataInicioStr, dias) {
       `<tr><td>${p.nome}</td><td>${formatarDataExtensaPTBR(p.dataHora)}</td><td>${p.tipo}</td></tr>`
     ).join('');
 
-    // Atestados (Com Data Início PT-BR e Data Final)
+    // Atestados
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
     document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => {
       const dataInicioFormatada = formatarDataExtensaPTBR(a.dataHoraRegistro || a.data);
