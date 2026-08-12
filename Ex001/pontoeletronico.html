@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Registro de Ponto</title>
+  <title>Sistema Avançado de Gestão de Ponto</title>
   <style>
     :root {
       --primary: #af09fc;
-      --primary-hover: #a51919;
+      --primary-hover: #6f0e9c;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #1e293b;
       --border: #e2e8f0;
+      --success: #16a34a;
+      --danger: #dc2626;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 800px; }
+    .container { width: 100%; max-width: 900px; }
     
     .card { background: var(--card-bg); padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid var(--border); }
     h2 { margin-bottom: 16px; color: #0f172a; }
@@ -32,6 +34,8 @@
     .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 10px; }
     .btn-secondary { background: #475569; }
     .btn-secondary:hover { background: #334155; }
+    .btn-success { background: var(--success); width: auto; padding: 6px 12px; }
+    .btn-danger { background: var(--danger); width: auto; padding: 6px 12px; }
     
     .hidden { display: none; }
     .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -40,6 +44,10 @@
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
     th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
     th { background: #f1f5f9; }
+    
+    .saldo-positivo { color: var(--success); font-weight: bold; }
+    .saldo-negativo { color: var(--danger); font-weight: bold; }
+    .flex-gap { display: flex; gap: 10px; }
   </style>
 </head>
 <body>
@@ -84,9 +92,9 @@
       </div>
     </div>
 
-    <!-- MÓDULO: SOLICITAR FOLGA -->
+    <!-- MÓDULO: SOLICITAÇÃO DE FOLGA -->
     <div class="card">
-      <h2>Solicitar Folga / Atestado</h2>
+      <h2>Solicitação de Folga</h2>
       <form id="folgaForm">
         <div class="form-group">
           <label>Data da Folga</label>
@@ -94,16 +102,35 @@
         </div>
         <div class="form-group">
           <label>Motivo / Justificativa</label>
-          <textarea id="folgaMotivo" rows="2" required placeholder="Ex: Consulta médica, folga compensatória..."></textarea>
+          <textarea id="folgaMotivo" rows="2" required placeholder="Ex: Compensação de horas..."></textarea>
         </div>
         <button type="submit" class="btn-secondary">Enviar Solicitação</button>
       </form>
     </div>
 
-    <!-- MÓDULO: GERENTE (CADASTRO DE USUÁRIOS) -->
+    <!-- MÓDULO: REGISTRO DE ATESTADOS -->
+    <div class="card">
+      <h2>Registrar Atestado Médico (Abono)</h2>
+      <form id="atestadoForm">
+        <div class="form-group">
+          <label>Data do Atestado</label>
+          <input type="date" id="atestadoData" required>
+        </div>
+        <div class="form-group">
+          <label>CID / Motivo</label>
+          <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica / Atestado 1 dia">
+        </div>
+        <button type="submit" class="btn-secondary">Enviar Atestado</button>
+      </form>
+    </div>
+
+    <!-- MÓDULO GERENTE: APROVAÇÕES, CADASTROS E BANCO DE HORAS -->
     <div id="adminSection" class="card hidden">
-      <h2>Painel do Gerente: Cadastrar Colaborador</h2>
-      <form id="cadastroForm">
+      <h2>Painel do Gerente</h2>
+      
+      <!-- Cadastrar Colaborador -->
+      <h3>Cadastrar Colaborador</h3>
+      <form id="cadastroForm" style="margin-bottom: 24px;">
         <div class="form-group">
           <label>Nome Completo</label>
           <input type="text" id="cadNome" required>
@@ -125,25 +152,63 @@
         </div>
         <button type="submit">Cadastrar Usuário</button>
       </form>
+
+      <hr style="margin: 20px 0;">
+
+      <!-- Relatório de Banco de Horas -->
+      <h3>Relatório de Cálculo de Horas / Banco de Horas</h3>
+      <div class="flex-gap" style="margin-bottom: 12px;">
+        <div style="flex:1">
+          <label>Data Início</label>
+          <input type="date" id="relDataInicio">
+        </div>
+        <div style="flex:1">
+          <label>Data Fim</label>
+          <input type="date" id="relDataFim">
+        </div>
+      </div>
+      <button onclick="gerarRelatorioHoras()" style="margin-bottom: 12px;">Calcular Banco de Horas</button>
+      <button onclick="exportarRelatorioCSV()" class="btn-secondary" style="margin-bottom: 12px;">Exportar Relatório (CSV)</button>
+
+      <table id="tabelaRelatorio">
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>Trabalhadas</th>
+            <th>Esperadas</th>
+            <th>Abonadas</th>
+            <th>Saldo Banco de Horas</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
-    <!-- MÓDULO: RELATÓRIOS E HISTÓRICO -->
+    <!-- MÓDULO: HISTÓRICO E SOLICITAÇÕES -->
     <div class="card">
-      <h2>Histórico e Relatórios</h2>
+      <h2>Histórico e Registros</h2>
       <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 12px;">Atualizar Dados</button>
       
-      <h3>Pontos Registrados</h3>
-      <table id="tabelaPontos">
+      <h3>Solicitações de Folgas</h3>
+      <table id="tabelaFolgas">
         <thead>
-          <tr><th>Nome</th><th>Data e Hora</th><th>Tipo</th></tr>
+          <tr><th>Nome</th><th>Data</th><th>Motivo</th><th>Status</th><th>Ação (Gerente)</th></tr>
         </thead>
         <tbody></tbody>
       </table>
 
-      <h3 style="margin-top: 20px;">Solicitações de Folgas</h3>
-      <table id="tabelaFolgas">
+      <h3 style="margin-top: 20px;">Atestados Registrados</h3>
+      <table id="tabelaAtestados">
         <thead>
-          <tr><th>Nome</th><th>Data</th><th>Motivo</th><th>Status</th></tr>
+          <tr><th>Nome</th><th>Data</th><th>Motivo</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <h3 style="margin-top: 20px;">Pontos Registrados</h3>
+      <table id="tabelaPontos">
+        <thead>
+          <tr><th>Nome</th><th>Data e Hora</th><th>Tipo</th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -153,47 +218,44 @@
 </div>
 
 <script>
-  // COLE A URL GERADA NA IMPLANTAÇÃO DENTRO DAS ASPAS ABAIXO:
   const API_URL = "https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei/exec"; 
 
   let currentUser = null;
+  let relatorioUltimoResultado = [];
 
-  // Relógio Digital
   setInterval(() => {
     const now = new Date();
     document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
   }, 1000);
 
-  // Requisição Fetch
-   async function apiCall(data) {
+  async function apiCall(data) {
     try {
       const response = await fetch(API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(data)
       });
       return await response.json();
     } catch (err) {
-      alert("Falha na comunicação com o backend. Verifique a URL e as permissões de acesso do Apps Script.");
+      alert("Erro na conexão com o Apps Script.");
       console.error(err);
     }
   }
 
-  // Action: Login
+  // Login
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = document.getElementById("loginEmail").value;
-    const senha = document.getElementById("loginSenha").value;
-
-    const res = await apiCall({ action: "login", email, senha });
+    const res = await apiCall({ 
+      action: "login", 
+      email: document.getElementById("loginEmail").value, 
+      senha: document.getElementById("loginSenha").value 
+    });
 
     if (res && res.status === "sucesso") {
       currentUser = res.user;
       iniciarSessao();
     } else {
-      alert(res ? res.message : "Erro na autenticação.");
+      alert(res ? res.message : "Erro no login.");
     }
   });
 
@@ -215,78 +277,136 @@
     location.reload();
   }
 
-  // Action: Registrar Ponto
+  // Registros
   async function baterPonto(tipo) {
-    if (!confirm(`Confirmar registro de ponto: ${tipo}?`)) return;
-
-    const res = await apiCall({
-      action: "registrarPonto",
-      id_usuario: currentUser.id,
-      nome: currentUser.nome,
-      tipo: tipo
-    });
-
+    if (!confirm(`Confirmar ponto: ${tipo}?`)) return;
+    const res = await apiCall({ action: "registrarPonto", id_usuario: currentUser.id, nome: currentUser.nome, tipo });
     if (res) alert(res.message);
     carregarHistorico();
   }
 
-  // Action: Solicitar Folga
   document.getElementById("folgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const data = document.getElementById("folgaData").value;
-    const motivo = document.getElementById("folgaMotivo").value;
-
     const res = await apiCall({
       action: "solicitarFolga",
       id_usuario: currentUser.id,
       nome: currentUser.nome,
-      data,
-      motivo
+      data: document.getElementById("folgaData").value,
+      motivo: document.getElementById("folgaMotivo").value
     });
-
     if (res) alert(res.message);
     document.getElementById("folgaForm").reset();
     carregarHistorico();
   });
 
-  // Action: Cadastrar Usuário
-  document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
+  document.getElementById("atestadoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const nome = document.getElementById("cadNome").value;
-    const email = document.getElementById("cadEmail").value;
-    const senha = document.getElementById("cadSenha").value;
-    const funcao = document.getElementById("cadFuncao").value;
-
     const res = await apiCall({
-      action: "cadastrarUsuario",
-      nome, email, senha, funcao
+      action: "registrarAtestado",
+      id_usuario: currentUser.id,
+      nome: currentUser.nome,
+      data: document.getElementById("atestadoData").value,
+      motivo: document.getElementById("atestadoMotivo").value
     });
-
     if (res) alert(res.message);
-    if (res && res.status === "sucesso") {
-      document.getElementById("cadastroForm").reset();
-    }
+    document.getElementById("atestadoForm").reset();
+    carregarHistorico();
   });
 
-  // Action: Carregar Histórico
-  async function carregarHistorico() {
+  document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
     const res = await apiCall({
-      action: "obterHistorico",
-      id_usuario: currentUser.id,
-      funcao: currentUser.funcao
+      action: "cadastrarUsuario",
+      nome: document.getElementById("cadNome").value,
+      email: document.getElementById("cadEmail").value,
+      senha: document.getElementById("cadSenha").value,
+      funcao: document.getElementById("cadFuncao").value
     });
+    if (res) alert(res.message);
+    if (res && res.status === "sucesso") document.getElementById("cadastroForm").reset();
+  });
+
+  // Aceitar / Negar Folgas
+  async function responderFolga(idFolga, status) {
+    const res = await apiCall({ action: "responderFolga", id_folga: idFolga, status });
+    if (res) alert(res.message);
+    carregarHistorico();
+  }
+
+  // Carregar Histórico
+  async function carregarHistorico() {
+    const res = await apiCall({ action: "obterHistorico", id_usuario: currentUser.id, funcao: currentUser.funcao });
 
     if (res && res.status === "sucesso") {
-      const tbodyPontos = document.querySelector("#tabelaPontos tbody");
-      tbodyPontos.innerHTML = res.pontos.map(p => 
+      // Tabela de Pontos
+      document.querySelector("#tabelaPontos tbody").innerHTML = res.pontos.map(p => 
         `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
       ).join('');
 
-      const tbodyFolgas = document.querySelector("#tabelaFolgas tbody");
-      tbodyFolgas.innerHTML = res.folgas.map(f => 
-        `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${f.status}</td></tr>`
+      // Tabela de Atestados
+      document.querySelector("#tabelaAtestados tbody").innerHTML = res.atestados.map(a => 
+        `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
       ).join('');
+
+      // Tabela de Folgas com Botões para o Gerente
+      document.querySelector("#tabelaFolgas tbody").innerHTML = res.folgas.map(f => {
+        let acoes = "--";
+        if (currentUser.funcao === "admin" && f.status === "Pendente") {
+          acoes = `
+            <button class="btn-success" onclick="responderFolga(${f.id_folga}, 'Aprovado')">Aceitar</button>
+            <button class="btn-danger" onclick="responderFolga(${f.id_folga}, 'Negado')">Negar</button>
+          `;
+        }
+        return `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${f.status}</td><td>${acoes}</td></tr>`;
+      }).join('');
     }
+  }
+
+  // Gerar e Exportar Relatórios
+  async function gerarRelatorioHoras() {
+    const dataInicio = document.getElementById("relDataInicio").value;
+    const dataFim = document.getElementById("relDataFim").value;
+
+    if (!dataInicio || !dataFim) {
+      alert("Selecione a data de início e fim do relatório.");
+      return;
+    }
+
+    const res = await apiCall({ action: "gerarRelatorioHoras", dataInicio, dataFim, id_usuario: "todos" });
+
+    if (res && res.status === "sucesso") {
+      relatorioUltimoResultado = res.relatorio;
+      document.querySelector("#tabelaRelatorio tbody").innerHTML = res.relatorio.map(r => {
+        const saldoClass = parseFloat(r.saldo) >= 0 ? "saldo-positivo" : "saldo-negativo";
+        return `<tr>
+          <td>${r.nome}</td>
+          <td>${r.horasTrabalhadas}h</td>
+          <td>${r.horasEsperadas}h</td>
+          <td>${r.horasAbonadas}h</td>
+          <td class="${saldoClass}">${r.saldo}h</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  function exportarRelatorioCSV() {
+    if (relatorioUltimoResultado.length === 0) {
+      alert("Gere o relatório primeiro antes de exportar.");
+      return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,Colaborador,Horas Trabalhadas,Horas Esperadas,Horas Abonadas,Saldo Banco de Horas\n";
+    relatorioUltimoResultado.forEach(r => {
+      csvContent += `${r.nome},${r.horasTrabalhadas},${r.horasEsperadas},${r.horasAbonadas},${r.saldo}\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Relatorio_Banco_de_Horas.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 </script>
 
