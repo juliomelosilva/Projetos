@@ -7,7 +7,7 @@
   <style>
     :root {
       --primary: #af09fc;
-      --primary-hover: #7919a5;
+      --primary-hover: #a51919;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #1e293b;
@@ -165,12 +165,7 @@
   }, 1000);
 
   // Requisição Fetch
-  async function apiCall(data) {
-    if (!API_URL || API_URL === "https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei/exec") {
-      alert("Insira a URL do Apps Script na variável API_URL do arquivo HTML.");
-      return;
-    }
-    
+   async function apiCall(data) {
     try {
       const response = await fetch(API_URL, {
         method: "POST",
