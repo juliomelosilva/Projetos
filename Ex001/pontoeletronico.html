@@ -120,7 +120,52 @@
     <!-- PAINEL EXCLUSIVO DO GERENTE -->
     <div id="adminSection" class="hidden">
       
-      <!-- Registro de Folga (EXCLUSIVO GERENTE) -->
+      <!-- Registro de Viagem (NOVA ABA) -->
+      <div class="card">
+        <div class="accordion-header" onclick="toggleAccordion('viagemContent', 'viagemIcon')">
+          <h2>Painel do Gerente: Registro de Viagem</h2>
+          <span id="viagemIcon" class="accordion-icon">+</span>
+        </div>
+        <div id="viagemContent" class="accordion-content hidden">
+          <form id="registroViagemForm">
+            <div class="form-group">
+              <label>Selecione o Colaborador</label>
+              <select id="viagemColaboradorSelect" class="dinamico-usuarios" required></select>
+            </div>
+            <div class="form-group">
+              <label>Cliente / Destino</label>
+              <input type="text" id="viagemCliente" required placeholder="Ex: Cliente ABC - São Paulo">
+            </div>
+            <div class="flex-gap">
+              <div class="form-group" style="flex: 1; min-width: 140px;">
+                <label>Data de Saída</label>
+                <input type="date" id="viagemDataSaida" required>
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 100px;">
+                <label>Hora de Saída</label>
+                <input type="time" id="viagemHoraSaida" required>
+              </div>
+            </div>
+            <div class="flex-gap">
+              <div class="form-group" style="flex: 1; min-width: 140px;">
+                <label>Data de Chegada</label>
+                <input type="date" id="viagemDataChegada" required>
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 100px;">
+                <label>Hora de Chegada</label>
+                <input type="time" id="viagemHoraChegada" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Anexo de Imagens / Comprovantes</label>
+              <input type="file" id="viagemAnexo" accept="image/*" multiple>
+            </div>
+            <button type="submit">Lançar Viagem e Adicionar Horas</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Registro de Folga -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('folgaContent', 'folgaIcon')">
           <h2>Painel do Gerente: Registro de Folga</h2>
@@ -138,8 +183,8 @@
                 <input type="date" id="folgaData" required>
               </div>
               <div class="form-group" style="flex: 1; min-width: 100px;">
-                <label>Horas Concedidas</label>
-                <input type="number" step="0.25" id="folgaHoras" min="0.25" required placeholder="Ex: 8 ou 4.5">
+                <label>Horas Abatidas (Ex: 0.25 para 15m, 1 ou 8)</label>
+                <input type="number" step="0.01" id="folgaHoras" min="0.01" required placeholder="Ex: 0.25, 1, 8">
               </div>
             </div>
             <div class="form-group">
@@ -151,7 +196,7 @@
         </div>
       </div>
 
-      <!-- Lançamento de Atestados (EXCLUSIVO GERENTE) -->
+      <!-- Lançamento de Atestados -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('atestadoContent', 'atestadoIcon')">
           <h2>Painel do Gerente: Registrar Atestado Médico</h2>
@@ -279,7 +324,8 @@
                   <th>Trabalhadas</th>
                   <th>Esperadas</th>
                   <th>Abonadas</th>
-                  <th>Ajustes Manuais</th>
+                  <th>Folgas/Deduções</th>
+                  <th>Ajustes/Viagens</th>
                   <th>Saldo Final</th>
                 </tr>
               </thead>
@@ -301,12 +347,22 @@
       </div>
 
       <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 16px;">Atualizar Registros</button>
+
+      <h3>Viagens Registradas</h3>
+      <div class="table-responsive">
+        <table id="tabelaViagens">
+          <thead>
+            <tr><th>Nome</th><th>Cliente</th><th>Saída</th><th>Chegada</th><th>Tempo Contabilizado</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
       
-      <h3>Registro de Folgas</h3>
+      <h3 style="margin-top: 20px;">Registro de Folgas</h3>
       <div class="table-responsive">
         <table id="tabelaFolgas">
           <thead>
-            <tr><th>Nome</th><th>Data</th><th>Horas Recebidas</th><th>Observação</th></tr>
+            <tr><th>Nome</th><th>Data</th><th>Horas Abatidas</th><th>Observação</th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -352,7 +408,7 @@
 
   let currentUser = null;
   let relatorioUltimoResultado = [];
-  let historicoCache = { pontos: [], folgas: [], atestados: [] };
+  let historicoCache = { pontos: [], folgas: [], atestados: [], viagens: [] };
   let usuariosCache = [];
 
   setInterval(() => {
@@ -369,6 +425,26 @@
     } else {
       content.classList.add("hidden");
       icon.innerText = "+";
+    }
+  }
+
+  function formatarDuracaoHoras(horasDecimal) {
+    let num = parseFloat(horasDecimal);
+    if (isNaN(num) || num === 0) return "--";
+
+    let sinal = num < 0 ? "-" : "";
+    num = Math.abs(num);
+
+    let totalMinutos = Math.round(num * 60);
+    let hrs = Math.floor(totalMinutos / 60);
+    let mins = totalMinutos % 60;
+
+    if (hrs === 0) {
+      return `${sinal}${mins} min`;
+    } else if (mins === 0) {
+      return `${sinal}${hrs}h`;
+    } else {
+      return `${sinal}${hrs}h ${mins}min`;
     }
   }
 
@@ -505,6 +581,47 @@
     carregarHistorico();
   }
 
+  // Registro de Viagem
+  document.getElementById("registroViagemForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const idUsuario = document.getElementById("viagemColaboradorSelect").value;
+    const userObj = usuariosCache.find(u => String(u.id) === String(idUsuario));
+
+    if (!userObj) {
+      alert("Selecione um colaborador válido.");
+      return;
+    }
+
+    const dataSaida = document.getElementById("viagemDataSaida").value;
+    const horaSaida = document.getElementById("viagemHoraSaida").value;
+    const dataChegada = document.getElementById("viagemDataChegada").value;
+    const horaChegada = document.getElementById("viagemHoraChegada").value;
+
+    const start = new Date(`${dataSaida}T${horaSaida}`);
+    const end = new Date(`${dataChegada}T${horaChegada}`);
+
+    if (end <= start) {
+      alert("A data e hora de chegada devem ser posteriores à saída.");
+      return;
+    }
+
+    const diffHoras = (end - start) / (1000 * 60 * 60);
+
+    const res = await apiCall({
+      action: "registrarViagem",
+      id_usuario: idUsuario,
+      nome: userObj.nome,
+      cliente: document.getElementById("viagemCliente").value,
+      saida: `${dataSaida} ${horaSaida}`,
+      chegada: `${dataChegada} ${horaChegada}`,
+      horasTotal: diffHoras
+    });
+
+    if (res) alert(res.message);
+    document.getElementById("registroViagemForm").reset();
+    carregarHistorico();
+  });
+
   document.getElementById("registroFolgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const idUsuario = document.getElementById("folgaColaboradorSelect").value;
@@ -577,7 +694,6 @@
       return;
     }
 
-    // Se o tipo for retirar, envia o valor negativo para o cálculo no backend
     if (tipoAjuste === "retirar") {
       qtdHoras = -Math.abs(qtdHoras);
     }
@@ -627,7 +743,12 @@
     });
 
     if (res && res.status === "sucesso") {
-      historicoCache = { pontos: res.pontos, folgas: res.folgas, atestados: res.atestados };
+      historicoCache = { 
+        pontos: res.pontos || [], 
+        folgas: res.folgas || [], 
+        atestados: res.atestados || [],
+        viagens: res.viagens || []
+      };
       renderizarTabelasFiltradas();
     }
   }
@@ -635,26 +756,39 @@
   function renderizarTabelasFiltradas() {
     const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
 
+    // Viagens
+    const viagensFiltradas = historicoCache.viagens.filter(v => filtro === "todos" || String(v.id_usuario) === String(filtro));
+    document.querySelector("#tabelaViagens tbody").innerHTML = viagensFiltradas.length > 0 ? viagensFiltradas.map(v => 
+      `<tr>
+        <td>${v.nome}</td>
+        <td>${v.cliente}</td>
+        <td>${formatarDataExtensaPTBR(v.saida)}</td>
+        <td>${formatarDataExtensaPTBR(v.chegada)}</td>
+        <td>+${formatarDuracaoHoras(v.horasTotal)}</td>
+      </tr>`
+    ).join('') : `<tr><td colspan="5">Nenhum registro encontrado</td></tr>`;
+
     // Pontos
     const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
-    document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.map(p => 
+    document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.length > 0 ? pontosFiltrados.map(p => 
       `<tr><td>${p.nome}</td><td>${formatarDataExtensaPTBR(p.dataHora)}</td><td>${p.tipo}</td></tr>`
-    ).join('');
+    ).join('') : `<tr><td colspan="3">Nenhum registro encontrado</td></tr>`;
 
     // Atestados
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
-    document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => {
+    document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.length > 0 ? atestadosFiltrados.map(a => {
       const dataInicioFormatada = formatarDataExtensaPTBR(a.dataHoraRegistro || a.data);
       const dataFinalFormatada = calcularDataFinal(a.data, a.dias || 1);
       return `<tr><td>${a.nome}</td><td>${dataInicioFormatada}</td><td>${dataFinalFormatada}</td><td>${a.dias || 1} dia(s)</td><td>${a.motivo}</td></tr>`;
-    }).join('');
+    }).join('') : `<tr><td colspan="5">Nenhum registro encontrado</td></tr>`;
 
     // Folgas
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
-    document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
+    document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.length > 0 ? folgasFiltradas.map(f => {
       const dataFormatada = formatarDataExtensaPTBR(f.data, false);
-      return `<tr><td>${f.nome}</td><td>${dataFormatada}</td><td>${f.horas || '--'} h</td><td>${f.motivo}</td></tr>`;
-    }).join('');
+      const horasFormatadas = formatarDuracaoHoras(f.horas);
+      return `<tr><td>${f.nome}</td><td>${dataFormatada}</td><td>${horasFormatadas}</td><td>${f.motivo}</td></tr>`;
+    }).join('') : `<tr><td colspan="4">Nenhum registro encontrado</td></tr>`;
   }
 
   async function gerarRelatorioHoras() {
@@ -672,14 +806,18 @@
     if (res && res.status === "sucesso") {
       relatorioUltimoResultado = res.relatorio;
       document.querySelector("#tabelaRelatorio tbody").innerHTML = res.relatorio.map(r => {
-        const saldoClass = parseFloat(r.saldo) >= 0 ? "saldo-positivo" : "saldo-negativo";
+        const saldoVal = parseFloat(r.saldo);
+        const saldoClass = saldoVal >= 0 ? "saldo-positivo" : "saldo-negativo";
+        const saldoTxt = formatarDuracaoHoras(r.saldo);
+
         return `<tr>
           <td>${r.nome}</td>
-          <td>${r.horasTrabalhadas}h</td>
-          <td>${r.horasEsperadas}h</td>
-          <td>${r.horasAbonadas}h</td>
-          <td>${r.ajustes}h</td>
-          <td class="${saldoClass}">${r.saldo}h</td>
+          <td>${formatarDuracaoHoras(r.horasTrabalhadas)}</td>
+          <td>${formatarDuracaoHoras(r.horasEsperadas)}</td>
+          <td>${formatarDuracaoHoras(r.horasAbonadas)}</td>
+          <td>${formatarDuracaoHoras(r.horasFolgas)}</td>
+          <td>${formatarDuracaoHoras(r.ajustes)}</td>
+          <td class="${saldoClass}">${saldoTxt}</td>
         </tr>`;
       }).join('');
     }
@@ -691,9 +829,9 @@
       return;
     }
 
-    let csvContent = "data:text/csv;charset=utf-8,Colaborador,Horas Trabalhadas,Horas Esperadas,Horas Abonadas,Ajustes Manuais,Saldo Final\n";
+    let csvContent = "data:text/csv;charset=utf-8,Colaborador,Horas Trabalhadas,Horas Esperadas,Horas Abonadas,Folgas,Ajustes e Viagens,Saldo Final\n";
     relatorioUltimoResultado.forEach(r => {
-      csvContent += `${r.nome},${r.horasTrabalhadas},${r.horasEsperadas},${r.horasAbonadas},${r.ajustes},${r.saldo}\n`;
+      csvContent += `${r.nome},${r.horasTrabalhadas},${r.horasEsperadas},${r.horasAbonadas},${r.horasFolgas},${r.ajustes},${r.saldo}\n`;
     });
 
     const encodedUri = encodeURI(csvContent);
