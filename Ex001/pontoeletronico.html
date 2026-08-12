@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Registro de Ponto Integrado</title>
+  <title>Sistema de Registro de Ponto</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -52,17 +52,17 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="seu@email.com">
+        <input type="email" id="loginEmail" required placeholder="admin@admin.com">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required>
+        <input type="password" id="loginSenha" required placeholder="123456">
       </div>
       <button type="submit">Entrar</button>
     </form>
   </div>
 
-  <!-- PAINEL PRINCIPAL DA APLICAÇÃO -->
+  <!-- PAINEL PRINCIPAL -->
   <div id="appSection" class="hidden">
     <div class="nav-bar card">
       <div>
@@ -100,7 +100,7 @@
       </form>
     </div>
 
-    <!-- MÓDULO: EXCLUSIVO DO GERENTE (CADASTRO DE USUÁRIOS) -->
+    <!-- MÓDULO: GERENTE (CADASTRO DE USUÁRIOS) -->
     <div id="adminSection" class="card hidden">
       <h2>Painel do Gerente: Cadastrar Colaborador</h2>
       <form id="cadastroForm">
@@ -152,20 +152,9 @@
 
 </div>
 
-<!-- SCRIPT DE INTEGRAÇÃO COM O GOOGLE SHEETS -->
 <script>
-  /****************************************************************************************
-   * ⬇️ INSERÇÃO DA CONEXÃO COM A PLANILHA DO GOOGLE ⬇️
-   * 
-   * Cole dentro das aspas abaixo a URL gerada no Google Apps Script após implantar
-   * o projeto como "App da Web" (Ex: https://script.google.com/macros/s/AKfycbx.../exec)
-   ****************************************************************************************/
-  
-  const API_URL = "https://script.google.com/macros/s/AKfycbxbal1oFnSo2uQ0DKNQ5vQXn4aTIYq0DDJsfQVCqWCj5NCG2o95WTzO5MxguPN9FJct/exec"; 
-  
-  /****************************************************************************************
-   * ⬆️ FIM DA CONFIGURAÇÃO DO LINK DA PLANILHA ⬆️
-   ****************************************************************************************/
+  // COLE A URL GERADA NA IMPLANTAÇÃO DENTRO DAS ASPAS ABAIXO:
+  const API_URL = "https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei/exec"; 
 
   let currentUser = null;
 
@@ -175,26 +164,29 @@
     document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
   }, 1000);
 
-  // Função genérica de envio de dados para a Planilha
+  // Requisição Fetch
   async function apiCall(data) {
-    if (API_URL === "https://script.google.com/macros/s/AKfycbxbal1oFnSo2uQ0DKNQ5vQXn4aTIYq0DDJsfQVCqWCj5NCG2o95WTzO5MxguPN9FJct/exec" || !API_URL) {
-      alert("Atenção: Você precisa cole a URL do Apps Script no código para conectar à planilha!");
+    if (!API_URL || API_URL.includes("https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei/exec")) {
+      alert("Insira a URL do Apps Script na variável API_URL do arquivo HTML.");
       return;
     }
     
     try {
       const response = await fetch(API_URL, {
         method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
         body: JSON.stringify(data)
       });
       return await response.json();
     } catch (err) {
-      alert("Erro ao se comunicar com a planilha Google!");
+      alert("Falha na comunicação com o backend. Verifique a URL e as permissões de acesso do Apps Script.");
       console.error(err);
     }
   }
 
-  // Ação: Login
+  // Action: Login
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("loginEmail").value;
@@ -228,7 +220,7 @@
     location.reload();
   }
 
-  // Ação: Registra entrada, saída e almoço na planilha
+  // Action: Registrar Ponto
   async function baterPonto(tipo) {
     if (!confirm(`Confirmar registro de ponto: ${tipo}?`)) return;
 
@@ -243,7 +235,7 @@
     carregarHistorico();
   }
 
-  // Ação: Registra folgas/atestados na planilha
+  // Action: Solicitar Folga
   document.getElementById("folgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = document.getElementById("folgaData").value;
@@ -262,7 +254,7 @@
     carregarHistorico();
   });
 
-  // Ação: Cadastra novos usuários na planilha (Apenas Gerentes)
+  // Action: Cadastrar Usuário
   document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const nome = document.getElementById("cadNome").value;
@@ -281,7 +273,7 @@
     }
   });
 
-  // Ação: Busca os dados gravados nas abas da planilha
+  // Action: Carregar Histórico
   async function carregarHistorico() {
     const res = await apiCall({
       action: "obterHistorico",
@@ -290,13 +282,11 @@
     });
 
     if (res && res.status === "sucesso") {
-      // Exibe pontos registrados
       const tbodyPontos = document.querySelector("#tabelaPontos tbody");
       tbodyPontos.innerHTML = res.pontos.map(p => 
         `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
       ).join('');
 
-      // Exibe solicitações de folgas
       const tbodyFolgas = document.querySelector("#tabelaFolgas tbody");
       tbodyFolgas.innerHTML = res.folgas.map(f => 
         `<tr><td>${f.nome}</td><td>${f.data}</td><td>${f.motivo}</td><td>${f.status}</td></tr>`
