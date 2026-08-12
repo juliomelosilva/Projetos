@@ -79,11 +79,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="Seu E-mail">
+        <input type="email" id="loginEmail" required placeholder="admin@admin.com">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Sua Senha">
+        <input type="password" id="loginSenha" required placeholder="123456">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -321,7 +321,7 @@
 <!-- MODAL POP-UP DE NOTIFICAÇÕES -->
 <div id="modalNotificacoes" class="modal-overlay hidden">
   <div class="modal-card">
-    <div style="display:flex; justify-size: space-between; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
       <h3 style="margin:0;">Notificações e Avisos</h3>
       <button onclick="fecharModalNotificacoes()" style="width: auto; padding: 4px 8px;" class="btn-secondary">X</button>
     </div>
@@ -392,14 +392,14 @@
 
     if (currentUser.funcao === "admin") {
       document.getElementById("adminSection").classList.remove("hidden");
-      document.getElementById("notifBtn").classList.remove("hidden");
       document.getElementById("filtroHistoricoGerente").classList.remove("hidden");
-      await carregarListaUsuariosDinamica();
-    } else {
-      document.getElementById("notifBtn").classList.remove("hidden");
     }
 
-    carregarHistorico();
+    document.getElementById("notifBtn").classList.remove("hidden");
+
+    // Carrega usuários e histórico imediatamente
+    await carregarListaUsuariosDinamica();
+    await carregarHistorico();
   }
 
   function logout() {
@@ -407,10 +407,10 @@
     location.reload();
   }
 
-  // Preenche todos os <select> com os colaboradores/gerentes da empresa
+  // Carrega dinamicamente a lista de usuários em todas as caixas de seleção
   async function carregarListaUsuariosDinamica() {
     const res = await apiCall({ action: "obterUsuarios" });
-    if (res && res.status === "sucesso") {
+    if (res && res.status === "sucesso" && res.usuarios) {
       const selects = document.querySelectorAll(".dinamico-usuarios");
       
       selects.forEach(select => {
@@ -497,7 +497,7 @@
     }
   });
 
-  // Aceitar / Negar Folga (Com Justificativa OBRIGATÓRIA ao Negar)
+  // Aceitar / Negar Folga
   async function responderFolga(idFolga, status) {
     let motivoNegativa = "";
     if (status === "Negado") {
@@ -513,7 +513,7 @@
     carregarHistorico();
   }
 
-  // Notificações em Pop-up Modal
+  // Notificações
   function abrirModalNotificacoes() {
     const modal = document.getElementById("modalNotificacoes");
     const container = document.getElementById("listaNotificacoes");
@@ -537,19 +537,19 @@
         });
       }
     } else {
-      const minhasFolgas = historicoCache.folgas.filter(f => f.status !== "Pendente");
+      const minhasFolgas = historicoCache.folgas;
       if (minhasFolgas.length > 0) {
-        html += `<strong>Suas Respostas de Folga:</strong><br>`;
+        html += `<strong>Suas Solicitações de Folga:</strong><br>`;
         minhasFolgas.forEach(f => {
           let detalhe = f.status === "Negado" ? `<br><span style="color:var(--danger)">Motivo: ${f.motivoNegativa}</span>` : "";
-          html += `<div class="notif-item">📌 Sua folga para <b>${f.data}</b> foi <b>${f.status}</b>.${detalhe}</div>`;
+          html += `<div class="notif-item">📌 Folga para <b>${f.data}</b>: Status <b>${f.status}</b>.${detalhe}</div>`;
         });
       } else {
-        html = "<p class='notif-item'>Nenhuma nova notificação para exibir.</p>";
+        html = "<p class='notif-item'>Nenhuma notificação para exibir.</p>";
       }
     }
 
-    container.innerHTML = html || "<p class='notif-item'>Nenhuma nova notificação no momento.</p>";
+    container.innerHTML = html || "<p class='notif-item'>Nenhuma notificação no momento.</p>";
     modal.classList.remove("hidden");
   }
 
