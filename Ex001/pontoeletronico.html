@@ -43,6 +43,33 @@
       width: 100%;
     }
 
+    /* Estilo de Módulos Sanfona (Accordion) */
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .accordion-header h2, .accordion-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .accordion-icon {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary);
+      transition: transform 0.2s;
+    }
+
+    .accordion-content {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
     h2 { margin-bottom: 14px; color: #0f172a; font-size: 1.25rem; }
     h3 { margin-bottom: 10px; color: #334155; font-size: 1rem; }
     
@@ -71,7 +98,6 @@
     .user-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .badge { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
     
-    /* Container para permitir rolagem horizontal em telas pequenas */
     .table-responsive {
       width: 100%;
       overflow-x: auto;
@@ -89,7 +115,6 @@
     .saldo-negativo { color: var(--danger); font-weight: bold; }
     .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; }
     
-    /* Ícone de Notificação */
     .notif-container {
       position: relative;
       cursor: pointer;
@@ -121,11 +146,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="E-mail">
+        <input type="email" id="loginEmail" required placeholder="admin@admin.com">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Senha">
+        <input type="password" id="loginSenha" required placeholder="123456">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -140,7 +165,6 @@
       </div>
       
       <div style="display: flex; align-items: center; gap: 12px;">
-        <!-- Ícone de Notificação (Sino) -->
         <div id="notifBtn" class="notif-container hidden" onclick="focarSolicitacoes()" title="Solicitações Pendentes">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
           <span id="notifBadge" class="notif-badge hidden">0</span>
@@ -150,7 +174,7 @@
       </div>
     </div>
 
-    <!-- MÓDULO: REGISTRO DE PONTO -->
+    <!-- MÓDULO: REGISTRO DE PONTO (Sempre Visível) -->
     <div class="card">
       <h2>Registrar Ponto</h2>
       <p id="clock" style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: var(--primary);"></p>
@@ -162,111 +186,133 @@
       </div>
     </div>
 
-    <!-- MÓDULO: SOLICITAÇÃO DE FOLGA -->
+    <!-- MÓDULO EXPANSÍVEL: SOLICITAÇÃO DE FOLGA -->
     <div class="card">
-      <h2>Solicitação de Folga</h2>
-      <form id="folgaForm">
-        <div class="form-group">
-          <label>Data da Folga</label>
-          <input type="date" id="folgaData" required>
-        </div>
-        <div class="form-group">
-          <label>Motivo / Justificativa</label>
-          <textarea id="folgaMotivo" rows="2" required placeholder="Ex: Compensação de horas..."></textarea>
-        </div>
-        <button type="submit" class="btn-secondary">Enviar Solicitação</button>
-      </form>
+      <div class="accordion-header" onclick="toggleAccordion('folgaContent', 'folgaIcon')">
+        <h2>Solicitação de Folga</h2>
+        <span id="folgaIcon" class="accordion-icon">+</span>
+      </div>
+      <div id="folgaContent" class="accordion-content hidden">
+        <form id="folgaForm">
+          <div class="form-group">
+            <label>Data da Folga</label>
+            <input type="date" id="folgaData" required>
+          </div>
+          <div class="form-group">
+            <label>Motivo / Justificativa</label>
+            <textarea id="folgaMotivo" rows="2" required placeholder="Ex: Compensação de horas..."></textarea>
+          </div>
+          <button type="submit" class="btn-secondary">Enviar Solicitação</button>
+        </form>
+      </div>
     </div>
 
-    <!-- MÓDULO: REGISTRO DE ATESTADOS -->
+    <!-- MÓDULO EXPANSÍVEL: REGISTRO DE ATESTADOS -->
     <div class="card">
-      <h2>Registrar Atestado Médico (Abono)</h2>
-      <form id="atestadoForm">
-        <div class="form-group">
-          <label>Data do Atestado</label>
-          <input type="date" id="atestadoData" required>
-        </div>
-        <div class="form-group">
-          <label>CID / Motivo</label>
-          <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica">
-        </div>
-        <button type="submit" class="btn-secondary">Enviar Atestado</button>
-      </form>
+      <div class="accordion-header" onclick="toggleAccordion('atestadoContent', 'atestadoIcon')">
+        <h2>Registrar Atestado Médico (Abono)</h2>
+        <span id="atestadoIcon" class="accordion-icon">+</span>
+      </div>
+      <div id="atestadoContent" class="accordion-content hidden">
+        <form id="atestadoForm">
+          <div class="form-group">
+            <label>Data do Atestado</label>
+            <input type="date" id="atestadoData" required>
+          </div>
+          <div class="form-group">
+            <label>CID / Motivo</label>
+            <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica">
+          </div>
+          <button type="submit" class="btn-secondary">Enviar Atestado</button>
+        </form>
+      </div>
     </div>
 
-    <!-- MÓDULO GERENTE: CADASTRO E BANCO DE HORAS -->
-    <div id="adminSection" class="card hidden">
-      <h2>Painel do Gerente</h2>
+    <!-- MÓDULO GERENTE: CADASTRO E RELATÓRIOS (EXPANSÍVEIS) -->
+    <div id="adminSection" class="hidden">
       
-      <h3>Cadastrar Colaborador</h3>
-      <form id="cadastroForm" style="margin-bottom: 20px;">
-        <div class="form-group">
-          <label>Nome Completo</label>
-          <input type="text" id="cadNome" required>
+      <!-- Cadastrar Colaborador -->
+      <div class="card">
+        <div class="accordion-header" onclick="toggleAccordion('cadContent', 'cadIcon')">
+          <h2>Painel do Gerente: Cadastrar Colaborador</h2>
+          <span id="cadIcon" class="accordion-icon">+</span>
         </div>
-        <div class="form-group">
-          <label>E-mail</label>
-          <input type="email" id="cadEmail" required>
-        </div>
-        <div class="form-group">
-          <label>Senha Inicial</label>
-          <input type="password" id="cadSenha" required>
-        </div>
-        <div class="form-group">
-          <label>Função / Nível de Acesso</label>
-          <select id="cadFuncao">
-            <option value="user">Colaborador (Normal)</option>
-            <option value="admin">Gerente / RH</option>
-          </select>
-        </div>
-        <button type="submit">Cadastrar Usuário</button>
-      </form>
-
-      <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);">
-
-      <!-- Relatório com Seleção de Colaboradores -->
-      <h3>Relatório de Cálculo de Horas / Banco de Horas</h3>
-      <div class="form-group">
-        <label>Selecione o Colaborador</label>
-        <select id="relColaboradorSelect">
-          <option value="todos">Todos os Colaboradores</option>
-        </select>
-      </div>
-
-      <div class="flex-gap" style="margin-bottom: 12px;">
-        <div style="flex:1; min-width: 130px;">
-          <label>Data Início</label>
-          <input type="date" id="relDataInicio">
-        </div>
-        <div style="flex:1; min-width: 130px;">
-          <label>Data Fim</label>
-          <input type="date" id="relDataFim">
+        <div id="cadContent" class="accordion-content hidden">
+          <form id="cadastroForm">
+            <div class="form-group">
+              <label>Nome Completo</label>
+              <input type="text" id="cadNome" required>
+            </div>
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" id="cadEmail" required>
+            </div>
+            <div class="form-group">
+              <label>Senha Inicial</label>
+              <input type="password" id="cadSenha" required>
+            </div>
+            <div class="form-group">
+              <label>Função / Nível de Acesso</label>
+              <select id="cadFuncao">
+                <option value="user">Colaborador (Normal)</option>
+                <option value="admin">Gerente / RH</option>
+              </select>
+            </div>
+            <button type="submit">Cadastrar Usuário</button>
+          </form>
         </div>
       </div>
-      <button onclick="gerarRelatorioHoras()" style="margin-bottom: 8px;">Calcular Banco de Horas</button>
-      <button onclick="exportarRelatorioCSV()" class="btn-secondary">Exportar Relatório (CSV)</button>
 
-      <div class="table-responsive">
-        <table id="tabelaRelatorio">
-          <thead>
-            <tr>
-              <th>Colaborador</th>
-              <th>Trabalhadas</th>
-              <th>Esperadas</th>
-              <th>Abonadas</th>
-              <th>Saldo Banco de Horas</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <!-- Relatório de Banco de Horas -->
+      <div class="card">
+        <div class="accordion-header" onclick="toggleAccordion('relContent', 'relIcon')">
+          <h2>Relatório de Banco de Horas</h2>
+          <span id="relIcon" class="accordion-icon">+</span>
+        </div>
+        <div id="relContent" class="accordion-content hidden">
+          <div class="form-group">
+            <label>Selecione o Colaborador</label>
+            <select id="relColaboradorSelect">
+              <option value="todos">Todos os Colaboradores</option>
+            </select>
+          </div>
+
+          <div class="flex-gap" style="margin-bottom: 12px;">
+            <div style="flex:1; min-width: 130px;">
+              <label>Data Início</label>
+              <input type="date" id="relDataInicio">
+            </div>
+            <div style="flex:1; min-width: 130px;">
+              <label>Data Fim</label>
+              <input type="date" id="relDataFim">
+            </div>
+          </div>
+          <button onclick="gerarRelatorioHoras()" style="margin-bottom: 8px;">Calcular Banco de Horas</button>
+          <button onclick="exportarRelatorioCSV()" class="btn-secondary">Exportar Relatório (CSV)</button>
+
+          <div class="table-responsive">
+            <table id="tabelaRelatorio">
+              <thead>
+                <tr>
+                  <th>Colaborador</th>
+                  <th>Trabalhadas</th>
+                  <th>Esperadas</th>
+                  <th>Abonadas</th>
+                  <th>Saldo Banco de Horas</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
     </div>
 
-    <!-- MÓDULO: HISTÓRICO E REGISTROS -->
+    <!-- MÓDULO: HISTÓRICO E REGISTROS (Sempre Visível) -->
     <div class="card" id="historicoCard">
       <h2>Histórico e Registros</h2>
 
-      <!-- Filtro de histórico para Gerente -->
       <div id="filtroHistoricoGerente" class="form-group hidden">
         <label>Filtrar Histórico por Colaborador</label>
         <select id="histColaboradorSelect" onchange="renderizarTabelasFiltradas()">
@@ -316,12 +362,23 @@
   let currentUser = null;
   let relatorioUltimoResultado = [];
   let historicoCache = { pontos: [], folgas: [], atestados: [] };
-  let listaUsuariosGlobal = [];
 
   setInterval(() => {
     const now = new Date();
     document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
   }, 1000);
+
+  function toggleAccordion(contentId, iconId) {
+    const content = document.getElementById(contentId);
+    const icon = document.getElementById(iconId);
+    if (content.classList.contains("hidden")) {
+      content.classList.remove("hidden");
+      icon.innerText = "-";
+    } else {
+      content.classList.add("hidden");
+      icon.innerText = "+";
+    }
+  }
 
   async function apiCall(data) {
     try {
@@ -364,9 +421,9 @@
       document.getElementById("adminSection").classList.remove("hidden");
       document.getElementById("notifBtn").classList.remove("hidden");
       document.getElementById("filtroHistoricoGerente").classList.remove("hidden");
-      await carregarListaUsuarios();
     }
 
+    await carregarListaUsuarios();
     carregarHistorico();
   }
 
@@ -378,9 +435,6 @@
   async function carregarListaUsuarios() {
     const res = await apiCall({ action: "obterUsuarios" });
     if (res && res.status === "sucesso") {
-      listaUsuariosGlobal = res.usuarios;
-      
-      // Preenche os Selects de filtro
       const selectRel = document.getElementById("relColaboradorSelect");
       const selectHist = document.getElementById("histColaboradorSelect");
 
@@ -456,14 +510,12 @@
     document.getElementById("historicoCard").scrollIntoView({ behavior: 'smooth' });
   }
 
-  // Carregar Histórico
   async function carregarHistorico() {
     const res = await apiCall({ action: "obterHistorico", id_usuario: currentUser.id, funcao: currentUser.funcao });
 
     if (res && res.status === "sucesso") {
       historicoCache = { pontos: res.pontos, folgas: res.folgas, atestados: res.atestados };
 
-      // Atualiza Badge de Notificações
       if (currentUser.funcao === "admin") {
         const notifBadge = document.getElementById("notifBadge");
         if (res.pendentesCount > 0) {
@@ -481,19 +533,16 @@
   function renderizarTabelasFiltradas() {
     const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
 
-    // Filtrar Pontos
     const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
     document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.map(p => 
       `<tr><td>${p.nome}</td><td>${p.dataHora}</td><td>${p.tipo}</td></tr>`
     ).join('');
 
-    // Filtrar Atestados
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
     document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => 
       `<tr><td>${a.nome}</td><td>${a.data}</td><td>${a.motivo}</td></tr>`
     ).join('');
 
-    // Filtrar Folgas
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
     document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
       let acoes = "--";
@@ -507,7 +556,6 @@
     }).join('');
   }
 
-  // Gerar e Exportar Relatórios
   async function gerarRelatorioHoras() {
     const dataInicio = document.getElementById("relDataInicio").value;
     const dataFim = document.getElementById("relDataFim").value;
