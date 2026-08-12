@@ -22,7 +22,6 @@
     .container { width: 100%; max-width: 800px; margin: 0 auto; }
     .card { background: var(--card-bg); padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid var(--border); width: 100%; }
 
-    /* Accordion */
     .accordion-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
     .accordion-header h2, .accordion-header h3 { margin: 0; font-size: 1.1rem; }
     .accordion-icon { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
@@ -55,57 +54,39 @@
     .saldo-positivo { color: var(--success); font-weight: bold; }
     .saldo-negativo { color: var(--danger); font-weight: bold; }
     .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; }
-    
-    /* Notificações */
-    .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
-    .notif-badge { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
-
-    /* Modal Pop-up */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index: 1000; }
-    .modal-card { background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
-    .notif-item { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .notif-item:last-child { border-bottom: none; }
   </style>
 </head>
 <body>
 
 <div class="container">
 
-  <!-- TELA DE LOGIN -->
+  <!-- LOGIN -->
   <div id="loginSection" class="card">
     <h2>Acesso ao Sistema</h2>
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="E-mail">
+        <input type="email" id="loginEmail" required placeholder="Teu E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Senha">
+        <input type="password" id="loginSenha" required placeholder="Tua Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
   </div>
 
-  <!-- PAINEL PRINCIPAL -->
+  <!-- APLICAÇÃO -->
   <div id="appSection" class="hidden">
     <div class="nav-bar card">
       <div class="user-info">
         <strong id="userNome">--</strong> 
         <span id="userBadge" class="badge">--</span>
       </div>
-      
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div id="notifBtn" class="notif-container hidden" onclick="abrirModalNotificacoes()" title="Notificações">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          <span id="notifBadge" class="notif-badge hidden">0</span>
-        </div>
-        
-        <button onclick="logout()" class="btn-secondary" style="width: auto; padding: 6px 12px;">Sair</button>
-      </div>
+      <button onclick="logout()" class="btn-secondary" style="width: auto; padding: 6px 12px;">Sair</button>
     </div>
 
-    <!-- MÓDULO: REGISTRO DE PONTO -->
+    <!-- REGISTRO DE PONTO -->
     <div class="card">
       <h2>Registrar Ponto</h2>
       <p id="clock" style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: var(--primary);"></p>
@@ -117,10 +98,10 @@
       </div>
     </div>
 
-    <!-- PAINEL EXCLUSIVO DO GERENTE -->
+    <!-- PAINEL GERENTE -->
     <div id="adminSection" class="hidden">
       
-      <!-- Registro de Viagem (NOVA ABA) -->
+      <!-- Registro de Viagem -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('viagemContent', 'viagemIcon')">
           <h2>Painel do Gerente: Registro de Viagem</h2>
@@ -183,13 +164,13 @@
                 <input type="date" id="folgaData" required>
               </div>
               <div class="form-group" style="flex: 1; min-width: 100px;">
-                <label>Horas Abatidas (Ex: 0.25 para 15m, 1 ou 8)</label>
+                <label>Horas Abatidas (Ex: 0.25 para 15m, 1.5 para 1h30m)</label>
                 <input type="number" step="0.01" id="folgaHoras" min="0.01" required placeholder="Ex: 0.25, 1, 8">
               </div>
             </div>
             <div class="form-group">
               <label>Observação / Justificativa</label>
-              <input type="text" id="folgaMotivo" required placeholder="Ex: Compensação de banco de horas">
+              <input type="text" id="folgaMotivo" required placeholder="Ex: Compensação de horas">
             </div>
             <button type="submit">Lançar Folga</button>
           </form>
@@ -215,7 +196,7 @@
               </div>
               <div class="form-group" style="flex: 1; min-width: 100px;">
                 <label>Qtd. Dias</label>
-                <input type="number" id="atestadoDias" min="1" value="1" required placeholder="Ex: 3">
+                <input type="number" id="atestadoDias" min="1" value="1" required>
               </div>
             </div>
             <div class="form-group">
@@ -227,7 +208,7 @@
         </div>
       </div>
 
-      <!-- Cadastrar Colaborador -->
+      <!-- Cadastrar Usuário -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('cadContent', 'cadIcon')">
           <h2>Cadastrar Novo Usuário</h2>
@@ -259,7 +240,7 @@
         </div>
       </div>
 
-      <!-- Lançamento / Ajuste Manual de Horas -->
+      <!-- Ajuste Manual -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('ajusteContent', 'ajusteIcon')">
           <h2>Ajuste Manual de Banco de Horas</h2>
@@ -274,8 +255,8 @@
             <div class="form-group">
               <label>Tipo de Ajuste</label>
               <select id="ajusteTipo" required>
-                <option value="adicionar">Adicionar Horas (Soma ao Saldo Atual)</option>
-                <option value="retirar">Retirar Horas (Subtrai do Saldo Atual)</option>
+                <option value="adicionar">Adicionar Horas</option>
+                <option value="retirar">Retirar Horas</option>
               </select>
             </div>
             <div class="form-group">
@@ -284,7 +265,7 @@
             </div>
             <div class="form-group">
               <label>Motivo / Justificativa</label>
-              <input type="text" id="ajusteMotivo" required placeholder="Ex: Ajuste acordado de horas faltantes">
+              <input type="text" id="ajusteMotivo" required placeholder="Ex: Ajuste de acerto prévio">
             </div>
             <button type="submit">Aplicar Ajuste</button>
           </form>
@@ -325,7 +306,7 @@
                   <th>Esperadas</th>
                   <th>Abonadas</th>
                   <th>Folgas/Deduções</th>
-                  <th>Ajustes/Viagens</th>
+                  <th>Viagens/Ajustes</th>
                   <th>Saldo Final</th>
                 </tr>
               </thead>
@@ -337,7 +318,7 @@
 
     </div>
 
-    <!-- MÓDULO: HISTÓRICO E REGISTROS -->
+    <!-- HISTÓRICO E REGISTROS -->
     <div class="card" id="historicoCard">
       <h2>Histórico e Registros</h2>
 
@@ -352,7 +333,7 @@
       <div class="table-responsive">
         <table id="tabelaViagens">
           <thead>
-            <tr><th>Nome</th><th>Cliente</th><th>Saída</th><th>Chegada</th><th>Tempo Contabilizado</th></tr>
+            <tr><th>Nome</th><th>Cliente</th><th>Saída</th><th>Chegada</th><th>Horas Adicionadas</th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -362,7 +343,7 @@
       <div class="table-responsive">
         <table id="tabelaFolgas">
           <thead>
-            <tr><th>Nome</th><th>Data</th><th>Horas Abatidas</th><th>Observação</th></tr>
+            <tr><th>Nome</th><th>Data</th><th>Tempo Abatido</th><th>Observação</th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -388,22 +369,13 @@
         </table>
       </div>
     </div>
+
   </div>
 
-</div>
-
-<!-- MODAL POP-UP DE NOTIFICAÇÕES -->
-<div id="modalNotificacoes" class="modal-overlay hidden">
-  <div class="modal-card">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h3 style="margin:0;">Notificações e Avisos</h3>
-      <button onclick="fecharModalNotificacoes()" style="width: auto; padding: 4px 8px;" class="btn-secondary">X</button>
-    </div>
-    <div id="listaNotificacoes"></div>
-  </div>
 </div>
 
 <script>
+  // ATENÇÃO: Cole a URL da sua implantação do Apps Script abaixo:
   const API_URL = "https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei/exec"; 
 
   let currentUser = null;
@@ -428,6 +400,7 @@
     }
   }
 
+  // Converte decimal (0.25, 1.5, 8) para texto inteligente (15 min, 1h 30min, 8h)
   function formatarDuracaoHoras(horasDecimal) {
     let num = parseFloat(horasDecimal);
     if (isNaN(num) || num === 0) return "--";
@@ -450,7 +423,6 @@
 
   function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
     if (!dataStr) return "--";
-
     let dataObj;
 
     if (typeof dataStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataStr.trim())) {
@@ -475,7 +447,6 @@
     if (incluirHora) {
       const horas = String(dataObj.getHours()).padStart(2, '0');
       const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-      
       if (horas !== "00" || minutos !== "00") {
         resultado += ` - ${horas}:${minutos}`;
       }
@@ -486,13 +457,13 @@
 
   function calcularDataFinal(dataInicioStr, dias) {
     if (!dataInicioStr) return "--";
-    
-    let dataObj;
-    if (typeof dataInicioStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dataInicioStr.trim())) {
-      const partes = dataInicioStr.trim().split("-");
-      dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
-    } else {
-      dataObj = new Date(dataInicioStr);
+    let dataObj = new Date(dataInicioStr);
+
+    if (isNaN(dataObj.getTime())) {
+      const partes = String(dataInicioStr).trim().split(" ")[0].split("-");
+      if (partes.length === 3) {
+        dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+      }
     }
 
     if (isNaN(dataObj.getTime())) return "--";
@@ -544,8 +515,6 @@
       document.getElementById("filtroHistoricoGerente").classList.remove("hidden");
     }
 
-    document.getElementById("notifBtn").classList.remove("hidden");
-
     await carregarListaUsuariosDinamica();
     await carregarHistorico();
   }
@@ -581,7 +550,7 @@
     carregarHistorico();
   }
 
-  // Registro de Viagem
+  // Viagem
   document.getElementById("registroViagemForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const idUsuario = document.getElementById("viagemColaboradorSelect").value;
@@ -622,6 +591,7 @@
     carregarHistorico();
   });
 
+  // Folga
   document.getElementById("registroFolgaForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const idUsuario = document.getElementById("folgaColaboradorSelect").value;
@@ -640,11 +610,13 @@
       horas: document.getElementById("folgaHoras").value,
       motivo: document.getElementById("folgaMotivo").value
     });
+
     if (res) alert(res.message);
     document.getElementById("registroFolgaForm").reset();
     carregarHistorico();
   });
 
+  // Atestado
   document.getElementById("atestadoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const idUsuario = document.getElementById("atestadoColaboradorSelect").value;
@@ -663,6 +635,7 @@
       dias: document.getElementById("atestadoDias").value,
       motivo: document.getElementById("atestadoMotivo").value
     });
+
     if (res) alert(res.message);
     document.getElementById("atestadoForm").reset();
     carregarHistorico();
@@ -677,6 +650,7 @@
       senha: document.getElementById("cadSenha").value,
       funcao: document.getElementById("cadFuncao").value
     });
+
     if (res) alert(res.message);
     if (res && res.status === "sucesso") {
       document.getElementById("cadastroForm").reset();
@@ -712,29 +686,6 @@
     }
   });
 
-  function abrirModalNotificacoes() {
-    const modal = document.getElementById("modalNotificacoes");
-    const container = document.getElementById("listaNotificacoes");
-    let html = "";
-
-    const ultimosPontos = historicoCache.pontos.slice(0, 5);
-    if (ultimosPontos.length > 0) {
-      html += `<strong>Últimos Registros de Ponto:</strong><br>`;
-      ultimosPontos.forEach(p => {
-        html += `<div class="notif-item">🕒 <b>${p.nome}</b> registrou <b>${p.tipo}</b> em ${formatarDataExtensaPTBR(p.dataHora)}</div>`;
-      });
-    } else {
-      html = "<p class='notif-item'>Nenhuma notificação para exibir.</p>";
-    }
-
-    container.innerHTML = html;
-    modal.classList.remove("hidden");
-  }
-
-  function fecharModalNotificacoes() {
-    document.getElementById("modalNotificacoes").classList.add("hidden");
-  }
-
   async function carregarHistorico() {
     const res = await apiCall({ 
       action: "obterHistorico", 
@@ -754,7 +705,7 @@
   }
 
   function renderizarTabelasFiltradas() {
-    const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
+    const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : String(currentUser.id);
 
     // Viagens
     const viagensFiltradas = historicoCache.viagens.filter(v => filtro === "todos" || String(v.id_usuario) === String(filtro));
@@ -766,7 +717,7 @@
         <td>${formatarDataExtensaPTBR(v.chegada)}</td>
         <td>+${formatarDuracaoHoras(v.horasTotal)}</td>
       </tr>`
-    ).join('') : `<tr><td colspan="5">Nenhum registro encontrado</td></tr>`;
+    ).join('') : `<tr><td colspan="5">Nenhum registro de viagem encontrado</td></tr>`;
 
     // Pontos
     const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
@@ -777,7 +728,7 @@
     // Atestados
     const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
     document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.length > 0 ? atestadosFiltrados.map(a => {
-      const dataInicioFormatada = formatarDataExtensaPTBR(a.dataHoraRegistro || a.data);
+      const dataInicioFormatada = formatarDataExtensaPTBR(a.data, false);
       const dataFinalFormatada = calcularDataFinal(a.data, a.dias || 1);
       return `<tr><td>${a.nome}</td><td>${dataInicioFormatada}</td><td>${dataFinalFormatada}</td><td>${a.dias || 1} dia(s)</td><td>${a.motivo}</td></tr>`;
     }).join('') : `<tr><td colspan="5">Nenhum registro encontrado</td></tr>`;
