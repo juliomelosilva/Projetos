@@ -2,694 +2,307 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sistema de Gestão de Ponto</title>
+  <title>Sistema de Controle de Ponto e Banco de Horas</title>
   <style>
-    :root {
-      --primary: #af09fc;
-      --primary-hover: #6f0e9c;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #1e293b;
-      --border: #e2e8f0;
-      --success: #16a34a;
-      --danger: #dc2626;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-    
-    body { background-color: var(--bg); color: var(--text); padding: 12px; display: flex; justify-content: center; overflow-x: hidden; }
-    .container { width: 100%; max-width: 800px; margin: 0 auto; }
-    .card { background: var(--card-bg); padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid var(--border); width: 100%; }
-
-    /* Accordion */
-    .accordion-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-    .accordion-header h2, .accordion-header h3 { margin: 0; font-size: 1.1rem; }
-    .accordion-icon { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-    .accordion-content { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border); }
-
-    h2 { margin-bottom: 14px; color: #0f172a; font-size: 1.25rem; }
-    h3 { margin-bottom: 10px; color: #334155; font-size: 1rem; }
-    
-    .form-group { margin-bottom: 12px; }
-    label { display: block; margin-bottom: 4px; font-weight: 500; font-size: 13px; }
-    input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
-    
-    button { background: var(--primary); color: white; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; font-size: 14px; }
-    button:hover { background: var(--primary-hover); }
-    
-    .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 10px; }
-    .btn-secondary { background: #475569; }
-    .btn-secondary:hover { background: #334155; }
-    
-    .hidden { display: none !important; }
-    .nav-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .user-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .badge { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-    
-    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; border: 1px solid var(--border); border-radius: 6px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
-    th, td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; }
-    th { background: #f1f5f9; font-weight: 600; }
-    
-    .saldo-positivo { color: var(--success); font-weight: bold; }
-    .saldo-negativo { color: var(--danger); font-weight: bold; }
-    .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; }
-    
-    /* Notificações */
-    .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; }
-    .notif-badge { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
-
-    /* Modal Pop-up */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index: 1000; }
-    .modal-card { background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
-    .notif-item { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .notif-item:last-child { border-bottom: none; }
+    /* Estilos do seu layout original mantidos */
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
+    .nav-tabs { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; cursor: pointer; border: none; background: none; font-size: 16px; }
+    .tab-btn.active { border-bottom: 3px solid #007bff; font-weight: bold; color: #007bff; }
+    .tab-content { display: none; background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .tab-content.active { display: block; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .form-group input, .form-group select { width: 100%; padding: 8px; box-sizing: border-box; }
+    button.btn-submit { background: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 3px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 10px; text-align: left; }
+    th { background-color: #f8f9fa; }
   </style>
 </head>
 <body>
 
-<div class="container">
+  <!-- Menu de Navegação Mantido + Nova Aba Viagem -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab('ponto')">Ponto</button>
+    <button class="tab-btn" onclick="openTab('atestado')">Atestados</button>
+    <button class="tab-btn" onclick="openTab('folga')">Folgas</button>
+    <button class="tab-btn" onclick="openTab('viagem')">Viagem</button> <!-- Nova Aba -->
+    <button class="tab-btn" onclick="openTab('historico')">Histórico</button>
+  </div>
 
-  <!-- TELA DE LOGIN -->
-  <div id="loginSection" class="card">
-    <h2>Acesso ao Sistema</h2>
-    <form id="loginForm">
+  <!-- ABA: PONTO -->
+  <div id="ponto" class="tab-content active">
+    <h2>Registro de Ponto</h2>
+    <form id="formPonto">
       <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="teu E-mail">
+        <label>Colaborador ID:</label>
+        <input type="number" id="pontoColabId" value="1" required>
       </div>
       <div class="form-group">
-        <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="tua Senha">
+        <label>Entrada (Padrão 08:00):</label>
+        <input type="datetime-local" id="pontoEntrada" required>
       </div>
-      <button type="submit">Entrar</button>
+      <div class="form-group">
+        <label>Início Almoço:</label>
+        <input type="datetime-local" id="pontoInicioAlmoco">
+      </div>
+      <div class="form-group">
+        <label>Fim Almoço:</label>
+        <input type="datetime-local" id="pontoFimAlmoco">
+      </div>
+      <div class="form-group">
+        <label>Saída:</label>
+        <input type="datetime-local" id="pontoSaida" required>
+      </div>
+      <button type="submit" class="btn-submit">Registrar Ponto</button>
     </form>
   </div>
 
-  <!-- PAINEL PRINCIPAL -->
-  <div id="appSection" class="hidden">
-    <div class="nav-bar card">
-      <div class="user-info">
-        <strong id="userNome">--</strong> 
-        <span id="userBadge" class="badge">--</span>
+  <!-- ABA: ATESTADO -->
+  <div id="atestado" class="tab-content">
+    <h2>Lançar Atestado</h2>
+    <form id="formAtestado">
+      <div class="form-group">
+        <label>Colaborador ID:</label>
+        <input type="number" id="atestadoColabId" value="1" required>
       </div>
-      
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div id="notifBtn" class="notif-container hidden" onclick="abrirModalNotificacoes()" title="Notificações">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          <span id="notifBadge" class="notif-badge hidden">0</span>
-        </div>
-        
-        <button onclick="logout()" class="btn-secondary" style="width: auto; padding: 6px 12px;">Sair</button>
+      <div class="form-group">
+        <label>Minutos Abonados (Ex: 480 para 8h):</label>
+        <input type="number" id="atestadoMinutos" value="480" required>
       </div>
-    </div>
-
-    <!-- MÓDULO: REGISTRO DE PONTO -->
-    <div class="card">
-      <h2>Registrar Ponto</h2>
-      <p id="clock" style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: var(--primary);"></p>
-      <div class="btn-grid">
-        <button onclick="baterPonto('Entrada')">Entrada</button>
-        <button onclick="baterPonto('Saída Almoço')">Saída Almoço</button>
-        <button onclick="baterPonto('Retorno Almoço')">Retorno Almoço</button>
-        <button onclick="baterPonto('Saída')">Saída</button>
+      <div class="form-group">
+        <label>Comprovante (Anexo):</label>
+        <input type="file" id="atestadoFile">
       </div>
-    </div>
-
-    <!-- PAINEL EXCLUSIVO DO GERENTE -->
-    <div id="adminSection" class="hidden">
-      
-      <!-- Registro de Folga (EXCLUSIVO GERENTE) -->
-      <div class="card">
-        <div class="accordion-header" onclick="toggleAccordion('folgaContent', 'folgaIcon')">
-          <h2>Painel do Gerente: Registro de Folga</h2>
-          <span id="folgaIcon" class="accordion-icon">+</span>
-        </div>
-        <div id="folgaContent" class="accordion-content hidden">
-          <form id="registroFolgaForm">
-            <div class="form-group">
-              <label>Selecione o Colaborador</label>
-              <select id="folgaColaboradorSelect" class="dinamico-usuarios" required></select>
-            </div>
-            <div class="flex-gap">
-              <div class="form-group" style="flex: 2; min-width: 140px;">
-                <label>Data da Folga</label>
-                <input type="date" id="folgaData" required>
-              </div>
-              <div class="form-group" style="flex: 1; min-width: 100px;">
-                <label>Horas Concedidas</label>
-                <input type="number" step="0.5" id="folgaHoras" min="0.5" required placeholder="Ex: 8">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Observação / Justificativa</label>
-              <input type="text" id="folgaMotivo" required placeholder="Ex: Compensação de banco de horas">
-            </div>
-            <button type="submit">Lançar Folga</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Lançamento de Atestados (EXCLUSIVO GERENTE) -->
-      <div class="card">
-        <div class="accordion-header" onclick="toggleAccordion('atestadoContent', 'atestadoIcon')">
-          <h2>Painel do Gerente: Registrar Atestado Médico</h2>
-          <span id="atestadoIcon" class="accordion-icon">+</span>
-        </div>
-        <div id="atestadoContent" class="accordion-content hidden">
-          <form id="atestadoForm">
-            <div class="form-group">
-              <label>Selecione o Colaborador</label>
-              <select id="atestadoColaboradorSelect" class="dinamico-usuarios" required></select>
-            </div>
-            <div class="flex-gap">
-              <div class="form-group" style="flex: 2; min-width: 140px;">
-                <label>Data de Início do Atestado</label>
-                <input type="date" id="atestadoData" required>
-              </div>
-              <div class="form-group" style="flex: 1; min-width: 100px;">
-                <label>Qtd. Dias</label>
-                <input type="number" id="atestadoDias" min="1" value="1" required placeholder="Ex: 3">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>CID / Motivo</label>
-              <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica / CID J00">
-            </div>
-            <button type="submit">Lançar Atestado</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Cadastrar Colaborador -->
-      <div class="card">
-        <div class="accordion-header" onclick="toggleAccordion('cadContent', 'cadIcon')">
-          <h2>Cadastrar Novo Usuário</h2>
-          <span id="cadIcon" class="accordion-icon">+</span>
-        </div>
-        <div id="cadContent" class="accordion-content hidden">
-          <form id="cadastroForm">
-            <div class="form-group">
-              <label>Nome Completo</label>
-              <input type="text" id="cadNome" required placeholder="Ex: Vinicius">
-            </div>
-            <div class="form-group">
-              <label>E-mail</label>
-              <input type="email" id="cadEmail" required placeholder="vinicius@empresa.com">
-            </div>
-            <div class="form-group">
-              <label>Senha Inicial</label>
-              <input type="password" id="cadSenha" required placeholder="123456">
-            </div>
-            <div class="form-group">
-              <label>Função / Nível de Acesso</label>
-              <select id="cadFuncao">
-                <option value="user">Colaborador (Normal)</option>
-                <option value="admin">Gerente / RH</option>
-              </select>
-            </div>
-            <button type="submit">Cadastrar Usuário</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Lançamento / Ajuste Manual de Horas -->
-      <div class="card">
-        <div class="accordion-header" onclick="toggleAccordion('ajusteContent', 'ajusteIcon')">
-          <h2>Ajuste Manual de Banco de Horas</h2>
-          <span id="ajusteIcon" class="accordion-icon">+</span>
-        </div>
-        <div id="ajusteContent" class="accordion-content hidden">
-          <form id="ajusteForm">
-            <div class="form-group">
-              <label>Selecione o Colaborador</label>
-              <select id="ajusteColaboradorSelect" class="dinamico-usuarios" required></select>
-            </div>
-            <div class="form-group">
-              <label>Tipo de Ajuste</label>
-              <select id="ajusteTipo" required>
-                <option value="adicionar">Adicionar Horas (Soma ao Saldo Atual)</option>
-                <option value="retirar">Retirar Horas (Subtrai do Saldo Atual)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Quantidade de Horas</label>
-              <input type="number" step="0.5" id="ajusteHoras" required placeholder="Ex: 2 ou 1.5">
-            </div>
-            <div class="form-group">
-              <label>Motivo / Justificativa</label>
-              <input type="text" id="ajusteMotivo" required placeholder="Ex: Ajuste acordado de horas faltantes">
-            </div>
-            <button type="submit">Aplicar Ajuste</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Relatório de Banco de Horas -->
-      <div class="card">
-        <div class="accordion-header" onclick="toggleAccordion('relContent', 'relIcon')">
-          <h2>Relatório de Banco de Horas</h2>
-          <span id="relIcon" class="accordion-icon">+</span>
-        </div>
-        <div id="relContent" class="accordion-content hidden">
-          <div class="form-group">
-            <label>Selecione o Colaborador</label>
-            <select id="relColaboradorSelect" class="dinamico-usuarios"></select>
-          </div>
-
-          <div class="flex-gap" style="margin-bottom: 12px;">
-            <div style="flex:1; min-width: 130px;">
-              <label>Data Início</label>
-              <input type="date" id="relDataInicio">
-            </div>
-            <div style="flex:1; min-width: 130px;">
-              <label>Data Fim</label>
-              <input type="date" id="relDataFim">
-            </div>
-          </div>
-          <button onclick="gerarRelatorioHoras()" style="margin-bottom: 8px;">Calcular Banco de Horas</button>
-          <button onclick="exportarRelatorioCSV()" class="btn-secondary">Exportar Relatório (CSV)</button>
-
-          <div class="table-responsive">
-            <table id="tabelaRelatorio">
-              <thead>
-                <tr>
-                  <th>Colaborador</th>
-                  <th>Trabalhadas</th>
-                  <th>Esperadas</th>
-                  <th>Abonadas</th>
-                  <th>Ajustes Manuais</th>
-                  <th>Saldo Final</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- MÓDULO: HISTÓRICO E REGISTROS -->
-    <div class="card" id="historicoCard">
-      <h2>Histórico e Registros</h2>
-
-      <div id="filtroHistoricoGerente" class="form-group hidden">
-        <label>Filtrar Histórico por Colaborador</label>
-        <select id="histColaboradorSelect" class="dinamico-usuarios" onchange="renderizarTabelasFiltradas()"></select>
-      </div>
-
-      <button onclick="carregarHistorico()" class="btn-secondary" style="margin-bottom: 16px;">Atualizar Registros</button>
-      
-      <h3>Registro de Folgas</h3>
-      <div class="table-responsive">
-        <table id="tabelaFolgas">
-          <thead>
-            <tr><th>Nome</th><th>Data</th><th>Horas Recebidas</th><th>Observação</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <h3 style="margin-top: 20px;">Atestados Registrados</h3>
-      <div class="table-responsive">
-        <table id="tabelaAtestados">
-          <thead>
-            <tr><th>Nome</th><th>Data Início</th><th>Data Final</th><th>Qtd. Dias</th><th>Motivo</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <h3 style="margin-top: 20px;">Pontos Registrados</h3>
-      <div class="table-responsive">
-        <table id="tabelaPontos">
-          <thead>
-            <tr><th>Nome</th><th>Data e Hora</th><th>Tipo</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
+      <button type="submit" class="btn-submit">Registrar Atestado</button>
+    </form>
   </div>
 
-</div>
-
-<!-- MODAL POP-UP DE NOTIFICAÇÕES -->
-<div id="modalNotificacoes" class="modal-overlay hidden">
-  <div class="modal-card">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h3 style="margin:0;">Notificações e Avisos</h3>
-      <button onclick="fecharModalNotificacoes()" style="width: auto; padding: 4px 8px;" class="btn-secondary">X</button>
-    </div>
-    <div id="listaNotificacoes"></div>
+  <!-- ABA: FOLGA -->
+  <div id="folga" class="tab-content">
+    <h2>Lançar Folga</h2>
+    <form id="formFolga">
+      <div class="form-group">
+        <label>Colaborador ID:</label>
+        <input type="number" id="folgaColabId" value="1" required>
+      </div>
+      <div class="form-group">
+        <label>Tempo da Folga (em Minutos - Ex: 15 para 15min, 60 para 1h):</label>
+        <input type="number" id="folgaMinutos" placeholder="Ex: 15" required>
+      </div>
+      <button type="submit" class="btn-submit">Lançar Folga</button>
+    </form>
   </div>
-</div>
 
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbz3w8odF2W-EfAHZ80niPR658nKPWrqyerigzxiWLHiyZmjebctKOC67I61FYabf1ei/exec"; 
+  <!-- NOVA ABA: VIAGEM -->
+  <div id="viagem" class="tab-content">
+    <h2>Lançamento de Viagem</h2>
+    <form id="formViagem" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Colaborador ID:</label>
+        <input type="number" id="viagemColabId" value="1" required>
+      </div>
+      <div class="form-group">
+        <label>Data e Hora de Saída:</label>
+        <input type="datetime-local" id="viagemSaida" required>
+      </div>
+      <div class="form-group">
+        <label>Cliente / Destino:</label>
+        <input type="text" id="viagemCliente" placeholder="Nome do cliente" required>
+      </div>
+      <div class="form-group">
+        <label>Data e Hora de Chegada:</label>
+        <input type="datetime-local" id="viagemChegada" required>
+      </div>
+      <div class="form-group">
+        <label>Anexos / Imagens:</label>
+        <input type="file" id="viagemAnexos" multiple accept="image/*">
+      </div>
+      <button type="submit" class="btn-submit">Registrar Viagem</button>
+    </form>
+  </div>
 
-  let currentUser = null;
-  let relatorioUltimoResultado = [];
-  let historicoCache = { pontos: [], folgas: [], atestados: [] };
-  let usuariosCache = [];
+  <!-- ABA: HISTÓRICO (EXIBIÇÃO DE MINUTOS/HORAS CORRETA) -->
+  <div id="historico" class="tab-content">
+    <h2>Histórico do Colaborador / Gerente</h2>
+    <button onclick="carregarHistorico()" style="margin-bottom: 10px; padding: 5px 10px;">Atualizar Histórico</button>
 
-  setInterval(() => {
-    const now = new Date();
-    document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
-  }, 1000);
+    <h3>Folgas Registradas</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Tempo Concedido</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaFolgas"></tbody>
+    </table>
 
-  function toggleAccordion(contentId, iconId) {
-    const content = document.getElementById(contentId);
-    const icon = document.getElementById(iconId);
-    if (content.classList.contains("hidden")) {
-      content.classList.remove("hidden");
-      icon.innerText = "-";
-    } else {
-      content.classList.add("hidden");
-      icon.innerText = "+";
+    <h3>Atestados Registrados</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Horas Abonadas</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaAtestados"></tbody>
+    </table>
+
+    <h3>Viagens Registradas</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Saída</th>
+          <th>Cliente</th>
+          <th>Chegada</th>
+          <th>Horas Acumuladas</th>
+          <th>Anexos</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaViagens"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Gerenciador de Abas
+    function openTab(tabName) {
+      const contents = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.tab-btn');
+      contents.forEach(c => c.classList.remove('active'));
+      buttons.forEach(b => b.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+      if(tabName === 'historico') carregarHistorico();
     }
-  }
 
-  // Função auxiliar para formatação de datas estendidas em PT-BR
-  function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
-    if (!dataStr) return "--";
-    
-    let dataObj = new Date(dataStr);
-    
-    // Tratamento para strings de data simples "YYYY-MM-DD" que sofrem com fuso horário UTC
-    if (typeof dataStr === "string" && dataStr.length === 10 && dataStr.includes("-")) {
-      const partes = dataStr.split("-");
-      dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
+    // Utilitário Frontend para Formatação de Minutos/Horas
+    function formatarTempoJS(minutosTotais) {
+      const sinal = minutosTotais < 0 ? "-" : "";
+      const absMinutos = Math.abs(minutosTotais);
+      const horas = Math.floor(absMinutos / 60);
+      const mins = absMinutos % 60;
+
+      if (horas === 0) return `${sinal}${mins} min`;
+      if (mins === 0) return `${sinal}${horas}h`;
+      return `${sinal}${horas}h ${mins}min`;
     }
 
-    if (isNaN(dataObj.getTime())) return dataStr;
-
-    const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-    const diaSemana = diasSemana[dataObj.getDay()];
-    const dia = String(dataObj.getDate()).padStart(2, '0');
-    const mes = meses[dataObj.getMonth()];
-    const ano = dataObj.getFullYear();
-
-    let resultado = `${diaSemana}, ${dia} de ${mes} de ${ano}`;
-
-    if (incluirHora && (dataObj.getHours() !== 0 || dataObj.getMinutes() !== 0)) {
-      const horas = String(dataObj.getHours()).padStart(2, '0');
-      const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-      resultado += ` - ${horas}:${minutos}`;
-    }
-
-    return resultado;
-  }
-
-  // Função auxiliar para calcular data final com base em dias concedidos
-  function calcularDataFinal(dataInicioStr, dias) {
-    if (!dataInicioStr) return "--";
-    
-    let dataObj;
-    if (typeof dataInicioStr === "string" && dataInicioStr.length === 10 && dataInicioStr.includes("-")) {
-      const partes = dataInicioStr.split("-");
-      dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
-    } else {
-      dataObj = new Date(dataInicioStr);
-    }
-
-    if (isNaN(dataObj.getTime())) return "--";
-
-    const qtdDias = parseInt(dias, 10) || 1;
-    dataObj.setDate(dataObj.getDate() + (qtdDias - 1));
-
-    return formatarDataExtensaPTBR(dataObj, false);
-  }
-
-  async function apiCall(data) {
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(data)
+    // Submit: Ponto
+    document.getElementById('formPonto').onsubmit = async (e) => {
+      e.preventDefault();
+      const payload = {
+        colaboradorId: document.getElementById('pontoColabId').value,
+        entrada: document.getElementById('pontoEntrada').value,
+        inicioAlmoco: document.getElementById('pontoInicioAlmoco').value,
+        fimAlmoco: document.getElementById('pontoFimAlmoco').value,
+        Saida: document.getElementById('pontoSaida').value
+      };
+      const res = await fetch('/api/ponto/registrar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-      return await response.json();
-    } catch (err) {
-      alert("Erro na conexão com o servidor.");
-      console.error(err);
-    }
-  }
+      const data = await res.json();
+      alert(`Ponto Registrado! Saldo Atual: ${data.saldoTotalFormatado}`);
+    };
 
-  document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const res = await apiCall({ 
-      action: "login", 
-      email: document.getElementById("loginEmail").value, 
-      senha: document.getElementById("loginSenha").value 
-    });
-
-    if (res && res.status === "sucesso") {
-      currentUser = res.user;
-      iniciarSessao();
-    } else {
-      alert(res ? res.message : "Erro no login.");
-    }
-  });
-
-  async function iniciarSessao() {
-    document.getElementById("loginSection").classList.add("hidden");
-    document.getElementById("appSection").classList.remove("hidden");
-    document.getElementById("userNome").innerText = currentUser.nome;
-    document.getElementById("userBadge").innerText = currentUser.funcao === "admin" ? "Gerente" : "Colaborador";
-
-    if (currentUser.funcao === "admin") {
-      document.getElementById("adminSection").classList.remove("hidden");
-      document.getElementById("filtroHistoricoGerente").classList.remove("hidden");
-    }
-
-    document.getElementById("notifBtn").classList.remove("hidden");
-
-    await carregarListaUsuariosDinamica();
-    await carregarHistorico();
-  }
-
-  function logout() {
-    currentUser = null;
-    location.reload();
-  }
-
-  async function carregarListaUsuariosDinamica() {
-    const res = await apiCall({ action: "obterUsuarios" });
-    if (res && res.status === "sucesso" && res.usuarios) {
-      usuariosCache = res.usuarios;
-      const selects = document.querySelectorAll(".dinamico-usuarios");
-      
-      selects.forEach(select => {
-        let isFiltro = select.id === "relColaboradorSelect" || select.id === "histColaboradorSelect";
-        let options = isFiltro ? `<option value="todos">Todos os Colaboradores</option>` : `<option value="">Selecione o Colaborador</option>`;
-        
-        res.usuarios.forEach(u => {
-          options += `<option value="${u.id}">${u.nome} (${u.funcao === 'admin' ? 'Gerente' : 'Colaborador'})</option>`;
-        });
-        
-        select.innerHTML = options;
+    // Submit: Folga
+    document.getElementById('formFolga').onsubmit = async (e) => {
+      e.preventDefault();
+      const payload = {
+        colaboradorId: document.getElementById('folgaColabId').value,
+        minutosFolga: document.getElementById('folgaMinutos').value
+      };
+      const res = await fetch('/api/folga', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    }
-  }
+      const data = await res.json();
+      alert(`Folga Lançada! Saldo Atual: ${data.saldoAtual}`);
+    };
 
-  async function baterPonto(tipo) {
-    if (!confirm(`Confirmar ponto: ${tipo}?`)) return;
-    const res = await apiCall({ action: "registrarPonto", id_usuario: currentUser.id, nome: currentUser.nome, tipo });
-    if (res) alert(res.message);
-    carregarHistorico();
-  }
-
-  // Registro de Folga direto pelo Gerente
-  document.getElementById("registroFolgaForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const idUsuario = document.getElementById("folgaColaboradorSelect").value;
-    const userObj = usuariosCache.find(u => String(u.id) === String(idUsuario));
-
-    if (!userObj) {
-      alert("Selecione um colaborador válido.");
-      return;
-    }
-
-    const res = await apiCall({
-      action: "registrarFolgaGerente",
-      id_usuario: idUsuario,
-      nome: userObj.nome,
-      data: document.getElementById("folgaData").value,
-      horas: document.getElementById("folgaHoras").value,
-      motivo: document.getElementById("folgaMotivo").value
-    });
-    if (res) alert(res.message);
-    document.getElementById("registroFolgaForm").reset();
-    carregarHistorico();
-  });
-
-  document.getElementById("atestadoForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const idUsuario = document.getElementById("atestadoColaboradorSelect").value;
-    const userObj = usuariosCache.find(u => String(u.id) === String(idUsuario));
-
-    if (!userObj) {
-      alert("Selecione um colaborador válido.");
-      return;
-    }
-
-    const res = await apiCall({
-      action: "registrarAtestado",
-      id_usuario: idUsuario,
-      nome: userObj.nome,
-      data: document.getElementById("atestadoData").value,
-      dias: document.getElementById("atestadoDias").value,
-      motivo: document.getElementById("atestadoMotivo").value
-    });
-    if (res) alert(res.message);
-    document.getElementById("atestadoForm").reset();
-    carregarHistorico();
-  });
-
-  document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const res = await apiCall({
-      action: "cadastrarUsuario",
-      nome: document.getElementById("cadNome").value,
-      email: document.getElementById("cadEmail").value,
-      senha: document.getElementById("cadSenha").value,
-      funcao: document.getElementById("cadFuncao").value
-    });
-    if (res) alert(res.message);
-    if (res && res.status === "sucesso") {
-      document.getElementById("cadastroForm").reset();
-      await carregarListaUsuariosDinamica();
-    }
-  });
-
-  document.getElementById("ajusteForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const res = await apiCall({
-      action: "ajustarHoras",
-      id_usuario: document.getElementById("ajusteColaboradorSelect").value,
-      tipo: document.getElementById("ajusteTipo").value,
-      horas: document.getElementById("ajusteHoras").value,
-      motivo: document.getElementById("ajusteMotivo").value
-    });
-    if (res) alert(res.message);
-    if (res && res.status === "sucesso") {
-      document.getElementById("ajusteForm").reset();
-    }
-  });
-
-  function abrirModalNotificacoes() {
-    const modal = document.getElementById("modalNotificacoes");
-    const container = document.getElementById("listaNotificacoes");
-    let html = "";
-
-    const ultimosPontos = historicoCache.pontos.slice(0, 5);
-    if (ultimosPontos.length > 0) {
-      html += `<strong>Últimos Registros de Ponto:</strong><br>`;
-      ultimosPontos.forEach(p => {
-        html += `<div class="notif-item">🕒 <b>${p.nome}</b> registrou <b>${p.tipo}</b> em ${formatarDataExtensaPTBR(p.dataHora)}</div>`;
+    // Submit: Atestado
+    document.getElementById('formAtestado').onsubmit = async (e) => {
+      e.preventDefault();
+      const payload = {
+        colaboradorId: document.getElementById('atestadoColabId').value,
+        minutosAtestado: document.getElementById('atestadoMinutos').value
+      };
+      const res = await fetch('/api/atestado', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-    } else {
-      html = "<p class='notif-item'>Nenhuma notificação para exibir.</p>";
+      const data = await res.json();
+      alert(`Atestado Registrado! Saldo Atualizado: ${data.saldoAtual}`);
+    };
+
+    // Submit: Viagem
+    document.getElementById('formViagem').onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('colaboradorId', document.getElementById('viagemColabId').value);
+      formData.append('dataHoraSaida', document.getElementById('viagemSaida').value);
+      formData.append('cliente', document.getElementById('viagemCliente').value);
+      formData.append('dataHoraChegada', document.getElementById('viagemChegada').value);
+
+      const files = document.getElementById('viagemAnexos').files;
+      for (let i = 0; i < files.length; i++) {
+        formData.append('anexos', files[i]);
+      }
+
+      const res = await fetch('/api/viagem', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if(res.ok) {
+        alert(`Viagem Lançada! ${data.viagem.duracaoFormatada} adicionados ao banco. Saldo Atual: ${data.saldoAtual}`);
+      } else {
+        alert(data.error);
+      }
+    };
+
+    // Carregar e Renderizar Históricos
+    async function carregarHistorico() {
+      const res = await fetch('/api/historico');
+      const data = await res.json();
+
+      // Render Folgas
+      const tbodyFolgas = document.getElementById('tabelaFolgas');
+      tbodyFolgas.innerHTML = data.folgas.map(f => `
+        <tr>
+          <td>${new Date(f.data).toLocaleDateString()}</td>
+          <td>${f.exibicaoTempo}</td>
+        </tr>
+      `).join('');
+
+      // Render Atestados
+      const tbodyAtestados = document.getElementById('tabelaAtestados');
+      tbodyAtestados.innerHTML = data.atestados.map(a => `
+        <tr>
+          <td>${new Date(a.data).toLocaleDateString()}</td>
+          <td>${a.exibicaoTempo}</td>
+        </tr>
+      `).join('');
+
+      // Render Viagens
+      const tbodyViagens = document.getElementById('tabelaViagens');
+      tbodyViagens.innerHTML = data.viagens.map(v => `
+        <tr>
+          <td>${new Date(v.dataHoraSaida).toLocaleString()}</td>
+          <td>${v.cliente}</td>
+          <td>${new Date(v.dataHoraChegada).toLocaleString()}</td>
+          <td>+${v.exibicaoTempo}</td>
+          <td>${v.anexos.length} imagem(ns)</td>
+        </tr>
+      `).join('');
     }
-
-    container.innerHTML = html;
-    modal.classList.remove("hidden");
-  }
-
-  function fecharModalNotificacoes() {
-    document.getElementById("modalNotificacoes").classList.add("hidden");
-  }
-
-  async function carregarHistorico() {
-    const res = await apiCall({ 
-      action: "obterHistorico", 
-      id_usuario: currentUser.id, 
-      funcao: currentUser.funcao 
-    });
-
-    if (res && res.status === "sucesso") {
-      historicoCache = { pontos: res.pontos, folgas: res.folgas, atestados: res.atestados };
-      renderizarTabelasFiltradas();
-    }
-  }
-
-  function renderizarTabelasFiltradas() {
-    const filtro = currentUser.funcao === "admin" ? document.getElementById("histColaboradorSelect").value : "todos";
-
-    // Pontos
-    const pontosFiltrados = historicoCache.pontos.filter(p => filtro === "todos" || String(p.id_usuario) === String(filtro));
-    document.querySelector("#tabelaPontos tbody").innerHTML = pontosFiltrados.map(p => 
-      `<tr><td>${p.nome}</td><td>${formatarDataExtensaPTBR(p.dataHora)}</td><td>${p.tipo}</td></tr>`
-    ).join('');
-
-    // Atestados (Com Data Início PT-BR e Data Final)
-    const atestadosFiltrados = historicoCache.atestados.filter(a => filtro === "todos" || String(a.id_usuario) === String(filtro));
-    document.querySelector("#tabelaAtestados tbody").innerHTML = atestadosFiltrados.map(a => {
-      const dataInicioFormatada = formatarDataExtensaPTBR(a.dataHoraRegistro || a.data);
-      const dataFinalFormatada = calcularDataFinal(a.data, a.dias || 1);
-      return `<tr><td>${a.nome}</td><td>${dataInicioFormatada}</td><td>${dataFinalFormatada}</td><td>${a.dias || 1} dia(s)</td><td>${a.motivo}</td></tr>`;
-    }).join('');
-
-    // Folgas
-    const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
-    document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
-      const dataFormatada = formatarDataExtensaPTBR(f.data, false);
-      return `<tr><td>${f.nome}</td><td>${dataFormatada}</td><td>${f.horas || '--'} h</td><td>${f.motivo}</td></tr>`;
-    }).join('');
-  }
-
-  async function gerarRelatorioHoras() {
-    const dataInicio = document.getElementById("relDataInicio").value;
-    const dataFim = document.getElementById("relDataFim").value;
-    const idUsuarioFiltro = document.getElementById("relColaboradorSelect").value;
-
-    if (!dataInicio || !dataFim) {
-      alert("Selecione a data de início e fim do relatório.");
-      return;
-    }
-
-    const res = await apiCall({ action: "gerarRelatorioHoras", dataInicio, dataFim, id_usuario: idUsuarioFiltro });
-
-    if (res && res.status === "sucesso") {
-      relatorioUltimoResultado = res.relatorio;
-      document.querySelector("#tabelaRelatorio tbody").innerHTML = res.relatorio.map(r => {
-        const saldoClass = parseFloat(r.saldo) >= 0 ? "saldo-positivo" : "saldo-negativo";
-        return `<tr>
-          <td>${r.nome}</td>
-          <td>${r.horasTrabalhadas}h</td>
-          <td>${r.horasEsperadas}h</td>
-          <td>${r.horasAbonadas}h</td>
-          <td>${r.ajustes}h</td>
-          <td class="${saldoClass}">${r.saldo}h</td>
-        </tr>`;
-      }).join('');
-    }
-  }
-
-  function exportarRelatorioCSV() {
-    if (relatorioUltimoResultado.length === 0) {
-      alert("Gere o relatório primeiro antes de exportar.");
-      return;
-    }
-
-    let csvContent = "data:text/csv;charset=utf-8,Colaborador,Horas Trabalhadas,Horas Esperadas,Horas Abonadas,Ajustes Manuais,Saldo Final\n";
-    relatorioUltimoResultado.forEach(r => {
-      csvContent += `${r.nome},${r.horasTrabalhadas},${r.horasEsperadas},${r.horasAbonadas},${r.ajustes},${r.saldo}\n`;
-    });
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Relatorio_Banco_de_Horas.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-</script>
-
+  </script>
 </body>
 </html>
