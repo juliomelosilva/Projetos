@@ -79,11 +79,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="Teu E-mail">
+        <input type="email" id="loginEmail" required placeholder="Seu E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="Tua Senha">
+        <input type="password" id="loginSenha" required placeholder="Sua Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!-- MÓDULO EXPANSÍVEL: SOLICITAÇÃO DE FOLGA -->
+    <!-- MÓDULO EXPANSÍVEL: SOLICITAÇÃO DE FOLGA (COLABORADOR) -->
     <div class="card">
       <div class="accordion-header" onclick="toggleAccordion('folgaContent', 'folgaIcon')">
         <h2>Solicitação de Folga</h2>
@@ -140,40 +140,44 @@
       </div>
     </div>
 
-    <!-- MÓDULO EXPANSÍVEL: REGISTRO DE ATESTADOS -->
-    <div class="card">
-      <div class="accordion-header" onclick="toggleAccordion('atestadoContent', 'atestadoIcon')">
-        <h2>Registrar Atestado Médico (Abono)</h2>
-        <span id="atestadoIcon" class="accordion-icon">+</span>
-      </div>
-      <div id="atestadoContent" class="accordion-content hidden">
-        <form id="atestadoForm">
-          <div class="flex-gap">
-            <div class="form-group" style="flex: 2; min-width: 140px;">
-              <label>Data de Início do Atestado</label>
-              <input type="date" id="atestadoData" required>
-            </div>
-            <div class="form-group" style="flex: 1; min-width: 100px;">
-              <label>Qtd. Dias</label>
-              <input type="number" id="atestadoDias" min="1" value="1" required placeholder="Ex: 3">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>CID / Motivo</label>
-            <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica / CID J00">
-          </div>
-          <button type="submit" class="btn-secondary">Enviar Atestado</button>
-        </form>
-      </div>
-    </div>
-
     <!-- PAINEL EXCLUSIVO DO GERENTE -->
     <div id="adminSection" class="hidden">
       
+      <!-- Lançamento de Atestados (EXCLUSIVO GERENTE) -->
+      <div class="card">
+        <div class="accordion-header" onclick="toggleAccordion('atestadoContent', 'atestadoIcon')">
+          <h2>Painel do Gerente: Registrar Atestado Médico</h2>
+          <span id="atestadoIcon" class="accordion-icon">+</span>
+        </div>
+        <div id="atestadoContent" class="accordion-content hidden">
+          <form id="atestadoForm">
+            <div class="form-group">
+              <label>Selecione o Colaborador</label>
+              <select id="atestadoColaboradorSelect" class="dinamico-usuarios" required></select>
+            </div>
+            <div class="flex-gap">
+              <div class="form-group" style="flex: 2; min-width: 140px;">
+                <label>Data de Início do Atestado</label>
+                <input type="date" id="atestadoData" required>
+              </div>
+              <div class="form-group" style="flex: 1; min-width: 100px;">
+                <label>Qtd. Dias</label>
+                <input type="number" id="atestadoDias" min="1" value="1" required placeholder="Ex: 3">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>CID / Motivo</label>
+              <input type="text" id="atestadoMotivo" required placeholder="Ex: Consulta Médica / CID J00">
+            </div>
+            <button type="submit">Lançar Atestado</button>
+          </form>
+        </div>
+      </div>
+
       <!-- Cadastrar Colaborador -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('cadContent', 'cadIcon')">
-          <h2>Painel do Gerente: Cadastrar Novo Usuário</h2>
+          <h2>Cadastrar Novo Usuário</h2>
           <span id="cadIcon" class="accordion-icon">+</span>
         </div>
         <div id="cadContent" class="accordion-content hidden">
@@ -341,6 +345,7 @@
   let currentUser = null;
   let relatorioUltimoResultado = [];
   let historicoCache = { pontos: [], folgas: [], atestados: [] };
+  let usuariosCache = [];
 
   setInterval(() => {
     const now = new Date();
@@ -414,6 +419,7 @@
   async function carregarListaUsuariosDinamica() {
     const res = await apiCall({ action: "obterUsuarios" });
     if (res && res.status === "sucesso" && res.usuarios) {
+      usuariosCache = res.usuarios;
       const selects = document.querySelectorAll(".dinamico-usuarios");
       
       selects.forEach(select => {
@@ -452,10 +458,18 @@
 
   document.getElementById("atestadoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const idUsuario = document.getElementById("atestadoColaboradorSelect").value;
+    const userObj = usuariosCache.find(u => String(u.id) === String(idUsuario));
+
+    if (!userObj) {
+      alert("Selecione um colaborador válido.");
+      return;
+    }
+
     const res = await apiCall({
       action: "registrarAtestado",
-      id_usuario: currentUser.id,
-      nome: currentUser.nome,
+      id_usuario: idUsuario,
+      nome: userObj.nome,
       data: document.getElementById("atestadoData").value,
       dias: document.getElementById("atestadoDias").value,
       motivo: document.getElementById("atestadoMotivo").value
