@@ -77,11 +77,11 @@
     <form id="loginForm">
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" required placeholder="teu E-mail">
+        <input type="email" id="loginEmail" required placeholder="Seu E-mail">
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="loginSenha" required placeholder="tua Senha">
+        <input type="password" id="loginSenha" required placeholder="Sua Senha">
       </div>
       <button type="submit">Entrar</button>
     </form>
@@ -165,7 +165,7 @@
         </div>
       </div>
 
-      <!-- Registro de Folga (EXCLUSIVO GERENTE) -->
+      <!-- Registro de Folga -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('folgaContent', 'folgaIcon')">
           <h2>Painel do Gerente: Registro de Folga</h2>
@@ -196,7 +196,7 @@
         </div>
       </div>
 
-      <!-- Lançamento de Atestados (EXCLUSIVO GERENTE) -->
+      <!-- Lançamento de Atestados -->
       <div class="card">
         <div class="accordion-header" onclick="toggleAccordion('atestadoContent', 'atestadoIcon')">
           <h2>Painel do Gerente: Registrar Atestado Médico</h2>
@@ -416,6 +416,28 @@
     document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
   }, 1000);
 
+  function parseDataHora(val) {
+    if (!val) return null;
+    if (val instanceof Date) return val;
+    let str = String(val).trim();
+    if (str.includes("T")) {
+      str = str.replace("T", " ").substring(0, 19);
+    }
+    let partes = str.split(" ");
+    if (partes.length < 2) return null;
+    let dParts = partes[0].split("-");
+    let tParts = partes[1].split(":");
+    if (dParts.length < 3 || tParts.length < 2) return null;
+    return new Date(
+      parseInt(dParts[0]),
+      parseInt(dParts[1]) - 1,
+      parseInt(dParts[2]),
+      parseInt(tParts[0]),
+      parseInt(tParts[1]),
+      tParts[2] ? parseInt(tParts[2]) : 0
+    );
+  }
+
   function toggleAccordion(contentId, iconId) {
     const content = document.getElementById(contentId);
     const icon = document.getElementById(iconId);
@@ -428,7 +450,6 @@
     }
   }
 
-  // Formatação de exibição rigorosa em XXhYY (ex: 01h30, 00h15, 25h30)
   function formatarTempoExibicao(horasNum) {
     const valor = parseFloat(horasNum) || 0;
     const sinal = valor < 0 ? "-" : "";
@@ -453,14 +474,18 @@
   function formatarDataExtensaPTBR(dataStr, incluirHora = true) {
     if (!dataStr) return "--";
     
-    let dataObj = new Date(dataStr);
+    let dataObj = parseDataHora(dataStr);
     
-    if (typeof dataStr === "string" && dataStr.length === 10 && dataStr.includes("-")) {
-      const partes = dataStr.split("-");
-      dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
+    if (!dataObj) {
+      if (typeof dataStr === "string" && dataStr.length === 10 && dataStr.includes("-")) {
+        const partes = dataStr.split("-");
+        dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+      } else {
+        dataObj = new Date(dataStr);
+      }
     }
 
-    if (isNaN(dataObj.getTime())) return dataStr;
+    if (!dataObj || isNaN(dataObj.getTime())) return dataStr;
 
     const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -487,12 +512,12 @@
     let dataObj;
     if (typeof dataInicioStr === "string" && dataInicioStr.length === 10 && dataInicioStr.includes("-")) {
       const partes = dataInicioStr.split("-");
-      dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
+      dataObj = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
     } else {
-      dataObj = new Date(dataInicioStr);
+      dataObj = parseDataHora(dataInicioStr) || new Date(dataInicioStr);
     }
 
-    if (isNaN(dataObj.getTime())) return "--";
+    if (!dataObj || isNaN(dataObj.getTime())) return "--";
 
     const qtdDias = parseInt(dias, 10) || 1;
     dataObj.setDate(dataObj.getDate() + (qtdDias - 1));
@@ -765,7 +790,7 @@
       return `<tr><td>${a.nome}</td><td>${dataInicioFormatada}</td><td>${dataFinalFormatada}</td><td>${a.dias || 1} dia(s)</td><td>${a.motivo}</td></tr>`;
     }).join('');
 
-    // Folgas (Formatadas com 00h00)
+    // Folgas
     const folgasFiltradas = historicoCache.folgas.filter(f => filtro === "todos" || String(f.id_usuario) === String(filtro));
     document.querySelector("#tabelaFolgas tbody").innerHTML = folgasFiltradas.map(f => {
       const dataFormatada = formatarDataExtensaPTBR(f.data, false);
@@ -788,7 +813,6 @@
     if (res && res.status === "sucesso") {
       relatorioUltimoResultado = res.relatorio;
       document.querySelector("#tabelaRelatorio tbody").innerHTML = res.relatorio.map(r => {
-        // Checa saldo negativo através da propriedade numérica
         const isNegativo = (typeof r.saldoNum !== "undefined" ? r.saldoNum : parseFloat(r.saldo)) < 0;
         const saldoClass = !isNegativo ? "saldo-positivo" : "saldo-negativo";
         return `<tr>
