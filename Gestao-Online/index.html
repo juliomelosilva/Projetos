@@ -151,7 +151,7 @@ th{background:rgba(127,127,127,.08)}
    GESTÃO ON-LINE — CONFIGURAÇÃO
    ========================================================= */
 const CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbwWSHxETKOyJB6BdphruzGwPfKB0R5wHM3HlPUBp4Z8vLgOn-gcScsmm1XBFLhXwKg_pw/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbzQWiZ5PDEXnt2VwHTGDqCc6DWGVnR4jfJ1qVG-oehsnCKOfB3tZ8qoMH1Udh-K_1vsTw/exec",
   APP_NAME: "Gestão On-line",
   DEFAULT_USER: "admin@admin.com.br",
   DEFAULT_PASSWORD: "admin@2026",
@@ -191,10 +191,42 @@ function fmtDate(v){if(!v)return "-"; const d=new Date(v); return isNaN(d)?v:d.t
 function fmtDateTime(v){if(!v)return "-"; const d=new Date(v); return isNaN(d)?v:d.toLocaleString("pt-BR")}
 function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function save(){DB.write(data); syncData()}
+async function apiRequest(payload){
+  const response = await fetch(data?.settings?.sheetsApi || CONFIG.API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(payload),
+    cache:"no-store"
+  });
+  if(!response.ok) throw new Error("HTTP "+response.status);
+  return await response.json();
+}
 async function syncData(){
   try{
-    await fetch(CONFIG.API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"sync",data})});
-  }catch(e){/* mantém localStorage quando a API estiver indisponível */}
+    const result=await apiRequest({action:"sync",data});
+    return result?.ok===true;
+  }catch(e){
+    console.warn("Google Sheets indisponível. Dados mantidos localmente.",e);
+    return false;
+  }
+}
+async function loadRemoteData(){
+  try{
+    const result=await apiRequest({action:"load"});
+    if(result?.ok && result.data && Array.isArray(result.data.users)){
+      const remote=result.data;
+      // O Google Sheets é a fonte compartilhada; preserva configurações locais se o remoto não tiver alguma.
+      remote.settings=remote.settings||{};
+      remote.settings.sheetsApi=remote.settings.sheetsApi||CONFIG.API_URL;
+      if(!remote.settings.logo && data.settings?.logo) remote.settings.logo=data.settings.logo;
+      data=remote;
+      DB.write(data);
+      return true;
+    }
+  }catch(e){
+    console.warn("Não foi possível carregar os dados do Google Sheets. Usando cache local.",e);
+  }
+  return false;
 }
 function addEvent(jobId,type,text,user=currentUser?.name||"Sistema"){
   data.events.push({id:uid("evt"),jobId,type,text,user,at:iso()}); save();
@@ -240,7 +272,7 @@ function renderLogin(){
       <h1 class="login-title">${CONFIG.APP_NAME}</h1>
       <div class="muted">Acesso ao sistema</div>
       <form onsubmit="login(event)">
-        <div class="form-group"><label>E-mail</label><input id="loginEmail" type="email" required value="${CONFIG.DEFAULT_USER}"></div>
+        <div class="form-group"><label>E-mail ou nome de usuário</label><input id="loginEmail" type="text" autocomplete="username" required value="${CONFIG.DEFAULT_USER}"></div>
         <div class="form-group"><label>Senha</label><input id="loginPass" type="password" required value="${CONFIG.DEFAULT_PASSWORD}"></div>
         <div id="loginError" class="error"></div>
         <button class="btn btn-primary" style="width:100%;margin-top:8px">Entrar</button>
@@ -251,9 +283,9 @@ function renderLogin(){
 }
 function login(e){
   e.preventDefault();
-  const email=document.getElementById("loginEmail").value.trim().toLowerCase();
+  const identifier=document.getElementById("loginEmail").value.trim().toLowerCase();
   const pass=document.getElementById("loginPass").value;
-  const u=data.users.find(x=>x.email.toLowerCase()===email&&x.password===pass&&x.active!==false);
+  const u=data.users.find(x=>(x.email?.toLowerCase()===identifier || x.username?.toLowerCase()===identifier || x.name?.toLowerCase()===identifier)&&x.password===pass&&x.active!==false);
   if(!u){document.getElementById("loginError").textContent="Usuário ou senha inválidos.";return}
   currentUser={id:u.id,name:u.name,email:u.email,role:u.role};
   DB.setSession(currentUser); render();
@@ -442,8 +474,9 @@ function saveLogo(){
 function openUserModal(){
   openModal("Cadastrar Colaborador",`
   <div class="grid2">
-    <div class="form-group"><label>Nome de usuário *</label><input id="uName"></div>
-    <div class="form-group"><label>E-mail *</label><input id="uEmail" type="email"></div>
+    <div class="form-group"><label>Nome do colaborador *</label><input id="uName"></div>
+    <div class="form-group"><label>Nome de usuário *</label><input id="uUsername" autocomplete="username" placeholder="Ex.: joao.silva"></div>
+    <div class="form-group"><label>E-mail *</label><input id="uEmail" type="email" autocomplete="email"></div>
     <div class="form-group"><label>Senha *</label><input id="uPass" type="password"></div>
     <div class="form-group"><label>Confirme sua senha *</label><input id="uPass2" type="password"></div>
     <div class="form-group"><label>Nível de acesso</label><select id="uRole"><option value="colaborador">Colaborador</option><option value="gestor">Gestor</option></select></div>
@@ -452,11 +485,15 @@ function openUserModal(){
   `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveUser()">Cadastrar</button>`);
 }
 function saveUser(){
-  const name=uName.value.trim(),email=uEmail.value.trim().toLowerCase(),p=uPass.value,p2=uPass2.value,role=uRole.value;
-  if(!name||!email||!p){uError.textContent="Preencha os campos obrigatórios.";return}
+  const name=uName.value.trim(),username=uUsername.value.trim().toLowerCase(),email=uEmail.value.trim().toLowerCase(),p=uPass.value,p2=uPass2.value,role=uRole.value;
+  if(!name||!username||!email||!p){uError.textContent="Preencha os campos obrigatórios.";return}
   if(p!==p2){uError.textContent="As senhas não são iguais.";return}
-  if(data.users.some(u=>u.email.toLowerCase()===email)){uError.textContent="E-mail já cadastrado.";return}
-  data.users.push({id:uid("usr"),name,email,password:p,role,active:true});save();notify(`Novo usuário cadastrado: ${name}`);closeModal();alert("Colaborador cadastrado com sucesso.");
+  if(data.users.some(u=>u.email?.toLowerCase()===email)){uError.textContent="E-mail já cadastrado.";return}
+  if(data.users.some(u=>(u.username||"").toLowerCase()===username)){uError.textContent="Nome de usuário já cadastrado.";return}
+  data.users.push({id:uid("usr"),name,username,email,password:p,role,active:true});
+  addEvent(null,"cadastro",`Usuário ${name} cadastrado.`);
+  notify(`Novo usuário cadastrado: ${name}`);
+  save(); closeModal(); alert("Colaborador cadastrado com sucesso. Ele já estará disponível para equipes e serviços após a sincronização.");
 }
 
 function openVehicleModal(){
@@ -480,7 +517,7 @@ function openTeamModal(){
   openModal("Cadastro de Equipe",`
   <div class="form-group"><label>Nome da equipe *</label><input id="tName"></div>
   <div class="form-group"><label>Veículo da equipe</label><select id="tVehicle"><option value="">Selecione</option>${data.vehicles.map(v=>`<option value="${v.id}">${escapeHtml(v.plate)} — ${escapeHtml(v.model||"")}</option>`).join("")}</select></div>
-  <div class="form-group"><label>Colaboradores da equipe</label><div class="check-list">${data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u=>`<label class="check-row"><input type="checkbox" class="teamMember" value="${u.id}"><span>${escapeHtml(u.name)} — ${escapeHtml(u.email)}</span></label>`).join("")||`<div class="muted">Cadastre colaboradores primeiro.</div>`}</div></div>`,
+  <div class="form-group"><label>Colaboradores da equipe</label><div class="notice">Selecione um ou mais colaboradores. Um colaborador pode participar de mais de uma equipe.</div><div class="check-list">${data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u=>`<label class="check-row"><input type="checkbox" class="teamMember" value="${u.id}"><span><b>${escapeHtml(u.name)}</b>${u.username?` — @${escapeHtml(u.username)}`:""} — ${escapeHtml(u.email)}</span></label>`).join("")||`<div class="muted">Nenhum colaborador ativo encontrado. Cadastre o colaborador e, se necessário, recarregue a página para sincronizar os dados.</div>`}</div></div>`,
   `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveTeam()">Salvar</button>`);
 }
 function saveTeam(){
@@ -694,7 +731,14 @@ function showTeamReport(){
 
 /* Segurança básica da sessão no carregamento. */
 window.addEventListener("storage",()=>{data=DB.read();render()});
-render();
+
+// Inicialização: primeiro restaura a sessão local e, em seguida, carrega a base compartilhada do Google Sheets.
+(async function boot(){
+  applyTheme();
+  await loadRemoteData();
+  currentUser=DB.session();
+  render();
+})();
 </script>
 </body>
 </html>
