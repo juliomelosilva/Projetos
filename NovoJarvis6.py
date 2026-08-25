@@ -15,7 +15,7 @@ import sys
 # CONFIGURAÇÕES GERAIS
 # ==================================================
 
-SITE_URL = "https://smliveloja.bitrix24.site/plantao/"
+SITE_URL = "https://api.leadconnectorhq.com/widget/form/UGgmkEe3YBsaDMsI58pG"
 CONFIG_DIA = "config_dia.json"
 
 pyautogui.FAILSAFE = True
@@ -27,10 +27,10 @@ pyautogui.PAUSE = 0.3
 
 IMAGENS = {}
 PLANILHA = ""
-JANELA_ABERTA = True  # Flag para monitorar o fechamento da interface gráfica
+JANELA_ABERTA = True
 
 # ==================================================
-# FUNÇÃO DE CLIQUE POR IMAGEM
+# FUNÇÕES DE INTERAÇÃO NA TELA
 # ==================================================
 
 def clicar_imagem(nome, timeout=15, confidence=0.8):
@@ -51,24 +51,51 @@ def clicar_imagem(nome, timeout=15, confidence=0.8):
         time.sleep(0.4)
     raise Exception(f"Imagem não encontrada: {nome}")
 
-def preencher_campo_seguro(imagem_nome, texto):
-    """Clica no campo, limpa dados antigos e fecha sugestões do navegador"""
-    if not JANELA_ABERTA: 
+def tentar_clicar_recomecar():
+    if "recomecar.png" not in IMAGENS:
         return
+
+    try:
+        pos = pyautogui.locateCenterOnScreen(
+            IMAGENS["recomecar.png"],
+            confidence=0.7
+        )
+        if pos:
+            pyautogui.click(pos)
+            time.sleep(1.0)
+    except Exception:
+        pass
+
+def preencher_campo_seguro(imagem_nome, texto, enter_ao_final=False, mover_direita=False):
+    """
+    1. Localiza a imagem e clica.
+    2. Se mover_direita=True, move o mouse 5px para a direita após o clique.
+    3. Limpa, digita o texto da planilha e confirma.
+    """
+    if not JANELA_ABERTA or texto is None: 
+        return
+    
+    # 1. Localiza a imagem e clica no campo
     clicar_imagem(imagem_nome)
     time.sleep(0.2)
     
-    # Seleciona tudo e apaga (evita acúmulo de texto e limpa ghost prompts)
+    # 2. Se for o caso, move o mouse 5px para a direita
+    if mover_direita:
+        pyautogui.moveRel(5, 0)
+        time.sleep(0.2)
+
+    # 3. Limpa e preenche o valor da planilha
     keyboard.press_and_release('ctrl+a')
     keyboard.press_and_release('backspace')
     time.sleep(0.1)
     
-    # Escreve o conteúdo real da planilha
     keyboard.write(str(texto))
-    time.sleep(0.2)
+    time.sleep(0.3)
     
-    # Pressiona ESC para fechar pop-ups de preenchimento automático do navegador
-    keyboard.press_and_release('esc')
+    if enter_ao_final:
+        keyboard.press_and_release('enter')
+    else:
+        keyboard.press_and_release('esc')
     time.sleep(0.2)
 
 # ==================================================
@@ -111,39 +138,67 @@ def desligar_com_confirmacao():
         if not desligar_confirmado["cancelado"] and JANELA_ABERTA:
             os.system("shutdown /s /t 0")
 
-    # Threads marcadas como daemon=True para morrerem se a janela principal fechar
     t1 = threading.Thread(target=perguntar, daemon=True)
     t2 = threading.Thread(target=contagem, daemon=True)
     t1.start()
     t2.start()
 
 # ==================================================
-# SELEÇÃO DO DIA
+# SELEÇÃO DO DIA E CONFIRMAÇÃO
 # ==================================================
 
-def salvar_dia(coord):
+def salvar_config_data(coord):
     with open(CONFIG_DIA, "w") as f:
         json.dump(coord, f)
 
-def carregar_dia():
+def carregar_config_data():
     if os.path.exists(CONFIG_DIA):
         with open(CONFIG_DIA, "r") as f:
             return json.load(f)
     return None
 
 def configurar_dia():
+    tentar_clicar_recomecar()
+    time.sleep(0.5)
+
     clicar_imagem("selecao_data.png")
+    
     messagebox.showinfo(
-        "Configurar Dia",
-        "Posicione o mouse sobre o DIA desejado\n"
-        "e pressione F8 para gravar"
+        "Configurar Dia - Passo 1",
+        "Deixe o mouse sobre o DIA desejado\n"
+        "e pressione F8 para gravar."
     )
     keyboard.wait("f8")
-    x, y = pyautogui.position()
-    salvar_dia({"x": x, "y": y})
+    dia_x, dia_y = pyautogui.position()
+    time.sleep(0.5)
+
+    messagebox.showinfo(
+        "Configurar Dia - Passo 2",
+        "Agora deixe o mouse sobre o botão CONFIRMAR\n"
+        "e pressione F8 para gravar."
+    )
+    keyboard.wait("f8")
+    conf_x, conf_y = pyautogui.position()
+
+    salvar_config_data({
+        "dia": {"x": dia_x, "y": dia_y},
+        "confirmar": {"x": conf_x, "y": conf_y}
+    })
+
+    pyautogui.click(dia_x, dia_y)
+    time.sleep(0.3)
+    pyautogui.click(conf_x, conf_y)
+    time.sleep(0.5)
+
+    keyboard.press_and_release('f5')
+    time.sleep(1.0)
+
     messagebox.showinfo(
         "Sucesso",
-        f"Dia gravado em:\nX={x} | Y={y}"
+        f"Posições gravadas com sucesso!\n\n"
+        f"Dia: X={dia_x} | Y={dia_y}\n"
+        f"Confirmar: X={conf_x} | Y={conf_y}\n\n"
+        f"A página foi atualizada e está pronta para a automação."
     )
 
 # ==================================================
@@ -174,19 +229,16 @@ def selecionar_planilha():
 # ==================================================
 
 def iniciar_automacao():
-    nome_tecnico = nome_entry.get()
-
-    if not nome_tecnico:
-        messagebox.showerror("Erro", "Informe o nome do técnico")
-        return
     if not PLANILHA:
         messagebox.showerror("Erro", "Selecione a planilha")
         return
 
-    dia = carregar_dia()
-    if not dia:
-        messagebox.showerror("Erro", "Configure o dia antes de iniciar")
+    config_data = carregar_config_data()
+    if not config_data or "dia" not in config_data or "confirmar" not in config_data:
+        messagebox.showerror("Erro", "Configure a data e o botão confirmar (F8) antes de iniciar")
         return
+
+    tentar_clicar_recomecar()
 
     wb = openpyxl.load_workbook(PLANILHA)
     sheet = wb.active
@@ -197,79 +249,68 @@ def iniciar_automacao():
     contador = 0
 
     for linha in sheet.iter_rows(min_row=2):
-        if not JANELA_ABERTA:  # Interrompe o loop imediatamente se a janela gráfica sumir
+        if not JANELA_ABERTA:
             break
 
-        empresa = linha[0].value
-        titulo = linha[1].value
-        descricao = linha[1].value
-        resolucao = linha[2].value
+        empresa = linha[0].value                                 # Coluna A (Empresa)
+        titulo = linha[1].value                                  # Coluna B (Problema / Título)
+        descricao = linha[1].value                               # Coluna B (Problema / Descrição)
+        resolucao = linha[2].value                               # Coluna C (Resoluçao)
+        revenda = linha[3].value if len(linha) > 3 else None     # Coluna D (Revenda)
+        segmento = linha[4].value if len(linha) > 4 else None    # Coluna E (Segmento)
 
         if not empresa:
             break
 
-        # 1. Nome do Técnico
-        preencher_campo_seguro("tecnico.png", nome_tecnico)
-
-        # 2. Seleção de Data (Foco controlado por cliques + ESC)
+        # 1. Seleção de Data
         clicar_imagem("selecao_data.png")
-        time.sleep(0.5)
-        pyautogui.click(dia["x"], dia["y"])
-        time.sleep(0.5)
-        keyboard.press_and_release('esc')
-        time.sleep(0.4)
+        time.sleep(0.3)
+        pyautogui.click(config_data["dia"]["x"], config_data["dia"]["y"])
+        time.sleep(0.3)
+        pyautogui.click(config_data["confirmar"]["x"], config_data["confirmar"]["y"])
+        time.sleep(1.0)
 
-        # 3. Empresa
+        # 2. Empresa
         preencher_campo_seguro("empresa.png", empresa)
 
-        # 4. Título
+        # 3. Título
         preencher_campo_seguro("titulo.png", titulo)
 
-        # 5. Descrição
+        # 4. Descrição + TAB
         preencher_campo_seguro("descricao.png", descricao)
+        keyboard.press_and_release('tab')
+        time.sleep(0.2)
 
-        # 6. Resolução
+        # 5. Resolução
         preencher_campo_seguro("resolucao.png", resolucao)
 
-        # Desce a tela do formulário para visualizar os blocos dinâmicos finais
+        # Desce a tela
         pyautogui.scroll(-2000)
         time.sleep(0.5)
 
-        # 7. Prioridade
-        clicar_imagem("prioridade.png")
-        time.sleep(0.5)
-        clicar_imagem("prioridade_opcao.png")
+        # 6. Segmento
+        if segmento and "segmento.png" in IMAGENS:
+            preencher_campo_seguro("segmento.png", segmento, enter_ao_final=True)
+
+        # 7. Categoria + TAB
+        if "categoria.png" in IMAGENS:
+            preencher_campo_seguro("categoria.png", "PLANTÃO", enter_ao_final=True)
+            keyboard.press_and_release('tab')
+            time.sleep(0.2)
+
+        # 8. Revenda (Localiza revenda.png -> Clica -> Move 5px para a direita -> Preenche e dá ENTER)
+        if revenda and "revenda.png" in IMAGENS:
+            preencher_campo_seguro("revenda.png", revenda, enter_ao_final=True, mover_direita=True)
+
         time.sleep(0.5)
 
-        # 8. Categoria - Movimento por Tempo com Repetição Contínua
-        clicar_imagem("categoria.png")
-        time.sleep(0.6)  # Tempo para o drop-down processar a abertura
+        # 9. Finalizar / Enviar Registro
+        if "finalizar.png" in IMAGENS:
+            clicar_imagem("finalizar.png")
+        else:
+            clicar_imagem("enviar.png")
         
-        # Move o ponteiro 100 pixels para baixo para focar na área interna da lista
-        pyautogui.moveRel(0, 100)
-        time.sleep(0.2)
-
-        if JANELA_ABERTA:
-            # Marca o momento que iniciou a contagem
-            tempo_inicio = time.time()
-            
-            # Executa o pressionamento repetido por exatamente 4 segundos
-            while time.time() - tempo_inicio < 4.0:
-                if not JANELA_ABERTA:
-                    break
-                keyboard.press_and_release('down')
-                time.sleep(0.05) # Envia o sinal várias vezes por segundo para descer a lista
-            
-            # Aguarda 1 segundo após o término dos 4 segundos
-            time.sleep(1.0)
-            
-            # Confirma a seleção com o Enter
-            keyboard.press_and_release('enter')
-            time.sleep(0.5)
-
-        # 9. Finalizar Registro
-        clicar_imagem("finalizar.png")
-        time.sleep(6)
+        time.sleep(4)
 
         contador += 1
         progress_bar["value"] = contador
@@ -286,7 +327,6 @@ def iniciar_automacao():
 # ==================================================
 
 def ao_fechar_janela():
-    """Para imediatamente todas as rotinas em background e mata o processo Python"""
     global JANELA_ABERTA
     JANELA_ABERTA = False
     app.destroy()
@@ -298,16 +338,11 @@ def ao_fechar_janela():
 
 app = tk.Tk()
 app.title("Bot Chamados Plantão")
-app.geometry("360x360")
+app.geometry("360x310")
 
-# Vincula o botão fechar 'X' do Windows à nossa rotina de encerramento total
 app.protocol("WM_DELETE_WINDOW", ao_fechar_janela)
 
 webbrowser.open(SITE_URL)
-
-tk.Label(app, text="Nome do Técnico").pack(pady=5)
-nome_entry = tk.Entry(app, width=30)
-nome_entry.pack()
 
 tk.Button(app, text="Selecionar Imagens", command=selecionar_imagens).pack(pady=5)
 tk.Button(app, text="Selecionar Planilha", command=selecionar_planilha, bg="#0d3303", fg="white").pack(pady=5)
