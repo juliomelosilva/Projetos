@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestão de Serviços</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-theme">
+
+  <!-- BARRA SUPERIOR / CABEÇALHO -->
+  <header class="app-header">
+    <div class="header-left">
+      <h2>Painel de Serviços</h2>
+    </div>
+    <div class="header-right">
+      <!-- Botão de Alternar Tema (Lâmpada Acesa / Apagada) -->
+      <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-btn" title="Alternar Tema">
+        <span id="themeIcon">💡</span>
+      </button>
+
+      <!-- Identificação do Usuário Logado -->
+      <div class="user-info">
+        <span id="userNameDisplay">Usuário</span>
+        <span id="userRoleDisplay" class="role-badge">colaborador</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- CONTROLES E FILTROS -->
+    <section class="controls-section">
+      <button onclick="openJobModal()" class="btn btn-primary">+ Novo Serviço</button>
+    </section>
+
+    <!-- LISTA / TABELA DE SERVIÇOS -->
+    <section class="services-list-section">
+      <div id="servicesContainer">
+        <!-- Renderizado dinamicamente pelo script.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL DE CRIAÇÃO / EDIÇÃO DE SERVIÇO (SEM CAMPO DE SLA) -->
+  <div id="jobModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeJobModal()">&times;</span>
+      <h3 id="modalTitle">Novo Serviço</h3>
+      
+      <form id="jobForm" onsubmit="handleSaveService(event)">
+        <input type="hidden" id="serviceId">
+
+        <div class="form-group">
+          <label for="serviceTitle">Título do Serviço</label>
+          <input type="text" id="serviceTitle" required placeholder="Ex: Manutenção Preventiva">
+        </div>
+
+        <div class="form-group">
+          <label for="serviceDescription">Descrição</label>
+          <textarea id="serviceDescription" rows="3" placeholder="Detalhes do serviço..."></textarea>
+        </div>
+
+        <!-- Seção de Cadastro de Afazeres do Serviço -->
+        <div class="form-group">
+          <label>Afazeres (Checklist)</label>
+          <div id="modalTasksList" class="tasks-input-list"></div>
+          <button type="button" onclick="addTaskInput()" class="btn btn-secondary btn-sm">+ Adicionar Afazer</button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" onclick="closeJobModal()" class="btn btn-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar Serviço</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
