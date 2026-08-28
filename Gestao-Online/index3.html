@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão On-line</title>
+<style>
+/* =========================================================
+   GESTÃO ON-LINE — CSS CENTRALIZADO
+   ========================================================= */
+:root{
+  --cor-azul:#082a4a;
+  --cor-azul-2:#0d3b66;
+  --cor-amarelo:#f2c94c;
+  --cor-amarelo-2:#d6a800;
+  --cor-fundo:#f3f6fa;
+  --cor-card:#ffffff;
+  --cor-texto:#17212b;
+  --cor-texto-2:#667085;
+  --cor-borda:#d9e1ea;
+  --cor-sucesso:#2e7d32;
+  --cor-perigo:#d32f2f;
+  --cor-laranja:#ef8b2c;
+  --cor-pausado:#c9a227;
+  --cor-pendente:#e65100;
+  --fonte-principal:Arial,sans-serif;
+  --raio:14px;
+  --sombra:0 8px 25px rgba(0,0,0,.10);
+}
+[data-theme="dark"]{
+  --cor-fundo:#101820;
+  --cor-card:#18232e;
+  --cor-texto:#edf2f7;
+  --cor-texto-2:#aab6c3;
+  --cor-borda:#2b3a49;
+  --cor-azul:#071c31;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:var(--fonte-principal);background:var(--cor-fundo);color:var(--cor-texto)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at center,#173f63,var(--cor-azul))}
+.login-card{width:min(420px,100%);background:var(--cor-card);padding:34px;border-radius:22px;box-shadow:var(--sombra);text-align:center}
+.logo-circle{width:112px;height:112px;border-radius:50%;object-fit:cover;border:5px solid var(--cor-amarelo);background:#eee;margin:auto;display:block}
+.login-title{margin:14px 0 4px;color:var(--cor-texto)}
+.muted{color:var(--cor-texto-2);font-size:13px}
+.form-group{margin:12px 0;text-align:left}
+.form-group label{display:block;font-weight:700;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--cor-borda);border-radius:10px;background:var(--cor-card);color:var(--cor-texto);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cor-amarelo-2);box-shadow:0 0 0 3px rgba(242,201,76,.18)}
+textarea{min-height:90px;resize:vertical}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;transition:.18s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-primary{background:var(--cor-azul-2);color:#fff}
+.btn-accent{background:var(--cor-amarelo);color:#17212b}
+.btn-danger{background:var(--cor-perigo);color:#fff}
+.btn-success{background:var(--cor-sucesso);color:#fff}
+.btn-secondary{background:#e7edf3;color:#17212b}
+[data-theme="dark"] .btn-secondary{background:#263442;color:#fff}
+.header{height:64px;background:var(--cor-azul);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:20}
+.header-left{display:flex;align-items:center;gap:10px}
+.menu-toggle{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:9px;padding:8px 11px}
+.brand{font-size:20px;font-weight:800}
+.header-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:9px 11px}
+.layout{display:flex;min-height:calc(100vh - 64px)}
+.sidebar{width:260px;background:var(--cor-card);border-right:1px solid var(--cor-borda);transition:.22s;flex-shrink:0;overflow:auto}
+.sidebar.collapsed{width:72px}
+.sidebar.collapsed .menu-label,.sidebar.collapsed .submenu{display:none}
+.sidebar.collapsed .menu-item{justify-content:center}
+.menu{padding:12px}
+.menu-section{margin:8px 0;color:var(--cor-texto-2);font-size:11px;font-weight:800;text-transform:uppercase}
+.menu-item{width:100%;border:0;background:transparent;color:var(--cor-texto);display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:10px;text-align:left;margin:3px 0}
+.menu-item:hover{background:var(--cor-amarelo);color:#17212b}
+.menu-item.active{background:var(--cor-azul-2);color:#fff}
+.submenu{padding-left:18px}
+.content{flex:1;padding:18px;overflow:auto}
+.page-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.page-title h1{margin:0;font-size:24px}
+.cards{display:grid;grid-template-columns:repeat(7,minmax(140px,1fr));gap:12px}
+.stat{background:var(--cor-card);border:1px solid var(--cor-borda);border-radius:var(--raio);padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat .n{font-size:28px;font-weight:900}
+.stat .l{color:var(--cor-texto-2);font-size:12px;margin-top:4px}
+.dashboard-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:14px}
+.panel{background:var(--cor-card);border:1px solid var(--cor-borda);border-radius:var(--raio);padding:16px}
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.kanban-col{min-width:285px;background:rgba(127,127,127,.08);border-radius:var(--raio);padding:10px;border-top:5px solid #777}
+.kanban-col.andamento{border-color:var(--cor-azul-2)}
+.kanban-col.pausado{border-color:var(--cor-pausado)}
+.kanban-col.atrasado{border-color:var(--cor-perigo)}
+.kanban-col.analise{border-color:var(--cor-laranja)}
+.kanban-col.pendente{border-color:var(--cor-pendente)}
+.kanban-col.concluido{border-color:var(--cor-sucesso)}
+.kanban-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:8px}
+.job{background:var(--cor-card);border:1px solid var(--cor-borda);border-radius:12px;padding:12px;margin:8px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.job:hover{border-color:var(--cor-amarelo-2)}
+.job-title{font-weight:800}
+.job-meta{font-size:12px;color:var(--cor-texto-2);margin-top:5px}
+.progress{height:8px;background:#dfe5ea;border-radius:8px;overflow:hidden;margin:9px 0}
+.progress>div{height:100%;background:var(--cor-amarelo-2)}
+.badge{display:inline-flex;align-items:center;padding:4px 7px;border-radius:99px;font-size:11px;font-weight:800;background:#e8edf2;color:#334155}
+.badge.priority{background:#fff1b8}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid var(--cor-borda);text-align:left;font-size:13px}
+th{background:rgba(127,127,127,.08)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:50}
+.modal{width:min(980px,100%);max-height:92vh;overflow:auto;background:var(--cor-card);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{padding:15px 18px;border-bottom:1px solid var(--cor-borda);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--cor-card);z-index:2}
+.modal-body{padding:18px}
+.modal-foot{padding:14px 18px;border-top:1px solid var(--cor-borda);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:var(--cor-card)}
+.close{border:0;background:transparent;color:var(--cor-texto);font-size:25px}
+.check-list{display:grid;gap:8px}
+.check-row{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--cor-borda);border-radius:10px}
+.check-row input{width:auto;margin-top:4px}
+.timeline{display:grid;gap:9px}
+.event{border-left:3px solid var(--cor-amarelo);padding:8px 12px;background:rgba(242,201,76,.08);border-radius:0 8px 8px 0}
+.event small{color:var(--cor-texto-2)}
+.file-box{border:1px dashed var(--cor-borda);padding:12px;border-radius:10px}
+.notice{padding:10px 12px;border-radius:10px;background:rgba(242,201,76,.15);margin-bottom:10px}
+.error{color:var(--cor-perigo);font-size:13px;margin-top:6px}
+.mobile-only{display:none}
+
+/* Estilos para impressão em Folha A4 */
+@media print {
+  @page { size: A4; margin: 15mm; }
+  body * { visibility: hidden; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea { position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff; }
+  .no-print { display: none !important; }
+  .print-header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
+  .print-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .print-table th, .print-table td { border: 1px solid #000; padding: 6px; font-size: 11pt; text-align: left; }
+}
+
+@media(max-width:1100px){
+  .cards{grid-template-columns:repeat(4,1fr)}
+  .dashboard-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .sidebar{position:fixed;top:64px;bottom:0;left:0;z-index:30;transform:translateX(-100%);width:270px}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar.collapsed{width:270px}
+  .sidebar.collapsed .menu-label,.sidebar.collapsed .submenu{display:block}
+  .content{padding:12px}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .brand{font-size:16px}
+  .mobile-only{display:block}
+}
+@media(max-width:430px){
+  .cards{grid-template-columns:1fr}
+  .login-card{padding:22px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="printArea" class="hidden"></div>
+<script>
+/* =========================================================
+   GESTÃO ON-LINE — CONFIGURAÇÃO
+   ========================================================= */
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbzQWiZ5PDEXnt2VwHTGDqCc6DWGVnR4jfJ1qVG-oehsnCKOfB3tZ8qoMH1Udh-K_1vsTw/exec",
+  APP_NAME: "Gestão On-line",
+  DEFAULT_USER: "admin@admin.com.br",
+  DEFAULT_PASSWORD: "admin@2026",
+  LOGO_KEY: "go_logo",
+  DATA_KEY: "go_data_v1",
+  SESSION_KEY: "go_session_v1",
+  THEME_KEY: "go_theme"
+};
+
+const DB = {
+  read(){
+    try { return JSON.parse(localStorage.getItem(CONFIG.DATA_KEY)) || seed(); }
+    catch(e){ return seed(); }
+  },
+  write(data){ localStorage.setItem(CONFIG.DATA_KEY, JSON.stringify(data)); },
+  session(){ try{return JSON.parse(localStorage.getItem(CONFIG.SESSION_KEY))}catch(e){return null} },
+  setSession(s){localStorage.setItem(CONFIG.SESSION_KEY,JSON.stringify(s))},
+  clearSession(){localStorage.removeItem(CONFIG.SESSION_KEY)}
+};
+
+function seed(){
+  const d={
+    users:[{id:"u-admin",name:"Administrador",email:CONFIG.DEFAULT_USER,password:CONFIG.DEFAULT_PASSWORD,role:"gestor",active:true}],
+    teams:[],vehicles:[],jobs:[],events:[],notifications:[],materials:[],settings:{logo:"",sheetsApi:CONFIG.API_URL}
+  };
+  DB.write(d); return d;
+}
+let data=DB.read();
+let currentUser=DB.session();
+let modalState=null;
+
+function uid(prefix){return prefix+"-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8)}
+function now(){return new Date()}
+function iso(){return new Date().toISOString()}
+function fmtDate(v){if(!v)return "-"; const d=new Date(v); return isNaN(d)?v:d.toLocaleDateString("pt-BR")}
+function fmtDateTime(v){if(!v)return "-"; const d=new Date(v); return isNaN(d)?v:d.toLocaleString("pt-BR")}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function save(){DB.write(data); syncData()}
+async function apiRequest(payload){
+  const response = await fetch(data?.settings?.sheetsApi || CONFIG.API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(payload),
+    cache:"no-store"
+  });
+  if(!response.ok) throw new Error("HTTP "+response.status);
+  return await response.json();
+}
+async function syncData(){
+  try{
+    const result=await apiRequest({action:"sync",data});
+    return result?.ok===true;
+  }catch(e){
+    console.warn("Google Sheets indisponível. Dados mantidos localmente.",e);
+    return false;
+  }
+}
+async function loadRemoteData(){
+  try{
+    const result=await apiRequest({action:"load"});
+    if(result?.ok && result.data && Array.isArray(result.data.users)){
+      const remote=result.data;
+      remote.settings=remote.settings||{};
+      remote.settings.sheetsApi=remote.settings.sheetsApi||CONFIG.API_URL;
+      if(!remote.settings.logo && data.settings?.logo) remote.settings.logo=data.settings.logo;
+      data=remote;
+      DB.write(data);
+      return true;
+    }
+  }catch(e){
+    console.warn("Não foi possível carregar os dados do Google Sheets. Usando cache local.",e);
+  }
+  return false;
+}
+function addEvent(jobId,type,text,user=currentUser?.name||"Sistema"){
+  data.events.push({id:uid("evt"),jobId,type,text,user,at:iso()}); save();
+}
+function notify(text,userId=null){
+  data.notifications.push({id:uid("not"),text,userId,read:false,at:iso()}); save();
+}
+function statusClass(status){
+  return { "Em Andamento":"andamento","Pausado":"pausado","Atrasado":"atrasado","Análise de Gestor":"analise","Pendente":"pendente","Concluído":"concluido"}[status]||"andamento";
+}
+function calcProgress(job){
+  if(!job.tasks?.length)return 0;
+  return Math.round(job.tasks.filter(x=>x.done).length/job.tasks.length*100);
+}
+function effectiveStatus(job){
+  if(job.status==="Concluído"||job.status==="Pausado"||job.status==="Análise de Gestor"||job.status==="Pendente") return job.status;
+  if(job.due && new Date(job.due+"T23:59:59") < new Date() && calcProgress(job)<100) return "Atrasado";
+  return "Em Andamento";
+}
+function getUser(id){return data.users.find(x=>x.id===id)}
+function getTeam(id){return data.teams.find(x=>x.id===id)}
+function getVehicle(id){return data.vehicles.find(x=>x.id===id)}
+function jobVisible(job){
+  if(currentUser.role==="gestor")return true;
+  const ids=job.assigneeType==="team"?(getTeam(job.assigneeId)?.members||[]):[job.assigneeId];
+  return ids.includes(currentUser.id);
+}
+function applyTheme(){
+  document.documentElement.dataset.theme=localStorage.getItem(CONFIG.THEME_KEY)||"light";
+}
+applyTheme();
+
+function render(){
+  if(!currentUser){renderLogin();return}
+  renderApp();
+}
+function renderLogin(){
+  const logo=localStorage.getItem(CONFIG.LOGO_KEY)||"";
+  document.getElementById("app").innerHTML=`
+  <main class="login">
+    <section class="login-card">
+      <img class="logo-circle" src="${logo||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#eee"/><text x="60" y="68" text-anchor="middle" font-size="38">GO</text></svg>')}" alt="Logomarca">
+      <h1 class="login-title">${CONFIG.APP_NAME}</h1>
+      <div class="muted">Acesso ao sistema</div>
+      <form onsubmit="login(event)">
+        <div class="form-group"><label>E-mail</label><input id="loginEmail" type="text" autocomplete="username" required></div>
+        <div class="form-group"><label>Senha</label><input id="loginPass" type="password" required></div>
+        <div id="loginError" class="error"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px">Entrar</button>
+      </form>
+      <button class="btn btn-secondary" style="margin-top:12px" onclick="toggleTheme()">💡 Alternar tema</button>
+    </section>
+  </main>`;
+}
+function login(e){
+  e.preventDefault();
+  const identifier=document.getElementById("loginEmail").value.trim().toLowerCase();
+  const pass=document.getElementById("loginPass").value;
+  const u=data.users.find(x=>(x.email?.toLowerCase()===identifier || x.username?.toLowerCase()===identifier || x.name?.toLowerCase()===identifier)&&x.password===pass&&x.active!==false);
+  if(!u){document.getElementById("loginError").textContent="Usuário ou senha inválidos.";return}
+  currentUser={id:u.id,name:u.name,email:u.email,role:u.role};
+  DB.setSession(currentUser); render();
+}
+function logout(){DB.clearSession();currentUser=null;render()}
+function toggleTheme(){
+  const t=(localStorage.getItem(CONFIG.THEME_KEY)||"light")==="light"?"dark":"light";
+  localStorage.setItem(CONFIG.THEME_KEY,t);applyTheme();render();
+}
+
+function renderApp(){
+  const role=currentUser.role;
+  const unread=data.notifications.filter(n=>(!n.userId||n.userId===currentUser.id)&&!n.read).length;
+  document.getElementById("app").innerHTML=`
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="brand">${CONFIG.APP_NAME}</div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Notificações" onclick="openNotifications()">🔔 ${unread?`<b>${unread}</b>`:""}</button>
+        <button class="icon-btn" title="Tema" onclick="toggleTheme()">💡</button>
+        <button class="icon-btn" onclick="logout()">Sair</button>
+      </div>
+    </header>
+    <div class="layout">
+      <aside id="sidebar" class="sidebar">
+        <nav class="menu">
+          <div class="menu-section">Principal</div>
+          <button class="menu-item" onclick="page('dashboard')">📊 <span class="menu-label">Dashboard</span></button>
+          <button class="menu-item" onclick="page('kanban')">🗂️ <span class="menu-label">Kanban</span></button>
+          <button class="menu-item" onclick="page('agenda')">📅 <span class="menu-label">Agenda</span></button>
+          <div class="menu-section">Serviços</div>
+          ${role==="gestor"?`<button class="menu-item" onclick="openJobModal()">➕ <span class="menu-label">Registrar Serviço</span></button>`:""}
+          <button class="menu-item" onclick="page('jobs')">🛠️ <span class="menu-label">Serviços</span></button>
+          ${role==="gestor"?`
+          <div class="menu-section">Cadastros</div>
+          <button class="menu-item" onclick="openLogoModal()">🖼️ <span class="menu-label">Definir Logomarca</span></button>
+          <button class="menu-item" title="Para ser exibida na tela de Login" onclick="openUserModal()">👤 <span class="menu-label">Cadastrar Colaborador</span></button>
+          <button class="menu-item" onclick="openTeamModal()">👥 <span class="menu-label">Cadastro de Equipe</span></button>
+          <button class="menu-item" onclick="openVehicleModal()">🚚 <span class="menu-label">Cadastro de Veículo</span></button>
+          <button class="menu-item" onclick="openMaterials()">📦 <span class="menu-label">Materiais</span></button>
+          <div class="menu-section">Relatórios</div>
+          <button class="menu-item" onclick="openReport('service')">📄 <span class="menu-label">Análise de Serviço</span></button>
+          <button class="menu-item" onclick="openReport('team')">📈 <span class="menu-label">Análise Equipe</span></button>
+          <button class="menu-item" onclick="openReport('productivity')">🏆 <span class="menu-label">Produtividade</span></button>
+          <div class="menu-section">Configurações</div>
+          <button class="menu-item" onclick="openSheetsConfig()">🔗 <span class="menu-label">Google Sheets</span></button>
+          <button class="menu-item" onclick="openAudit()">🛡️ <span class="menu-label">Auditoria</span></button>`:""}
+        </nav>
+      </aside>
+      <main id="content" class="content"></main>
+    </div>
+    <div id="modalRoot"></div>
+  </div>`;
+  page("dashboard");
+}
+function toggleSidebar(){
+  const s=document.getElementById("sidebar");
+  if(innerWidth<=760)s.classList.toggle("open"); else s.classList.toggle("collapsed");
+}
+function page(name){
+  if(name==="dashboard") renderDashboard();
+  if(name==="kanban") renderKanban();
+  if(name==="agenda") renderAgenda();
+  if(name==="jobs") renderJobs();
+}
+
+function renderDashboard(){
+  const jobs=data.jobs.filter(jobVisible);
+  const counts={};
+  ["Em Andamento","Pausado","Atrasado","Análise de Gestor","Pendente","Concluído"].forEach(s=>counts[s]=jobs.filter(j=>effectiveStatus(j)===s).length);
+  const pending=data.materials.filter(m=>m.status==="Pendente").length;
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Dashboard</h1><div class="muted">Visão geral da operação</div></div>${currentUser.role==="gestor"?`<button class="btn btn-accent" onclick="openJobModal()">+ Registrar Serviço</button>`:""}</div>
+  <section class="cards">
+    ${stat("Em andamento",counts["Em Andamento"],"🟦")}
+    ${stat("Pausados",counts["Pausado"],"🟨")}
+    ${stat("Atrasados",counts["Atrasado"],"🔴")}
+    ${stat("Em análise",counts["Análise de Gestor"],"🟧")}
+    ${stat("Pendentes",counts["Pendente"],"⚠️")}
+    ${stat("Concluídos",counts["Concluído"],"🟢")}
+    ${stat("Peças pendentes",pending,"📦")}
+  </section>
+  <div class="dashboard-grid">
+    <section class="panel"><h3>Resumo por equipe</h3>${teamSummary()}</section>
+    <section class="panel"><h3>Notificações recentes</h3>${recentNotifications()}</section>
+  </div>`;
+}
+function stat(label,n,icon){return `<div class="stat"><div>${icon}</div><div class="n">${n}</div><div class="l">${label}</div></div>`}
+function teamSummary(){
+  if(!data.teams.length)return `<div class="muted">Nenhuma equipe cadastrada.</div>`;
+  return `<div class="table-wrap"><table><tr><th>Equipe</th><th>Serviços</th><th>Concluídos</th><th>Atrasados</th></tr>${data.teams.map(t=>{
+    const js=data.jobs.filter(j=>j.assigneeType==="team"&&j.assigneeId===t.id);
+    return `<tr><td>${escapeHtml(t.name)}</td><td>${js.length}</td><td>${js.filter(j=>effectiveStatus(j)==="Concluído").length}</td><td>${js.filter(j=>effectiveStatus(j)==="Atrasado").length}</td></tr>`
+  }).join("")}</table></div>`;
+}
+function recentNotifications(){
+  const ns=data.notifications.slice().sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,7);
+  return ns.length?ns.map(n=>`<div class="event">${escapeHtml(n.text)}<br><small>${fmtDateTime(n.at)}</small></div>`).join(""):`<div class="muted">Nenhuma notificação.</div>`;
+}
+
+function renderKanban(){
+  const jobs=data.jobs.filter(jobVisible);
+  const statuses=currentUser.role==="gestor"?["Em Andamento","Pausado","Atrasado","Análise de Gestor","Pendente","Concluído"]:["Em Andamento","Pausado","Atrasado","Pendente","Concluído"];
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Kanban de Serviços</h1><div class="muted">Arraste visualmente não é obrigatório: as mudanças são feitas pelos comandos do serviço.</div></div></div>
+  <div class="kanban">${statuses.map(s=>`
+    <section class="kanban-col ${statusClass(s)}">
+      <div class="kanban-head"><span>${s}</span><span>${jobs.filter(j=>effectiveStatus(j)===s).length}</span></div>
+      ${jobs.filter(j=>effectiveStatus(j)===s).map(jobCard).join("")||`<div class="muted">Nenhum serviço.</div>`}
+    </section>`).join("")}</div>`;
+}
+function jobCard(j){
+  const pct=calcProgress(j);
+  return `<article class="job" onclick="openJobView('${j.id}')">
+    <div class="job-title">#${escapeHtml(j.number)} — ${escapeHtml(j.name)}</div>
+    <div class="job-meta">📍 ${escapeHtml(j.location||"-")}</div>
+    <div class="job-meta">👥 ${escapeHtml(j.assigneeName||"-")}</div>
+    <span class="badge priority">${escapeHtml(j.priority||"Normal")}</span>
+    <div class="progress"><div style="width:${pct}%"></div></div>
+    <div class="job-meta">${pct}% concluído • prazo ${fmtDate(j.due)}</div>
+  </article>`;
+}
+
+function renderJobs(){
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><h1>Serviços</h1>${currentUser.role==="gestor"?`<button class="btn btn-accent" onclick="openJobModal()">+ Novo Serviço</button>`:""}</div>
+  <div class="toolbar">
+    <input id="searchJobs" placeholder="🔎 Pedido, serviço, cliente, equipe..." oninput="filterJobs()" style="max-width:330px">
+    <select id="filterStatus" onchange="filterJobs()"><option value="">Todos os status</option><option>Em Andamento</option><option>Pausado</option><option>Atrasado</option><option>Análise de Gestor</option><option>Pendente</option><option>Concluído</option></select>
+    <select id="filterPriority" onchange="filterJobs()"><option value="">Todas prioridades</option><option>Urgente</option><option>Alta</option><option>Normal</option><option>Baixa</option></select>
+  </div>
+  <div id="jobTable" class="panel"></div>`;
+  filterJobs();
+}
+function filterJobs(){
+  const q=(document.getElementById("searchJobs")?.value||"").toLowerCase();
+  const st=document.getElementById("filterStatus")?.value||"";
+  const pr=document.getElementById("filterPriority")?.value||"";
+  const js=data.jobs.filter(jobVisible).filter(j=>
+    (!q||`${j.number} ${j.name} ${j.location} ${j.customerName} ${j.assigneeName}`.toLowerCase().includes(q)) &&
+    (!st||effectiveStatus(j)===st) && (!pr||j.priority===pr));
+  document.getElementById("jobTable").innerHTML=`<div class="table-wrap"><table><tr><th>Pedido</th><th>Serviço</th><th>Destino</th><th>Status</th><th>Progresso</th><th>Prazo</th></tr>
+  ${js.map(j=>`<tr onclick="openJobView('${j.id}')" style="cursor:pointer"><td>#${j.number}</td><td>${escapeHtml(j.name)}</td><td>${escapeHtml(j.assigneeName)}</td><td>${effectiveStatus(j)}</td><td>${calcProgress(j)}%</td><td>${fmtDate(j.due)}</td></tr>`).join("")||`<tr><td colspan="6">Nenhum serviço encontrado.</td></tr>`}</table></div>`;
+}
+
+function renderAgenda(){
+  const start=new Date(); start.setDate(1);
+  const month=start.getMonth(),year=start.getFullYear();
+  const days=new Date(year,month+1,0).getDate();
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Agenda</h1><div class="muted">${start.toLocaleDateString("pt-BR",{month:"long",year:"numeric"})}</div></div></div>
+  <div class="panel"><div class="grid3">${Array.from({length:days},(_,i)=>{
+    const day=i+1; const key=`${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    const js=data.jobs.filter(j=>jobVisible(j)&&j.start?.startsWith(key));
+    return `<div class="stat"><b>${day}</b><div style="margin-top:8px">${js.map(j=>`<div class="badge" style="margin:2px;cursor:pointer" onclick="openJobView('${j.id}')">#${j.number}</div>`).join("")||`<span class="muted">Livre</span>`}</div></div>`
+  }).join("")}</div></div>`;
+}
+
+function openModal(title,body,footer=""){
+  document.getElementById("modalRoot").innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><section class="modal">
+    <header class="modal-head"><h2 style="margin:0;font-size:19px">${title}</h2><button class="close" onclick="closeModal()">×</button></header>
+    <div class="modal-body">${body}</div>
+    ${footer?`<footer class="modal-foot">${footer}</footer>`:""}
+  </section></div>`;
+}
+function closeModal(){document.getElementById("modalRoot").innerHTML=""}
+
+function openLogoModal(){
+  openModal("Definir Logomarca",`
+    <div class="notice">Para ser exibida na tela de Login.</div>
+    <div class="form-group"><label>URL da logomarca</label><input id="logoUrl" placeholder="https://..."></div>
+    <div class="form-group"><label>Ou selecione uma imagem</label><input id="logoFile" type="file" accept="image/*" onchange="previewLogo(event)"></div>
+    <img id="logoPreview" class="logo-circle" style="margin:15px 0" src="${escapeHtml(data.settings.logo||localStorage.getItem(CONFIG.LOGO_KEY)||"")}">`,
+    `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveLogo()">Salvar</button>`);
+}
+function previewLogo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>document.getElementById("logoPreview").src=r.result;r.readAsDataURL(f)}
+function saveLogo(){
+  const file=document.getElementById("logoFile").files[0];
+  const url=document.getElementById("logoUrl").value.trim();
+  if(file){const r=new FileReader();r.onload=()=>{data.settings.logo=r.result;localStorage.setItem(CONFIG.LOGO_KEY,r.result);save();closeModal();render()};r.readAsDataURL(file)}
+  else {data.settings.logo=url;localStorage.setItem(CONFIG.LOGO_KEY,url);save();closeModal();render()}
+}
+
+function openUserModal(){
+  openModal("Cadastrar Colaborador",`
+  <div class="grid2">
+    <div class="form-group"><label>Nome do colaborador *</label><input id="uName"></div>
+    <div class="form-group"><label>Nome de usuário *</label><input id="uUsername" autocomplete="username" placeholder="Ex.: joao.silva"></div>
+    <div class="form-group"><label>E-mail *</label><input id="uEmail" type="email" autocomplete="email"></div>
+    <div class="form-group"><label>Senha *</label><input id="uPass" type="password"></div>
+    <div class="form-group"><label>Confirme sua senha *</label><input id="uPass2" type="password"></div>
+    <div class="form-group"><label>Nível de acesso</label><select id="uRole"><option value="colaborador">Colaborador</option><option value="gestor">Gestor</option></select></div>
+  </div>
+  <div id="uError" class="error"></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveUser()">Cadastrar</button>`);
+}
+function saveUser(){
+  const name=uName.value.trim(),username=uUsername.value.trim().toLowerCase(),email=uEmail.value.trim().toLowerCase(),p=uPass.value,p2=uPass2.value,role=uRole.value;
+  if(!name||!username||!email||!p){uError.textContent="Preencha os campos obrigatórios.";return}
+  if(p!==p2){uError.textContent="As senhas não são iguais.";return}
+  if(data.users.some(u=>u.email?.toLowerCase()===email)){uError.textContent="E-mail já cadastrado.";return}
+  if(data.users.some(u=>(u.username||"").toLowerCase()===username)){uError.textContent="Nome de usuário já cadastrado.";return}
+  data.users.push({id:uid("usr"),name,username,email,password:p,role,active:true});
+  addEvent(null,"cadastro",`Usuário ${name} cadastrado.`);
+  notify(`Novo usuário cadastrado: ${name}`);
+  save(); closeModal(); alert("Colaborador cadastrado com sucesso. Ele já estará disponível para equipes e serviços após a sincronização.");
+}
+
+function openVehicleModal(){
+  openModal("Cadastro de Veículo",`
+  <div class="grid2">
+    <div class="form-group"><label>Placa *</label><input id="vPlate"></div>
+    <div class="form-group"><label>Modelo</label><input id="vModel"></div>
+    <div class="form-group"><label>Marca</label><input id="vBrand"></div>
+    <div class="form-group"><label>Ano</label><input id="vYear" type="number"></div>
+    <div class="form-group"><label>Quilometragem</label><input id="vKm" type="number"></div>
+    <div class="form-group"><label>Status</label><select id="vStatus"><option>Disponível</option><option>Em serviço</option><option>Indisponível</option><option>Manutenção</option></select></div>
+  </div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveVehicle()">Salvar</button>`);
+}
+function saveVehicle(){
+  if(!vPlate.value.trim())return alert("Informe a placa.");
+  data.vehicles.push({id:uid("veh"),plate:vPlate.value.trim().toUpperCase(),model:vModel.value,brand:vBrand.value,year:vYear.value,km:Number(vKm.value||0),status:vStatus.value,active:true});save();closeModal();alert("Veículo cadastrado.");
+}
+
+function openTeamModal(){
+  openModal("Cadastro de Equipe",`
+  <div class="form-group"><label>Nome da equipe *</label><input id="tName"></div>
+  <div class="form-group"><label>Veículo da equipe</label><select id="tVehicle"><option value="">Selecione</option>${data.vehicles.map(v=>`<option value="${v.id}">${escapeHtml(v.plate)} — ${escapeHtml(v.model||"")}</option>`).join("")}</select></div>
+  <div class="form-group"><label>Colaboradores da equipe</label><div class="notice">Selecione um ou mais colaboradores. Um colaborador pode participar de mais de uma equipe.</div><div class="check-list">${data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u=>`<label class="check-row"><input type="checkbox" class="teamMember" value="${u.id}"><span><b>${escapeHtml(u.name)}</b>${u.username?` — @${escapeHtml(u.username)}`:""} — ${escapeHtml(u.email)}</span></label>`).join("")||`<div class="muted">Nenhum colaborador ativo encontrado. Cadastre o colaborador e, se necessário, recarregue a página para sincronizar os dados.</div>`}</div></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveTeam()">Salvar</button>`);
+}
+function saveTeam(){
+  if(!tName.value.trim())return alert("Informe o nome da equipe.");
+  const members=[...document.querySelectorAll(".teamMember:checked")].map(x=>x.value);
+  data.teams.push({id:uid("team"),name:tName.value.trim(),vehicleId:tVehicle.value,members,active:true});save();closeModal();alert("Equipe cadastrada.");
+}
+
+function openJobModal(){
+  if(currentUser.role!=="gestor")return;
+  const n=String((Math.max(0,...data.jobs.map(j=>Number(j.number)||0))+1)).padStart(6,"0");
+  openModal("Registrar Serviço",`
+  <div class="notice">Pedido <b>#${n}</b> será gerado automaticamente e não poderá ser editado.</div>
+  <div class="grid2">
+    <div class="form-group"><label>Nome do serviço *</label><input id="jName"></div>
+    <div class="form-group"><label>Prioridade</label><select id="jPriority"><option>Normal</option><option>Baixa</option><option>Alta</option><option>Urgente</option></select></div>
+    <div class="form-group"><label>Trabalho Para *</label><select id="jType" onchange="switchAssigneeFields()"><option value="team">Equipe</option><option value="user">Colaborador</option></select></div>
+    <div class="form-group" id="assigneeBox"></div>
+    <div class="form-group"><label>Data de início do serviço *</label><input id="jStart" type="date"></div>
+    <div class="form-group"><label>Data prevista de conclusão *</label><input id="jDue" type="date"></div>
+    <div class="form-group"><label>Local do serviço *</label><input id="jLocation"></div>
+    <div class="form-group"><label>Nome do responsável/dono do local</label><input id="jCustomer"></div>
+    <div class="form-group"><label>Contato do responsável</label><input id="jContact"></div>
+  </div>
+  <div class="form-group"><label>Inclusão de Afazeres</label><div id="tasksBox"></div><button class="btn btn-secondary" onclick="addTaskField()">+ Adicionar Afazer</button></div>
+  <div class="form-group"><label>SLA (opcional, em horas)</label><input id="jSla" type="number" min="0"></div>
+  <div class="form-group"><label>Observações</label><textarea id="jNotes"></textarea></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveJob()">Criar Serviço</button>`);
+  switchAssigneeFields();addTaskField();
+}
+function switchAssigneeFields(){
+  const type=document.getElementById("jType").value;
+  document.getElementById("assigneeBox").innerHTML=`<label>${type==="team"?"Seleção Equipe *":"Seleção Colaborador *"}</label>
+  <select id="jAssignee">${type==="team"?data.teams.map(t=>`<option value="${t.id}">${escapeHtml(t.name)}</option>`).join(""):data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u=>`<option value="${u.id}">${escapeHtml(u.name)}</option>`).join("")}</select>`;
+}
+function addTaskField(){
+  const box=document.getElementById("tasksBox"); if(!box)return;
+  const d=document.createElement("div"); d.className="grid2"; d.style.marginBottom="8px";
+  d.innerHTML=`<input class="taskInput" placeholder="Descrição do afazer"><input class="taskRequired" placeholder="Observação/requisito (opcional)">`;
+  box.appendChild(d);
+}
+function saveJob(){
+  const type=jType.value,aid=jAssignee.value;
+  const assignee=type==="team"?getTeam(aid):getUser(aid);
+  const tasks=[...document.querySelectorAll(".taskInput")].map((x,i)=>({id:uid("task"),name:x.value.trim(),requirement:document.querySelectorAll(".taskRequired")[i].value.trim(),done:false,doneAt:null,doneBy:null})).filter(x=>x.name);
+  if(!jName.value.trim()||!aid||!jStart.value||!jDue.value||!jLocation.value||!tasks.length)return alert("Preencha os campos obrigatórios e inclua pelo menos um afazer.");
+  const job={id:uid("job"),number:String(Math.max(0,...data.jobs.map(j=>Number(j.number)||0))+1).padStart(6,"0"),name:jName.value.trim(),priority:jPriority.value,type,assigneeType:type,assigneeId:aid,assigneeName:assignee?.name||"",start:jStart.value,due:jDue.value,originalDue:jDue.value,location:jLocation.value.trim(),customerName:jCustomer.value.trim(),customerContact:jContact.value.trim(),slaHours:Number(jSla.value||0),notes:jNotes.value,tasks,status:"Em Andamento",createdAt:iso(),createdBy:currentUser.id,startedAt:null,endedAt:null,attachments:[],pauseHistory:[],lunchHistory:[],materials:[]};
+  data.jobs.push(job);addEvent(job.id,"criação",`Serviço #${job.number} criado para ${job.assigneeName}.`);notify(`Novo serviço #${job.number} atribuído a ${job.assigneeName}`);save();closeModal();renderKanban();
+}
+
+function openJobView(id){
+  const j=data.jobs.find(x=>x.id===id); if(!j)return;
+  if(!j.lunchHistory) j.lunchHistory = [];
+  const pct=calcProgress(j),events=data.events.filter(e=>e.jobId===id).sort((a,b)=>new Date(a.at)-new Date(b.at)),mats=data.materials.filter(m=>m.jobId===id);
+  const canEdit=currentUser.role==="gestor";
+  const inLunch = j.lunchHistory.length > 0 && !j.lunchHistory[j.lunchHistory.length - 1].end;
+
+  openModal(`#${j.number} — ${escapeHtml(j.name)}`,`
+  <div class="grid2">
+    <div><b>Status:</b> ${effectiveStatus(j)}</div><div><b>Prioridade:</b> ${escapeHtml(j.priority)}</div>
+    <div><b>Equipe/Colaborador:</b> ${escapeHtml(j.assigneeName)}</div><div><b>Local:</b> ${escapeHtml(j.location)}</div>
+    <div><b>Início previsto:</b> ${fmtDate(j.start)}</div><div><b>Conclusão prevista:</b> ${fmtDate(j.due)}</div>
+    <div><b>Responsável local:</b> ${escapeHtml(j.customerName||"-")}</div><div><b>Contato:</b> ${escapeHtml(j.customerContact||"-")}</div>
+  </div>
+  <hr>
+  <h3>Afazeres — ${pct}%</h3>
+  <div class="progress"><div style="width:${pct}%"></div></div>
+  <div class="check-list">${j.tasks.map((t,i)=>`
+    <div class="check-row">
+      <input type="checkbox" ${t.done?"checked":""} ${currentUser.role==="gestor"?"disabled":""} onchange="toggleTask('${j.id}','${t.id}',this.checked)">
+      <div style="flex:1"><b>${escapeHtml(t.name)}</b>${t.requirement?`<div class="muted">${escapeHtml(t.requirement)}</div>`:""}${t.done?`<div class="muted">Concluído em: ${fmtDateTime(t.doneAt)}</div>`:""}</div>
+      ${canEdit && t.done ? `<button class="btn btn-secondary" style="font-size:11px;padding:4px 8px" onclick="reactivateTask('${j.id}','${t.id}')">Reativar</button>` : ""}
+    </div>`).join("")}</div>
+  <hr>
+  <h3>Execução</h3>
+  <div class="toolbar">
+    ${/* [OTIMIZAÇÃO 2] Permite iniciar/reutilizar mesmo se já foi iniciado ou finalizado anteriormente */ ""}
+    ${currentUser.role==="colaborador" && (!j.startedAt || j.endedAt) ? `<button class="btn btn-success" onclick="startJob('${j.id}')">▶ ${j.startedAt ? 'Reiniciar / Novo Início' : 'Início'}</button>` : ""}
+    ${currentUser.role==="colaborador" && j.startedAt && !j.endedAt ? `<button class="btn btn-danger" onclick="endJob('${j.id}')">■ Saída</button>` : ""}
+    ${/* Botões de Almoço e Volta Almoço */ ""}
+    ${currentUser.role==="colaborador" && j.startedAt && !j.endedAt ? (
+      !inLunch ? `<button class="btn btn-accent" onclick="startLunch('${j.id}')">🍱 Almoço</button>`
+               : `<button class="btn btn-success" onclick="endLunch('${j.id}')">↩️ Volta Almoço</button>`
+    ) : ""}
+    ${canEdit&&effectiveStatus(j)!=="Concluído"?`${effectiveStatus(j)==="Pausado"?`<button class="btn btn-success" onclick="resumeJob('${j.id}')">▶ Retomar</button>`:`<button class="btn btn-accent" onclick="pauseJob('${j.id}')">Ⅱ Pausar</button>`}`:""}
+    ${canEdit&&effectiveStatus(j)==="Análise de Gestor"?`
+      <button class="btn btn-success" onclick="approveJob('${j.id}')">✓ Aprovar conclusão</button>
+      <button class="btn btn-danger" onclick="rejectJob('${j.id}')">✖ Reprovar (Voltar Pendente)</button>
+    `:""}
+    ${/* [OTIMIZAÇÃO 1] Imprimir serviço em PDF (A4) */ ""}
+    <button class="btn btn-secondary" onclick="printJobPDF('${j.id}')">🖨️ Imprimir PDF (A4)</button>
+  </div>
+  <div class="grid2"><div><b>Início real:</b> ${fmtDateTime(j.startedAt)}</div><div><b>Saída real:</b> ${fmtDateTime(j.endedAt)}</div></div>
+  <hr>
+  <h3>Solicitar peça/equipamento</h3>
+  ${currentUser.role==="colaborador"?`<div class="grid3"><input id="mDesc" placeholder="Peça/equipamento"><input id="mQty" type="number" min="1" value="1" placeholder="Quantidade"><button class="btn btn-primary" onclick="requestMaterial('${j.id}')">Solicitar</button></div>`:""}
+  <div class="table-wrap"><table><tr><th>Item</th><th>Qtd.</th><th>Status</th><th>Data</th>${canEdit?"<th>Ação</th>":""}</tr>${mats.map(m=>`<tr><td>${escapeHtml(m.description)}</td><td>${m.quantity}</td><td>${m.status}</td><td>${fmtDateTime(m.at)}</td>${canEdit?`<td><button class="btn btn-secondary" onclick="materialStatus('${m.id}','Aprovada')">Aprovar</button> <button class="btn btn-danger" onclick="materialStatus('${m.id}','Rejeitada')">Rejeitar</button></td>`:""}</tr>`).join("")||`<tr><td colspan="5">Nenhuma solicitação.</td></tr>`}</table></div>
+  <hr>
+  <h3>Fotos e anexos</h3>
+  <div class="file-box"><input id="jobFiles" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xlsx,.csv" onchange="addAttachments('${j.id}')"></div>
+  <div>${(j.attachments||[]).map(a=>`<div class="badge" style="margin:3px">${escapeHtml(a.name)} — ${fmtDateTime(a.at)}</div>`).join("")||`<span class="muted">Nenhum anexo.</span>`}</div>
+  <hr>
+  <h3>Histórico</h3><div class="timeline">${events.map(e=>`<div class="event"><b>${escapeHtml(e.text)}</b><br><small>${escapeHtml(e.user)} • ${fmtDateTime(e.at)}</small></div>`).join("")||`<div class="muted">Sem eventos.</div>`}</div>
+  <hr>
+  <h3>Comentários / comunicação</h3>
+  <textarea id="commentText" placeholder="Escreva uma observação para este serviço"></textarea>
+  <button class="btn btn-secondary" style="margin-top:8px" onclick="addComment('${j.id}')">Adicionar comentário</button>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button>`);
+}
+
+/* OTIMIZAÇÃO 2: Funções de Almoço e Volta do Almoço */
+function startLunch(id){
+  const j=data.jobs.find(x=>x.id===id);
+  if(!j.lunchHistory) j.lunchHistory = [];
+  j.lunchHistory.push({ start: iso(), end: null });
+  addEvent(id, "almoço", `Saída para almoço registrada por ${currentUser.name}.`);
+  save(); openJobView(id);
+}
+function endLunch(id){
+  const j=data.jobs.find(x=>x.id===id);
+  if(j.lunchHistory && j.lunchHistory.length > 0){
+    j.lunchHistory[j.lunchHistory.length - 1].end = iso();
+    addEvent(id, "almoço", `Retorno do almoço registrado por ${currentUser.name}.`);
+    save(); openJobView(id);
+  }
+}
+
+/* OTIMIZAÇÃO 4: Reprovar serviço (voltar para aba Pendente + Notificar Colaborador) */
+function rejectJob(id){
+  const j=data.jobs.find(x=>x.id===id);
+  j.status="Pendente";
+  addEvent(id,"reprovação",`Serviço reprovado pelo gestor (${currentUser.name}) e movido para Pendentes.`);
+  
+  // Notificação direcionada aos responsáveis pelo serviço
+  if(j.assigneeType === "user"){
+    notify(`O serviço #${j.number} foi reprovado pelo gestor e voltou para a aba de pendentes.`, j.assigneeId);
+  } else if(j.assigneeType === "team"){
+    const team = getTeam(j.assigneeId);
+    if(team && team.members){
+      team.members.forEach(memberId => {
+        notify(`O serviço #${j.number} foi reprovado pelo gestor e voltou para a aba de pendentes.`, memberId);
+      });
+    }
+  }
+  
+  save(); closeModal(); renderKanban();
+}
+
+/* OTIMIZAÇÃO 5: Gestor reativar afazeres */
+function reactivateTask(jobId, taskId){
+  const j=data.jobs.find(x=>x.id===jobId);
+  const t=j.tasks.find(x=>x.id===taskId);
+  if(t){
+    t.done = false;
+    t.doneAt = null;
+    t.doneBy = null;
+    if(j.status === "Análise de Gestor" || j.status === "Concluído"){
+      j.status = "Em Andamento";
+    }
+    addEvent(jobId, "afazer", `Afazer "${t.name}" foi REATIVADO pelo gestor ${currentUser.name}.`);
+    save(); openJobView(jobId);
+  }
+}
+
+/* OTIMIZAÇÃO 1: Imprimir o Serviço em PDF (Folha A4) */
+function printJobPDF(id){
+  const j=data.jobs.find(x=>x.id===id);
+  if(!j) return;
+  const logo = data.settings?.logo || localStorage.getItem(CONFIG.LOGO_KEY) || "";
+  const printArea = document.getElementById("printArea");
+  
+  printArea.innerHTML = `
+    <div style="padding: 20px; font-family: Arial, sans-serif;">
+      <div class="print-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2>${CONFIG.APP_NAME}</h2>
+          <h3>Ordem de Serviço / Ficha de Campo #${j.number}</h3>
+        </div>
+        ${logo ? `<img src="${logo}" style="max-height: 70px; max-width: 150px;">` : ""}
+      </div>
+      <table class="print-table">
+        <tr><td><b>Serviço:</b> ${escapeHtml(j.name)}</td><td><b>Prioridade:</b> ${escapeHtml(j.priority)}</td></tr>
+        <tr><td><b>Atribuído a:</b> ${escapeHtml(j.assigneeName)}</td><td><b>Status Atual:</b> ${effectiveStatus(j)}</td></tr>
+        <tr><td><b>Local do Serviço:</b> ${escapeHtml(j.location)}</td><td><b>Previsão de Término:</b> ${fmtDate(j.due)}</td></tr>
+        <tr><td><b>Cliente/Responsável:</b> ${escapeHtml(j.customerName||"-")}</td><td><b>Contato:</b> ${escapeHtml(j.customerContact||"-")}</td></tr>
+      </table>
+      
+      <h4 style="margin-top:20px; margin-bottom:5px;">Lista de Afazeres (Checklist)</h4>
+      <table class="print-table">
+        <thead><tr><th style="width: 40px;">Status</th><th>Descrição do Afazer</th><th>Requisito / Obs</th></tr></thead>
+        <tbody>
+          ${j.tasks.map(t => `
+            <tr>
+              <td style="text-align:center;">[ ${t.done ? "X" : " "} ]</td>
+              <td>${escapeHtml(t.name)}</td>
+              <td>${escapeHtml(t.requirement||"-")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+      
+      ${j.notes ? `<h4 style="margin-top:20px; margin-bottom:5px;">Observações do Pedido</h4><p style="border:1px solid #000; padding:10px;">${escapeHtml(j.notes)}</p>` : ""}
+      
+      <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+        <div style="border-top: 1px solid #000; width: 45%; text-align: center; padding-top: 5px;">Assinatura do Colaborador / Equipe</div>
+        <div style="border-top: 1px solid #000; width: 45%; text-align: center; padding-top: 5px;">Assinatura do Responsável no Local</div>
+      </div>
+    </div>
+  `;
+  
+  printArea.classList.remove("hidden");
+  window.print();
+  printArea.classList.add("hidden");
+}
+
+function toggleTask(jobId,taskId,checked){
+  const j=data.jobs.find(x=>x.id===jobId),t=j.tasks.find(x=>x.id===taskId);
+  t.done=checked;t.doneAt=checked?iso():null;t.doneBy=checked?currentUser.id:null;
+  addEvent(jobId,"afazer",`${checked?"Afazer concluído":"Afazer reaberto"}: ${t.name}`);
+  if(calcProgress(j)===100){j.status="Análise de Gestor";addEvent(jobId,"análise","Todos os afazeres foram concluídos e o serviço foi enviado para análise do gestor.");notify(`Serviço #${j.number} aguarda análise do gestor`)}
+  save();openJobView(jobId);
+}
+function startJob(id){
+  const j=data.jobs.find(x=>x.id===id);
+  j.startedAt=iso();
+  j.endedAt=null; /* Zera encerramento se for um reinício */
+  addEvent(id,"início",`Início do serviço registrado por ${currentUser.name}.`);
+  notify(`Serviço #${j.number} iniciado por ${currentUser.name}`);
+  save();openJobView(id);
+}
+function endJob(id){
+  const j=data.jobs.find(x=>x.id===id);j.endedAt=iso();addEvent(id,"saída",`Saída do serviço registrada.`);save();openJobView(id);
+}
+function pauseJob(id){
+  const j=data.jobs.find(x=>x.id===id);
+  openModal("Pausar serviço",`<div class="form-group"><label>Motivo da pausa *</label><select id="pauseReason"><option>Aguardando peça</option><option>Aguardando cliente</option><option>Aguardando autorização</option><option>Problema técnico</option><option>Falta de equipamento</option><option>Problema com veículo</option><option>Outro</option></select></div><div class="form-group"><label>Observação</label><textarea id="pauseObs"></textarea></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-accent" onclick="confirmPause('${id}')">Pausar</button>`);
+}
+function confirmPause(id){
+  const j=data.jobs.find(x=>x.id===id), reason=pauseReason.value;
+  j.status="Pausado";j.pauseHistory.push({at:iso(),reason,obs:pauseObs.value,user:currentUser.id});
+  addEvent(id,"pausa",`Serviço pausado. Motivo: ${reason}. ${pauseObs.value||""}`);save();closeModal();openJobView(id);
+}
+function resumeJob(id){
+  openModal("Retomar serviço",`<p>Deseja manter a data prevista para conclusão?</p>`,
+  `<button class="btn btn-secondary" onclick="resumeWithDate('${id}',true)">Sim</button><button class="btn btn-accent" onclick="askNewDue('${id}')">Não</button>`);
+}
+function resumeWithDate(id,keep){
+  const j=data.jobs.find(x=>x.id===id);j.status="Em Andamento";addEvent(id,"retomada",`Serviço retomado. Prazo ${keep?"mantido":"alterado"}.`);save();closeModal();openJobView(id);
+}
+function askNewDue(id){
+  document.querySelector(".modal-body").innerHTML=`<div class="form-group"><label>Nova data prevista</label><input id="newDue" type="date"></div>`;
+  document.querySelector(".modal-foot").innerHTML=`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="confirmNewDue('${id}')">Salvar nova data</button>`;
+}
+function confirmNewDue(id){
+  const j=data.jobs.find(x=>x.id===id);if(!newDue.value)return;
+  const old=j.due;j.due=newDue.value;j.status="Em Andamento";
+  addEvent(id,"prazo",`Prazo alterado de ${fmtDate(old)} para ${fmtDate(j.due)}.`);
+  save();closeModal();openJobView(id);
+}
+function approveJob(id){
+  const j=data.jobs.find(x=>x.id===id);j.status="Concluído";j.endedAt=j.endedAt||iso();addEvent(id,"conclusão","Serviço aprovado e concluído pelo gestor.");notify(`Serviço #${j.number} foi concluído.`);save();closeModal();renderKanban();
+}
+function requestMaterial(jobId){
+  const description=mDesc.value.trim(),quantity=Number(mQty.value||0);
+  if(!description||quantity<=0)return alert("Informe item e quantidade.");
+  const m={id:uid("mat"),jobId,description,quantity,status:"Pendente",requestedBy:currentUser.id,at:iso()};
+  data.materials.push(m);addEvent(jobId,"material",`Solicitação: ${description} — quantidade ${quantity}.`);notify(`Nova solicitação de material no serviço #${data.jobs.find(j=>j.id===jobId).number}`);save();openJobView(jobId);
+}
+function materialStatus(id,status){
+  const m=data.materials.find(x=>x.id===id);m.status=status;addEvent(m.jobId,"material",`Solicitação "${m.description}" marcada como ${status}.`);save();openJobView(m.jobId);
+}
+function addAttachments(jobId){
+  const j=data.jobs.find(x=>x.id===jobId),files=[...jobFiles.files];
+  files.forEach(f=>j.attachments.push({id:uid("att"),name:f.name,size:f.size,type:f.type,at:iso()}));
+  addEvent(jobId,"anexo",`${files.length} anexo(s) registrado(s).`);save();openJobView(jobId);
+}
+function addComment(jobId){
+  const text=commentText.value.trim();if(!text)return;
+  addEvent(jobId,"comentário",`${currentUser.name}: ${text}`);openJobView(jobId);
+}
+function openNotifications(){
+  const ns=data.notifications.filter(n=>!n.userId||n.userId===currentUser.id).sort((a,b)=>new Date(b.at)-new Date(a.at));
+  ns.forEach(n=>n.read=true);save();
+  openModal("Notificações",ns.map(n=>`<div class="event">${escapeHtml(n.text)}<br><small>${fmtDateTime(n.at)}</small></div>`).join("")||`<div class="muted">Nenhuma notificação.</div>`);
+}
+function openMaterials(){
+  openModal("Materiais / Solicitações",`<div class="table-wrap"><table><tr><th>Pedido</th><th>Item</th><th>Qtd.</th><th>Status</th><th>Data</th></tr>${data.materials.map(m=>{const j=data.jobs.find(x=>x.id===m.jobId);return `<tr><td>#${j?.number||"-"}</td><td>${escapeHtml(m.description)}</td><td>${m.quantity}</td><td>${m.status}</td><td>${fmtDateTime(m.at)}</td></tr>`}).join("")||`<tr><td colspan="5">Nenhuma solicitação.</td></tr>`}</table></div>`);
+}
+function openSheetsConfig(){
+  openModal("Integração Google Sheets",`
+  <div class="notice">A URL fornecida foi configurada no projeto. O endpoint atual precisa disponibilizar <b>doPost(e)</b> para receber sincronização. Se ele ainda não possuir essa função, use o Code.gs incluído neste projeto.</div>
+  <div class="form-group"><label>API / Endpoint</label><input id="sheetsApi" value="${escapeHtml(data.settings.sheetsApi||CONFIG.API_URL)}"></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveSheetsConfig()">Salvar</button>`);
+}
+function saveSheetsConfig(){data.settings.sheetsApi=sheetsApi.value.trim();save();closeModal();alert("Configuração salva.")}
+function openAudit(){
+  openModal("Auditoria do Sistema",`<div class="table-wrap"><table><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Pedido</th></tr>${data.events.slice().sort((a,b)=>new Date(b.at)-new Date(a.at)).map(e=>`<tr><td>${fmtDateTime(e.at)}</td><td>${escapeHtml(e.user)}</td><td>${escapeHtml(e.text)}</td><td>${e.jobId||"-"}</td></tr>`).join("")||`<tr><td colspan="4">Sem registros.</td></tr>`}</table></div>`);
+}
+
+function openReport(type){
+  if(type==="service"){
+    openModal("Análise de Serviço",`
+      <div class="form-group"><label>Seleção do serviço</label><select id="reportJob"><option value="">Selecione</option>${data.jobs.map(j=>`<option value="${j.id}">#${j.number} — ${escapeHtml(j.name)}</option>`).join("")}</select></div>
+      <div id="reportResult"></div>`,
+      `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button><button class="btn btn-primary" onclick="showServiceReport()">Gerar</button>`);
+  }else if(type==="team"){
+    openModal("Análise Equipe",`
+      <div class="grid3"><div class="form-group"><label>Equipe</label><select id="rTeam"><option value="">Todas</option>${data.teams.map(t=>`<option value="${t.id}">${escapeHtml(t.name)}</option>`).join("")}</select></div><div class="form-group"><label>Data inicial</label><input id="rStart" type="date"></div><div class="form-group"><label>Data final</label><input id="rEnd" type="date"></div></div><div id="teamReport"></div>`,
+      `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button><button class="btn btn-primary" onclick="showTeamReport()">Gerar</button>`);
+  }else{
+    openModal("Produtividade",`<div class="table-wrap"><table><tr><th>Colaborador</th><th>Serviços</th><th>Concluídos</th><th>Tempo registrado</th></tr>${data.users.filter(u=>u.role==="colaborador").map(u=>{const js=data.jobs.filter(j=>j.assigneeType==="user"&&j.assigneeId===u.id||j.assigneeType==="team"&&getTeam(j.assigneeId)?.members.includes(u.id));return `<tr><td>${escapeHtml(u.name)}</td><td>${js.length}</td><td>${js.filter(j=>j.status==="Concluído").length}</td><td>${durationTotal(js)}</td></tr>`}).join("")}</table></div>`);
+  }
+}
+function duration(j){
+  if(!j.startedAt||!j.endedAt)return 0;
+  return Math.max(0,new Date(j.endedAt)-new Date(j.startedAt));
+}
+function durationText(ms){
+  const min=Math.floor(ms/60000),d=Math.floor(min/1440),h=Math.floor((min%1440)/60),m=min%60;
+  return `${d}d ${h}h ${m}min`;
+}
+function durationTotal(js){return durationText(js.reduce((a,j)=>a+duration(j),0))}
+function showServiceReport(){
+  const j=data.jobs.find(x=>x.id===reportJob.value);if(!j)return;
+  reportResult.innerHTML=`<div class="panel">
+  <h3>#${j.number} — ${escapeHtml(j.name)}</h3>
+  <div class="grid2"><div>Responsável: <b>${escapeHtml(j.assigneeName)}</b></div><div>Status: <b>${effectiveStatus(j)}</b></div><div>Período previsto: <b>${fmtDate(j.start)} → ${fmtDate(j.due)}</b></div><div>Tempo real: <b>${durationText(duration(j))}</b></div><div>Dentro do prazo: <b>${j.endedAt?((new Date(j.endedAt).toISOString().slice(0,10)<=j.due)?"Sim":"Não"):"Não finalizado"}</b></div><div>Solicitações: <b>${data.materials.filter(m=>m.jobId===j.id).length}</b></div></div>
+  <h4>Afazeres</h4>${j.tasks.map(t=>`<div class="event">${escapeHtml(t.name)} — ${t.done?"Concluído":"Pendente"} ${t.done?`<small>• ${fmtDateTime(t.doneAt)}</small>`:""}</div>`).join("")}
+  </div>`;
+}
+function showTeamReport(){
+  const team=rTeam.value, start=rStart.value, end=rEnd.value;
+  const js=data.jobs.filter(j=>(!team||j.assigneeId===team)&&(j.assigneeType==="team")&&(!start||j.start>=start)&&(!end||j.start<=end));
+  teamReport.innerHTML=`<div class="panel"><div class="cards"><div class="stat"><div class="n">${js.length}</div><div class="l">Serviços</div></div><div class="stat"><div class="n">${js.filter(j=>j.status==="Concluído").length}</div><div class="l">Concluídos</div></div><div class="stat"><div class="n">${js.filter(j=>effectiveStatus(j)==="Atrasado").length}</div><div class="l">Atrasados</div></div></div><div class="table-wrap"><table><tr><th>Pedido</th><th>Serviço</th><th>Status</th><th>Tempo</th></tr>${js.map(j=>`<tr><td>#${j.number}</td><td>${escapeHtml(j.name)}</td><td>${effectiveStatus(j)}</td><td>${durationText(duration(j))}</td></tr>`).join("")}</table></div></div>`;
+}
+
+window.addEventListener("storage",()=>{data=DB.read();render()});
+
+(async function boot(){
+  applyTheme();
+  await loadRemoteData();
+  currentUser=DB.session();
+  render();
+})();
+</script>
+</body>
+</html>
