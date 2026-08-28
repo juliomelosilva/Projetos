@@ -3,201 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Gestão & Cadastros</title>
+  <title>Gestão On-line</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #2c3e50;
-      --secondary: #3498db;
-      --success: #2ecc71;
-      --danger: #e74c3c;
-      --bg: #f4f6f9;
-      --card-bg: #ffffff;
+      --bg-dark: #0f172a;
+      --sidebar-bg: #1e293b;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-yellow: #f59e0b;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
     }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg);
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+    /* Topbar */
     .header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--primary);
-      color: #fff;
-      padding: 15px 20px;
-      border-radius: 8px;
+      position: fixed; top: 0; left: 0; right: 0; height: 60px;
+      background: var(--sidebar-bg); border-bottom: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; z-index: 100;
     }
-    .btn-main {
-      background: var(--secondary);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn-main:hover { opacity: 0.9; }
-    
-    /* Modal Styles */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: var(--card-bg);
-      width: 90%;
-      max-width: 850px;
-      max-height: 85vh;
-      border-radius: 10px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-    }
-    .btn-close {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .tabs-header {
-      display: flex;
-      gap: 10px;
-      margin: 15px 0;
-    }
-    .tab-btn {
-      padding: 8px 16px;
-      border: 1px solid #ccc;
-      background: #eee;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .tab-btn.active {
-      background: var(--secondary);
-      color: #fff;
-      border-color: var(--secondary);
-    }
-    .tabs-body {
-      overflow-y: auto;
-      flex: 1;
-      padding-right: 5px;
-    }
-    .input-search {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 15px;
-    }
-    .card-item {
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    .card-item h3 { margin-top: 0; color: var(--primary); }
-    .card-item p { font-size: 14px; margin: 5px 0; }
-    .card-item button {
-      margin-top: 8px;
-      margin-right: 5px;
-      padding: 6px 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #e3f2fd;
-      color: #0d47a1;
-      font-size: 12px;
-      font-weight: bold;
-    }
-    .card-item button:hover { background: #bbdefb; }
-    .status-badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #fff;
-    }
-    .badge-success { background: var(--success); }
-    .badge-danger { background: var(--danger); }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 1.2rem; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-top { background: var(--card-border); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+    .btn-top:hover { background: #475569; }
+    .btn-primary { background: #fbbf24; color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+    /* Main Container & Sidebar */
+    .app-container { display: flex; width: 100%; margin-top: 60px; height: calc(100vh - 60px); }
+    .sidebar { width: 240px; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); padding: 20px 10px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+    .menu-group { display: flex; flex-direction: column; gap: 4px; }
+    .menu-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: bold; margin-bottom: 8px; padding-left: 10px; }
+    .menu-item { display: flex; align-items: center; gap: 10px; padding: 10px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.9rem; transition: 0.2s; }
+    .menu-item:hover, .menu-item.active { background: #334155; color: #fff; }
+
+    /* Dashboard View */
+    .content-area { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+    .dashboard-header h1 { font-size: 1.6rem; }
+    .dashboard-header p { color: var(--text-muted); font-size: 0.85rem; }
+
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+    .metric-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 15px; }
+    .metric-card .dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-bottom: 8px; }
+    .metric-card .val { font-size: 1.5rem; font-weight: bold; }
+    .metric-card .lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    .dashboard-sections { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .panel-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; }
+    .panel-box h3 { font-size: 1.1rem; margin-bottom: 15px; }
+
+    .notification-list { display: flex; flex-direction: column; gap: 10px; }
+    .notification-item { border-left: 3px solid #fbbf24; background: #0f172a; padding: 10px 12px; border-radius: 0 6px 6px 0; font-size: 0.85rem; }
+    .notification-item .time { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 4px; }
+
+    /* Modal Gestão Unificada */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    .modal-box { background: #111827; border: 1px solid var(--card-border); width: 90%; max-width: 900px; max-height: 85vh; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; }
+    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    .tabs-bar { display: flex; gap: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; }
+    .tab-btn { background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .tab-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    .input-gestao { width: 100%; background: var(--bg-dark); border: 1px solid var(--card-border); color: #fff; padding: 10px 14px; border-radius: 6px; box-sizing: border-box; margin-bottom: 12px; }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; overflow-y: auto; max-height: 50vh; }
+    .card-gestao { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; }
+    .card-gestao h4 { margin-bottom: 8px; font-size: 0.95rem; }
+    .card-gestao p { margin: 4px 0; font-size: 0.85rem; color: var(--text-muted); }
+    .card-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    .btn-act { background: #334155; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
+    .btn-act:hover { background: #475569; }
   </style>
 </head>
 <body>
 
-  <div class="header-bar">
-    <h2>Painel do Sistema</h2>
-    <button onclick="abrirMenuConsultas()" class="btn-main">🔍 Gestão de Cadastros</button>
+  <!-- TOPBAR -->
+  <header class="header-bar">
+    <div class="brand">
+      <i class="fas fa-bars"></i>
+      <span>Gestão On-line</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn-top"><i class="fas fa-bell"></i></button>
+      <button class="btn-top"><i class="fas fa-lightbulb"></i></button>
+      <button class="btn-top">Sair</button>
+      <button class="btn-primary">+ Registrar Serviço</button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- SIDEBAR MENU -->
+    <nav class="sidebar">
+      <div class="menu-group">
+        <span class="menu-title">Principal</span>
+        <a href="#" class="menu-item active"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="#" class="menu-item"><i class="fas fa-columns"></i> Kanban</a>
+        <a href="#" class="menu-item"><i class="fas fa-calendar-alt"></i> Agenda</a>
+      </div>
+
+      <div class="menu-group">
+        <span class="menu-title">Serviços</span>
+        <a href="#" class="menu-item"><i class="fas fa-plus-circle"></i> Registrar Serviço</a>
+        <a href="#" class="menu-item"><i class="fas fa-tools"></i> Serviços</a>
+      </div>
+
+      <div class="menu-group">
+        <span class="menu-title">Cadastros</span>
+        <a href="#" class="menu-item" onclick="abrirMenuConsultas()"><i class="fas fa-search"></i> Gestão de Cadastros</a>
+        <a href="#" class="menu-item"><i class="fas fa-image"></i> Definir Logomarca</a>
+        <a href="#" class="menu-item"><i class="fas fa-user-plus"></i> Cadastrar Colaborador</a>
+        <a href="#" class="menu-item"><i class="fas fa-users"></i> Cadastro de Equipe</a>
+        <a href="#" class="menu-item"><i class="fas fa-truck"></i> Cadastro de Veículo</a>
+        <a href="#" class="menu-item"><i class="fas fa-box"></i> Materiais</a>
+      </div>
+
+      <div class="menu-group">
+        <span class="menu-title">Relatórios</span>
+        <a href="#" class="menu-item"><i class="fas fa-file-alt"></i> Análise de Serviço</a>
+      </div>
+    </nav>
+
+    <!-- ÁREA CENTRAL DO DASHBOARD -->
+    <main class="content-area">
+      <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <p>Visão geral da operação</p>
+      </div>
+
+      <!-- MÉTRICAS -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="dot" style="background: var(--accent-blue);"></span>
+          <div class="val" id="cntEmAndamento">0</div>
+          <div class="lbl">Em andamento</div>
+        </div>
+        <div class="metric-card">
+          <span class="dot" style="background: var(--accent-yellow);"></span>
+          <div class="val" id="cntPausados">0</div>
+          <div class="lbl">Pausados</div>
+        </div>
+        <div class="metric-card">
+          <span class="dot" style="background: var(--accent-red);"></span>
+          <div class="val" id="cntAtrasados">0</div>
+          <div class="lbl">Atrasados</div>
+        </div>
+        <div class="metric-card">
+          <span class="dot" style="background: var(--accent-yellow);"></span>
+          <div class="val" id="cntEmAnalise">0</div>
+          <div class="lbl">Em análise</div>
+        </div>
+        <div class="metric-card">
+          <span class="dot" style="background: var(--accent-green);"></span>
+          <div class="val" id="cntConcluidos">1</div>
+          <div class="lbl">Concluídos</div>
+        </div>
+        <div class="metric-card">
+          <span class="dot" style="background: #a855f7;"></span>
+          <div class="val" id="cntPecasPendentes">0</div>
+          <div class="lbl">Peças pendentes</div>
+        </div>
+      </div>
+
+      <!-- PAINÉIS INFERIORES -->
+      <div class="dashboard-sections">
+        <div class="panel-box">
+          <h3>Resumo por equipe</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;" id="lblResumoEquipe">Nenhuma equipe cadastrada.</p>
+        </div>
+
+        <div class="panel-box">
+          <h3>Notificações recentes</h3>
+          <div class="notification-list" id="listaNotificacoes">
+            <div class="notification-item">
+              <div>Serviço #000001 foi concluído.</div>
+              <span class="time">24/08/2026, 10:17:01</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <main>
-    <p>Os serviços e operações continuam ativos normalmente nesta área.</p>
-  </main>
-
-  <!-- MODAL UNIFICADO DE GESTÃO -->
-  <div id="modalConsultas" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
+  <!-- MODAL DA CENTRAL UNIFICADA DE GESTÃO DE CADASTROS -->
+  <div id="modalGestaoUnificada" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
       <div class="modal-header">
-        <h2>Central de Consultas e Gestão</h2>
-        <button onclick="fecharMenuConsultas()" class="btn-close">&times;</button>
+        <h2>🔍 Central de Consultas e Gestão</h2>
+        <button class="modal-close" onclick="fecharMenuConsultas()">&times;</button>
       </div>
 
-      <!-- ABAS -->
-      <div class="tabs-header">
-        <button class="tab-btn active" onclick="alternarAbaConsulta('colaboradores')">👥 Colaboradores</button>
-        <button class="tab-btn" onclick="alternarAbaConsulta('veiculos')">🚗 Veículos</button>
-        <button class="tab-btn" onclick="alternarAbaConsulta('equipes')">🛡️ Equipes Avançadas</button>
+      <div class="tabs-bar">
+        <button class="tab-btn active" id="btnTabColab" onclick="alternarAbaGestao('colaboradores')">👥 Colaboradores</button>
+        <button class="tab-btn" id="btnTabVeic" onclick="alternarAbaGestao('veiculos')">🚗 Veículos</button>
+        <button class="tab-btn" id="btnTabEqp" onclick="alternarAbaGestao('equipes')">🛡️ Equipes Avançadas</button>
       </div>
 
-      <div class="tabs-body">
-        <!-- ABA 1: COLABORADORES -->
-        <div id="abaColaboradores" class="tab-content">
-          <input type="text" id="filtroColaborador" class="input-search" placeholder="Filtrar por nome..." oninput="renderizarColaboradores()">
-          <div id="listaColaboradores" class="grid-cards"></div>
-        </div>
+      <!-- ABA COLABORADORES -->
+      <div id="abaGestaoColaboradores">
+        <input type="text" id="filtroColaborador" class="input-gestao" placeholder="Filtrar por nome..." oninput="renderizarColaboradores()">
+        <div id="listaColaboradores" class="grid-cards"></div>
+      </div>
 
-        <!-- ABA 2: VEÍCULOS -->
-        <div id="abaVeiculos" class="tab-content" style="display: none;">
-          <input type="text" id="filtroVeiculo" class="input-search" placeholder="Filtrar por placa ou modelo..." oninput="renderizarVeiculos()">
-          <div id="listaVeiculos" class="grid-cards"></div>
-        </div>
+      <!-- ABA VEÍCULOS -->
+      <div id="abaGestaoVeiculos" style="display: none;">
+        <input type="text" id="filtroVeiculo" class="input-gestao" placeholder="Filtrar por placa ou modelo..." oninput="renderizarVeiculos()">
+        <div id="listaVeiculos" class="grid-cards"></div>
+      </div>
 
-        <!-- ABA 3: EQUIPES (AVANÇADO) -->
-        <div id="abaEquipes" class="tab-content" style="display: none;">
-          <div id="listaEquipes" class="grid-cards"></div>
-        </div>
+      <!-- ABA EQUIPES -->
+      <div id="abaGestaoEquipes" style="display: none;">
+        <div id="listaEquipes" class="grid-cards"></div>
       </div>
     </div>
   </div>
 
+  <!-- LÓGICA JAVASCRIPT & COMUNICAÇÃO -->
   <script>
-    // URL do seu Apps Script implantado
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx0mzNcMieUm_FyazeBKzq_jkvXCRqVB00CHe__JHaOeCNkaq4yhTfwcW1Xz1j-zRsHAQ/exec";
+    const URL_SCRIPT = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI";
 
-    // Trava de segurança para impedir sobrescrita de dados
+    // TRAVA DE SEGURANÇA: Bloqueia syncs em branco antes da leitura do banco
     let dadosCarregadosDoServidor = false;
 
-    // Estado global mantendo todas as estruturas intactas
+    // ESTADO GLOBAL COMPLETO (Conserva todos os dados do sistema)
     let dados = {
       colaboradores: [],
       veiculos: [],
@@ -205,8 +237,7 @@
       servicos: []
     };
 
-    // --- COMUNICAÇÃO COM O SERVER ---
-
+    // --- CARREGAR DADOS DA PLANILHA ---
     async function carregarDadosDoServidor() {
       try {
         const response = await fetch(URL_SCRIPT, {
@@ -216,20 +247,20 @@
         const result = await response.json();
 
         if (result.ok && result.data) {
-          // Garante a mesclagem dos dados remotos com a estrutura global
           dados = Object.assign({}, dados, result.data);
           dadosCarregadosDoServidor = true;
-          console.log("Dados remotos carregados com sucesso.");
+          console.log("Banco de dados remotos carregado com sucesso.");
+          atualizarDashboardMetrics();
         }
       } catch (error) {
-        console.error("Erro ao carregar dados remotos:", error);
+        console.error("Erro ao carregar banco de dados remotos:", error);
       }
     }
 
+    // --- SALVAR/SINCRONIZAR COM A PLANILHA ---
     async function sincronizarComServidor() {
-      // SEGURANÇA: Cancela a gravação se a leitura remota ainda não ocorreu
       if (!dadosCarregadosDoServidor) {
-        alert("Aguarde o carregamento completo do banco de dados antes de realizar alterações.");
+        alert("Aguarde o carregamento do banco remoto antes de salvar alterações.");
         return;
       }
 
@@ -247,134 +278,113 @@
       }
     }
 
-    // --- CONTROLE DE NAVEGAÇÃO E MODAL ---
+    // --- ATUALIZADOR DAS MÉTRICAS DO DASHBOARD ---
+    function atualizarDashboardMetrics() {
+      if (!dados.servicos) return;
+      document.getElementById('cntEmAndamento').innerText = dados.servicos.filter(s => s.status === 'Em andamento').length;
+      document.getElementById('cntPausados').innerText = dados.servicos.filter(s => s.status === 'Pausado').length;
+      document.getElementById('cntAtrasados').innerText = dados.servicos.filter(s => s.status === 'Atrasado').length;
+      document.getElementById('cntEmAnalise').innerText = dados.servicos.filter(s => s.status === 'Em análise').length;
+      document.getElementById('cntConcluidos').innerText = dados.servicos.filter(s => s.status === 'Concluído').length;
+    }
 
+    // --- CONTROLE DAS ABAS E MODAL DE GESTÃO ---
     function abrirMenuConsultas() {
-      document.getElementById('modalConsultas').style.display = 'flex';
-      alternarAbaConsulta('colaboradores');
+      document.getElementById('modalGestaoUnificada').style.display = 'flex';
+      alternarAbaGestao('colaboradores');
     }
 
     function fecharMenuConsultas() {
-      document.getElementById('modalConsultas').style.display = 'none';
+      document.getElementById('modalGestaoUnificada').style.display = 'none';
     }
 
-    function alternarAbaConsulta(aba) {
-      document.getElementById('abaColaboradores').style.display = 'none';
-      document.getElementById('abaVeiculos').style.display = 'none';
-      document.getElementById('abaEquipes').style.display = 'none';
+    function alternarAbaGestao(aba) {
+      document.getElementById('abaGestaoColaboradores').style.display = 'none';
+      document.getElementById('abaGestaoVeiculos').style.display = 'none';
+      document.getElementById('abaGestaoEquipes').style.display = 'none';
 
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('btnTabColab').classList.remove('active');
+      document.getElementById('btnTabVeic').classList.remove('active');
+      document.getElementById('btnTabEqp').classList.remove('active');
 
       if (aba === 'colaboradores') {
-        document.getElementById('abaColaboradores').style.display = 'block';
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('abaGestaoColaboradores').style.display = 'block';
+        document.getElementById('btnTabColab').classList.add('active');
         renderizarColaboradores();
       } else if (aba === 'veiculos') {
-        document.getElementById('abaVeiculos').style.display = 'block';
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('abaGestaoVeiculos').style.display = 'block';
+        document.getElementById('btnTabVeic').classList.add('active');
         renderizarVeiculos();
       } else if (aba === 'equipes') {
-        document.getElementById('abaEquipes').style.display = 'block';
-        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('abaGestaoEquipes').style.display = 'block';
+        document.getElementById('btnTabEqp').classList.add('active');
         renderizarEquipes();
       }
     }
 
     // --- GESTÃO DE COLABORADORES ---
-
     function renderizarColaboradores() {
-      const filtro = document.getElementById('filtroColaborador').value.toLowerCase();
+      const filtro = (document.getElementById('filtroColaborador').value || '').toLowerCase();
       const container = document.getElementById('listaColaboradores');
       container.innerHTML = '';
 
-      const filtrados = (dados.colaboradores || []).filter(c => c.nome.toLowerCase().includes(filtro));
-
-      filtrados.forEach(colab => {
-        const idxReal = dados.colaboradores.findIndex(c => c.id === colab.id || c.nome === colab.nome);
-
+      (dados.colaboradores || []).filter(c => (c.nome || '').toLowerCase().includes(filtro)).forEach(colab => {
+        const idxReal = dados.colaboradores.findIndex(c => c.nome === colab.nome);
         container.innerHTML += `
-          <div class="card-item">
-            <h3>${colab.nome}</h3>
+          <div class="card-gestao">
+            <h4>${colab.nome}</h4>
             <p><strong>Usuário:</strong> ${colab.usuario || '-'}</p>
             <p><strong>E-mail:</strong> ${colab.email || '-'}</p>
-            <button onclick="editarColaborador(${idxReal})">✏️ Editar Dados</button>
-          </div>
-        `;
+            <div class="card-actions">
+              <button class="btn-act" onclick="editarColaborador(${idxReal})">✏️ Editar</button>
+            </div>
+          </div>`;
       });
     }
 
     function editarColaborador(index) {
       const colab = dados.colaboradores[index];
-
-      const novoNome = prompt("Nome do Colaborador:", colab.nome);
-      if (novoNome === null) return;
-
-      const novoUsuario = prompt("Usuário de Acesso:", colab.usuario || '');
-      if (novoUsuario === null) return;
-
-      const novoEmail = prompt("E-mail:", colab.email || '');
-      if (novoEmail === null) return;
-
+      const novoNome = prompt("Nome do Colaborador:", colab.nome); if (novoNome === null) return;
+      const novoUsuario = prompt("Usuário de Acesso:", colab.usuario || ''); if (novoUsuario === null) return;
+      const novoEmail = prompt("E-mail:", colab.email || ''); if (novoEmail === null) return;
       const novaSenha = prompt("Nova Senha (deixe em branco para manter a atual):");
 
       dados.colaboradores[index].nome = novoNome.trim();
       dados.colaboradores[index].usuario = novoUsuario.trim();
       dados.colaboradores[index].email = novoEmail.trim();
-      
-      if (novaSenha && novaSenha.trim() !== '') {
-        dados.colaboradores[index].senha = novaSenha.trim();
-      }
+      if (novaSenha && novaSenha.trim()) dados.colaboradores[index].senha = novaSenha.trim();
 
       renderizarColaboradores();
       sincronizarComServidor();
     }
 
     // --- GESTÃO DE VEÍCULOS ---
-
     function renderizarVeiculos() {
-      const filtro = document.getElementById('filtroVeiculo').value.toLowerCase();
+      const filtro = (document.getElementById('filtroVeiculo').value || '').toLowerCase();
       const container = document.getElementById('listaVeiculos');
       container.innerHTML = '';
 
-      const filtrados = (dados.veiculos || []).filter(v => 
-        (v.modelo && v.modelo.toLowerCase().includes(filtro)) || 
-        (v.placa && v.placa.toLowerCase().includes(filtro))
-      );
-
-      filtrados.forEach(veic => {
+      (dados.veiculos || []).filter(v => (v.modelo || '').toLowerCase().includes(filtro) || (v.placa || '').toLowerCase().includes(filtro)).forEach(veic => {
         const idxReal = dados.veiculos.findIndex(v => v.placa === veic.placa);
-        const isDisponivel = veic.disponivel !== false;
-
         container.innerHTML += `
-          <div class="card-item">
-            <h3>${veic.modelo}</h3>
+          <div class="card-gestao">
+            <h4>${veic.modelo}</h4>
             <p><strong>Placa:</strong> ${veic.placa}</p>
             <p><strong>KM:</strong> ${veic.km || 0} km</p>
-            <p>
-              <strong>Status:</strong> 
-              <span class="status-badge ${isDisponivel ? 'badge-success' : 'badge-danger'}">
-                ${isDisponivel ? 'Disponível' : 'Indisponível / Uso'}
-              </span>
-            </p>
-            <button onclick="editarVeiculo(${idxReal})">✏️ Editar Veículo</button>
-          </div>
-        `;
+            <p><strong>Status:</strong> ${veic.disponivel !== false ? '🟢 Disponível' : '🔴 Em Uso / Manutenção'}</p>
+            <div class="card-actions">
+              <button class="btn-act" onclick="editarVeiculo(${idxReal})">✏️ Editar</button>
+            </div>
+          </div>`;
       });
     }
 
     function editarVeiculo(index) {
       const veic = dados.veiculos[index];
-
-      const novoModelo = prompt("Modelo do Veículo:", veic.modelo);
-      if (novoModelo === null) return;
-
-      const novaPlaca = prompt("Placa:", veic.placa);
-      if (novaPlaca === null) return;
-
-      const novaKm = prompt("Quilometragem Atual:", veic.km || 0);
-      if (novaKm === null) return;
-
-      const statusDisp = confirm("Clique em OK para DISPONÍVEL ou CANCELAR para INDISPONÍVEL/EM USO.");
+      const novoModelo = prompt("Modelo do Veículo:", veic.modelo); if (novoModelo === null) return;
+      const novaPlaca = prompt("Placa:", veic.placa); if (novaPlaca === null) return;
+      const novaKm = prompt("Quilometragem Atual:", veic.km || 0); if (novaKm === null) return;
+      const statusDisp = confirm("Clique em OK para manter DISPONÍVEL ou CANCELAR para INDISPONÍVEL.");
 
       dados.veiculos[index].modelo = novoModelo.trim();
       dados.veiculos[index].placa = novaPlaca.trim();
@@ -386,31 +396,27 @@
     }
 
     // --- GESTÃO AVANÇADA DE EQUIPES ---
-
     function renderizarEquipes() {
       const container = document.getElementById('listaEquipes');
       container.innerHTML = '';
 
       (dados.equipes || []).forEach((equipe, index) => {
-        const membrosNomes = (equipe.membros || []).join(', ');
-
         container.innerHTML += `
-          <div class="card-item">
-            <h3>${equipe.nome}</h3>
-            <p><strong>Integrantes:</strong> ${membrosNomes || 'Nenhum membro'}</p>
-            <div>
-              <button onclick="alterarNomeEquipe(${index})">✏️ Renomear</button>
-              <button onclick="adicionarMembroEquipe(${index})">➕ Add Membro</button>
-              <button onclick="removerMembroEquipe(${index})">➖ Rem Membro</button>
+          <div class="card-gestao">
+            <h4>${equipe.nome}</h4>
+            <p><strong>Membros:</strong> ${(equipe.membros || []).join(', ') || 'Nenhum participante'}</p>
+            <div class="card-actions">
+              <button class="btn-act" onclick="alterarNomeEquipe(${index})">✏️ Nome</button>
+              <button class="btn-act" onclick="adicionarMembroEquipe(${index})">➕ Add Membro</button>
+              <button class="btn-act" onclick="removerMembroEquipe(${index})">➖ Rem Membro</button>
             </div>
-          </div>
-        `;
+          </div>`;
       });
     }
 
     function alterarNomeEquipe(index) {
-      const novoNome = prompt("Novo nome da equipe:", dados.equipes[index].nome);
-      if (novoNome && novoNome.trim() !== '') {
+      const novoNome = prompt("Novo nome para a equipe:", dados.equipes[index].nome);
+      if (novoNome && novoNome.trim()) {
         dados.equipes[index].nome = novoNome.trim();
         renderizarEquipes();
         sincronizarComServidor();
@@ -420,20 +426,14 @@
     function adicionarMembroEquipe(indexEquipe) {
       const equipe = dados.equipes[indexEquipe];
       if (!equipe.membros) equipe.membros = [];
-
       const disponiveis = (dados.colaboradores || []).filter(c => !equipe.membros.includes(c.nome));
-
-      if (disponiveis.length === 0) {
-        alert("Todos os colaboradores cadastrados já estão nesta equipe.");
-        return;
-      }
+      if (!disponiveis.length) return alert("Todos os colaboradores cadastrados já pertencem a esta equipe.");
 
       const opcoes = disponiveis.map((c, i) => `${i + 1}. ${c.nome}`).join('\n');
-      const escolha = prompt(`Selecione o número do colaborador para adicionar:\n\n${opcoes}`);
-
-      const idxEscolhido = parseInt(escolha) - 1;
-      if (!isNaN(idxEscolhido) && disponiveis[idxEscolhido]) {
-        equipe.membros.push(disponiveis[idxEscolhido].nome);
+      const escolha = prompt(`Escolha o número do colaborador para incluir:\n\n${opcoes}`);
+      const idx = parseInt(escolha) - 1;
+      if (!isNaN(idx) && disponiveis[idx]) {
+        equipe.membros.push(disponiveis[idx].nome);
         renderizarEquipes();
         sincronizarComServidor();
       }
@@ -441,23 +441,18 @@
 
     function removerMembroEquipe(indexEquipe) {
       const equipe = dados.equipes[indexEquipe];
-      if (!equipe.membros || equipe.membros.length === 0) {
-        alert("Esta equipe não possui membros para remover.");
-        return;
-      }
-
+      if (!equipe.membros || !equipe.membros.length) return;
       const opcoes = equipe.membros.map((m, i) => `${i + 1}. ${m}`).join('\n');
-      const escolha = prompt(`Selecione o número do membro para remover:\n\n${opcoes}`);
-
-      const idxEscolhido = parseInt(escolha) - 1;
-      if (!isNaN(idxEscolhido) && equipe.membros[idxEscolhido]) {
-        equipe.membros.splice(idxEscolhido, 1);
+      const escolha = prompt(`Escolha o número do membro que deseja remover:\n\n${opcoes}`);
+      const idx = parseInt(escolha) - 1;
+      if (!isNaN(idx) && equipe.membros[idx]) {
+        equipe.membros.splice(idx, 1);
         renderizarEquipes();
         sincronizarComServidor();
       }
     }
 
-    // Inicialização ao carregar a página
+    // Inicialização ao abrir o site
     window.onload = () => {
       carregarDadosDoServidor();
     };
