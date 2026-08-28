@@ -1,461 +1,1070 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestão On-line</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-dark: #0f172a;
-      --sidebar-bg: #1e293b;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-blue: #3b82f6;
-      --accent-yellow: #f59e0b;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão On-line</title>
+<style>
+/* =========================================================
+   GESTÃO ON-LINE — CSS CENTRALIZADO
+   ========================================================= */
+:root{
+  --cor-azul:#082a4a;
+  --cor-azul-2:#0d3b66;
+  --cor-amarelo:#f2c94c;
+  --cor-amarelo-2:#d6a800;
+  --cor-fundo:#f3f6fa;
+  --cor-card:#ffffff;
+  --cor-texto:#17212b;
+  --cor-texto-2:#667085;
+  --cor-borda:#d9e1ea;
+  --cor-sucesso:#2e7d32;
+  --cor-perigo:#d32f2f;
+  --cor-laranja:#ef8b2c;
+  --cor-pausado:#c9a227;
+  --cor-pendente:#8e44ad;
+  --fonte-principal:Arial,sans-serif;
+  --raio:14px;
+  --sombra:0 8px 25px rgba(0,0,0,.10);
+}
+[data-theme="dark"]{
+  --cor-fundo:#101820;
+  --cor-card:#18232e;
+  --cor-texto:#edf2f7;
+  --cor-texto-2:#aab6c3;
+  --cor-borda:#2b3a49;
+  --cor-azul:#071c31;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:var(--fonte-principal);background:var(--cor-fundo);color:var(--cor-texto)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at center,#173f63,var(--cor-azul))}
+.login-card{width:min(420px,100%);background:var(--cor-card);padding:34px;border-radius:22px;box-shadow:var(--sombra);text-align:center}
+.logo-circle{width:112px;height:112px;border-radius:50%;object-fit:cover;border:5px solid var(--cor-amarelo);background:#eee;margin:auto;display:block}
+.login-title{margin:14px 0 4px;color:var(--cor-texto)}
+.muted{color:var(--cor-texto-2);font-size:13px}
+.form-group{margin:12px 0;text-align:left}
+.form-group label{display:block;font-weight:700;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--cor-borda);border-radius:10px;background:var(--cor-card);color:var(--cor-texto);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cor-amarelo-2);box-shadow:0 0 0 3px rgba(242,201,76,.18)}
+textarea{min-height:90px;resize:vertical}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;transition:.18s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-primary{background:var(--cor-azul-2);color:#fff}
+.btn-accent{background:var(--cor-amarelo);color:#17212b}
+.btn-danger{background:var(--cor-perigo);color:#fff}
+.btn-success{background:var(--cor-sucesso);color:#fff}
+.btn-secondary{background:#e7edf3;color:#17212b}
+.btn-warning{background:var(--cor-laranja);color:#fff}
+[data-theme="dark"] .btn-secondary{background:#263442;color:#fff}
+.header{height:64px;background:var(--cor-azul);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:20}
+.header-left{display:flex;align-items:center;gap:10px}
+.menu-toggle{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:99px;padding:8px 11px}
+.brand{font-size:20px;font-weight:800}
+.header-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:9px 11px}
+.layout{display:flex;min-height:calc(100vh - 64px)}
+.sidebar{width:260px;background:var(--cor-card);border-right:1px solid var(--cor-borda);transition:.22s;flex-shrink:0;overflow:auto}
+.sidebar.collapsed{width:72px}
+.sidebar.collapsed .menu-label,.sidebar.collapsed .submenu{display:none}
+.sidebar.collapsed .menu-item{justify-content:center}
+.menu{padding:12px}
+.menu-section{margin:8px 0;color:var(--cor-texto-2);font-size:11px;font-weight:800;text-transform:uppercase}
+.menu-item{width:100%;border:0;background:transparent;color:var(--cor-texto);display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:10px;text-align:left;margin:3px 0}
+.menu-item:hover{background:var(--cor-amarelo);color:#17212b}
+.menu-item.active{background:var(--cor-azul-2);color:#fff}
+.submenu{padding-left:18px}
+.content{flex:1;padding:18px;overflow:auto}
+.page-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.page-title h1{margin:0;font-size:24px}
+.cards{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:12px}
+.stat{background:var(--cor-card);border:1px solid var(--cor-borda);border-radius:var(--raio);padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat .n{font-size:26px;font-weight:900}
+.stat .l{color:var(--cor-texto-2);font-size:12px;margin-top:4px}
+.dashboard-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:14px}
+.panel{background:var(--cor-card);border:1px solid var(--cor-borda);border-radius:var(--raio);padding:16px;margin-bottom:14px}
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.kanban-col{min-width:270px;background:rgba(127,127,127,.08);border-radius:var(--raio);padding:10px;border-top:5px solid #777}
+.kanban-col.pendente{border-color:var(--cor-pendente)}
+.kanban-col.pausado{border-color:var(--cor-pausado)}
+.kanban-col.atrasado{border-color:var(--cor-perigo)}
+.kanban-col.analise{border-color:var(--cor-laranja)}
+.kanban-col.concluido{border-color:var(--cor-sucesso)}
+.kanban-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:8px}
+.job{background:var(--cor-card);border:1px solid var(--cor-borda);border-radius:12px;padding:12px;margin:8px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.job:hover{border-color:var(--cor-amarelo-2)}
+.job-title{font-weight:800}
+.job-meta{font-size:12px;color:var(--cor-texto-2);margin-top:5px}
+.progress{height:8px;background:#dfe5ea;border-radius:8px;overflow:hidden;margin:9px 0}
+.progress>div{height:100%;background:var(--cor-amarelo-2)}
+.badge{display:inline-flex;align-items:center;padding:4px 7px;border-radius:99px;font-size:11px;font-weight:800;background:#e8edf2;color:#334155}
+.badge.priority{background:#fff1b8}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid var(--cor-borda);text-align:left;font-size:13px}
+th{background:rgba(127,127,127,.08)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:15px;z-index:50}
+.modal{width:min(980px,100%);max-height:92vh;overflow:auto;background:var(--cor-card);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{padding:15px 18px;border-bottom:1px solid var(--cor-borda);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--cor-card);z-index:2}
+.modal-body{padding:18px}
+.modal-foot{padding:14px 18px;border-top:1px solid var(--cor-borda);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:var(--cor-card)}
+.close{border:0;background:transparent;color:var(--cor-texto);font-size:25px}
+.check-list{display:grid;gap:8px}
+.check-row{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--cor-borda);border-radius:10px;background:rgba(127,127,127,.03)}
+.check-head{display:flex;gap:10px;align-items:flex-start}
+.check-head input{width:auto;margin-top:4px}
+.task-photos{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.task-photo-img{width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--cor-borda);cursor:pointer}
+.timeline{display:grid;gap:9px}
+.event{border-left:3px solid var(--cor-amarelo);padding:8px 12px;background:rgba(242,201,76,.08);border-radius:0 8px 8px 0}
+.event small{color:var(--cor-texto-2)}
+.notice{padding:10px 12px;border-radius:10px;background:rgba(242,201,76,.15);margin-bottom:10px}
+.error{color:var(--cor-perigo);font-size:13px;margin-top:6px}
+.nav-tabs{display:flex;gap:8px;border-bottom:2px solid var(--cor-borda);margin-bottom:16px}
+.nav-tab{padding:8px 16px;border:0;background:transparent;font-weight:bold;color:var(--cor-texto-2);border-bottom:3px solid transparent}
+.nav-tab.active{color:var(--cor-azul-2);border-bottom-color:var(--cor-azul-2)}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+/* Estilos de Impressão (Folha A4) */
+@media print {
+  body * { visibility: hidden; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea { position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff; padding: 20px; font-size: 12pt; }
+  .no-print { display: none !important; }
+  .print-page { page-break-after: always; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+}
 
-    /* Topbar */
-    .header-bar {
-      position: fixed; top: 0; left: 0; right: 0; height: 60px;
-      background: var(--sidebar-bg); border-bottom: 1px solid var(--card-border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; z-index: 100;
-    }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 1.2rem; }
-    .top-actions { display: flex; align-items: center; gap: 12px; }
-    .btn-top { background: var(--card-border); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
-    .btn-top:hover { background: #475569; }
-    .btn-primary { background: #fbbf24; color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-
-    /* Main Container & Sidebar */
-    .app-container { display: flex; width: 100%; margin-top: 60px; height: calc(100vh - 60px); }
-    .sidebar { width: 240px; background: var(--sidebar-bg); border-right: 1px solid var(--card-border); padding: 20px 10px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-    .menu-group { display: flex; flex-direction: column; gap: 4px; }
-    .menu-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: bold; margin-bottom: 8px; padding-left: 10px; }
-    .menu-item { display: flex; align-items: center; gap: 10px; padding: 10px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.9rem; transition: 0.2s; }
-    .menu-item:hover, .menu-item.active { background: #334155; color: #fff; }
-
-    /* Dashboard View */
-    .content-area { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-    .dashboard-header h1 { font-size: 1.6rem; }
-    .dashboard-header p { color: var(--text-muted); font-size: 0.85rem; }
-
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
-    .metric-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 15px; }
-    .metric-card .dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-bottom: 8px; }
-    .metric-card .val { font-size: 1.5rem; font-weight: bold; }
-    .metric-card .lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
-
-    .dashboard-sections { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-    .panel-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; }
-    .panel-box h3 { font-size: 1.1rem; margin-bottom: 15px; }
-
-    .notification-list { display: flex; flex-direction: column; gap: 10px; }
-    .notification-item { border-left: 3px solid #fbbf24; background: #0f172a; padding: 10px 12px; border-radius: 0 6px 6px 0; font-size: 0.85rem; }
-    .notification-item .time { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 4px; }
-
-    /* Modal Gestão Unificada */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-    .modal-box { background: #111827; border: 1px solid var(--card-border); width: 90%; max-width: 900px; max-height: 85vh; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; }
-    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-    .tabs-bar { display: flex; gap: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; }
-    .tab-btn { background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-    .tab-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
-    .input-gestao { width: 100%; background: var(--bg-dark); border: 1px solid var(--card-border); color: #fff; padding: 10px 14px; border-radius: 6px; box-sizing: border-box; margin-bottom: 12px; }
-    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; overflow-y: auto; max-height: 50vh; }
-    .card-gestao { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; }
-    .card-gestao h4 { margin-bottom: 8px; font-size: 0.95rem; }
-    .card-gestao p { margin: 4px 0; font-size: 0.85rem; color: var(--text-muted); }
-    .card-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-    .btn-act { background: #334155; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
-    .btn-act:hover { background: #475569; }
-  </style>
+@media(max-width:1100px){
+  .cards{grid-template-columns:repeat(4,1fr)}
+  .dashboard-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .sidebar{position:fixed;top:64px;bottom:0;left:0;z-index:30;transform:translateX(-100%);width:270px}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar.collapsed{width:270px}
+  .sidebar.collapsed .menu-label,.sidebar.collapsed .submenu{display:block}
+  .content{padding:12px}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .brand{font-size:16px}
+}
+</style>
 </head>
 <body>
+<div id="app"></div>
+<div id="printArea" class="hidden"></div>
 
-  <!-- TOPBAR -->
-  <header class="header-bar">
-    <div class="brand">
-      <i class="fas fa-bars"></i>
-      <span>Gestão On-line</span>
+<script>
+/* =========================================================
+   GESTÃO ON-LINE — CONFIGURAÇÃO E DADOS DE SUPORTE
+   ========================================================= */
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbxQ9VhlTdt-e29Pbcgh6S2NfTqu0VIqFBgWNKYN6qq1VNcaXIo6wTQeZRZ9wsQMr5-T/exec",
+  APP_NAME: "Gestão On-line",
+  DEFAULT_USER: "admin@admin.com.br",
+  DEFAULT_PASSWORD: "admin@2026",
+  LOGO_KEY: "go_logo",
+  DATA_KEY: "go_data_v1",
+  SESSION_KEY: "go_session_v1",
+  THEME_KEY: "go_theme"
+};
+
+const DB = {
+  read(){
+    try { return JSON.parse(localStorage.getItem(CONFIG.DATA_KEY)) || seed(); }
+    catch(e){ return seed(); }
+  },
+  write(data){ localStorage.setItem(CONFIG.DATA_KEY, JSON.stringify(data)); },
+  session(){ try{return JSON.parse(localStorage.getItem(CONFIG.SESSION_KEY))}catch(e){return null} },
+  setSession(s){localStorage.setItem(CONFIG.SESSION_KEY,JSON.stringify(s))},
+  clearSession(){localStorage.removeItem(CONFIG.SESSION_KEY)}
+};
+
+function seed(){
+  const d={
+    users:[{id:"u-admin",name:"Administrador",username:"admin",email:CONFIG.DEFAULT_USER,password:CONFIG.DEFAULT_PASSWORD,role:"gestor",active:true}],
+    teams:[],vehicles:[],jobs:[],events:[],notifications:[],materials:[],settings:{logo:"",sheetsApi:CONFIG.API_URL}
+  };
+  DB.write(d); return d;
+}
+let data=DB.read();
+let currentUser=DB.session();
+
+function uid(prefix){return prefix+"-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8)}
+function iso(){return new Date().toISOString()}
+function fmtDate(v){if(!v)return "-"; const d=new Date(v); return isNaN(d)?v:d.toLocaleDateString("pt-BR")}
+function fmtDateTime(v){if(!v)return "-"; const d=new Date(v); return isNaN(d)?v:d.toLocaleString("pt-BR")}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function save(){DB.write(data); syncData()}
+async function apiRequest(payload){
+  const response = await fetch(data?.settings?.sheetsApi || CONFIG.API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(payload),
+    cache:"no-store"
+  });
+  if(!response.ok) throw new Error("HTTP "+response.status);
+  return await response.json();
+}
+async function syncData(){
+  try{ return (await apiRequest({action:"sync",data}))?.ok===true; }
+  catch(e){ console.warn("Google Sheets indisponível. Mantido localmente.",e); return false; }
+}
+async function loadRemoteData(){
+  try{
+    const result=await apiRequest({action:"load"});
+    if(result?.ok && result.data && Array.isArray(result.data.users)){
+      const remote=result.data;
+      remote.settings=remote.settings||{};
+      remote.settings.sheetsApi=remote.settings.sheetsApi||CONFIG.API_URL;
+      if(!remote.settings.logo && data.settings?.logo) remote.settings.logo=data.settings.logo;
+      data=remote; DB.write(data); return true;
+    }
+  }catch(e){ console.warn("Usando cache local.",e); }
+  return false;
+}
+
+function addEvent(jobId,type,text,user=currentUser?.name||"Sistema"){
+  data.events.push({id:uid("evt"),jobId,type,text,user,at:iso()}); save();
+}
+function notify(text,userId=null){
+  data.notifications.push({id:uid("not"),text,userId,read:false,at:iso()}); save();
+}
+function statusClass(status){
+  return { "Pendente":"pendente","Em Andamento":"andamento","Pausado":"pausado","Atrasado":"atrasado","Análise de Gestor":"analise","Concluído":"concluido"}[status]||"andamento";
+}
+function calcProgress(job){
+  if(!job.tasks?.length)return 0;
+  return Math.round(job.tasks.filter(x=>x.done).length/job.tasks.length*100);
+}
+function effectiveStatus(job){
+  if(job.status==="Pendente"||job.status==="Concluído"||job.status==="Pausado"||job.status==="Análise de Gestor") return job.status;
+  if(job.due && new Date(job.due+"T23:59:59") < new Date() && calcProgress(job)<100) return "Atrasado";
+  return job.status||"Em Andamento";
+}
+function getUser(id){return data.users.find(x=>x.id===id)}
+function getTeam(id){return data.teams.find(x=>x.id===id)}
+function getVehicle(id){return data.vehicles.find(x=>x.id===id)}
+function jobVisible(job){
+  if(currentUser.role==="gestor")return true;
+  const ids=job.assigneeType==="team"?(getTeam(job.assigneeId)?.members||[]):[job.assigneeId];
+  return ids.includes(currentUser.id);
+}
+function applyTheme(){
+  document.documentElement.dataset.theme=localStorage.getItem(CONFIG.THEME_KEY)||"light";
+}
+applyTheme();
+
+function render(){
+  if(!currentUser){renderLogin();return}
+  renderApp();
+}
+function renderLogin(){
+  const logo=localStorage.getItem(CONFIG.LOGO_KEY)||"";
+  document.getElementById("app").innerHTML=`
+  <main class="login">
+    <section class="login-card">
+      <img class="logo-circle" src="${logo||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#eee"/><text x="60" y="68" text-anchor="middle" font-size="38">GO</text></svg>')}" alt="Logomarca">
+      <h1 class="login-title">${CONFIG.APP_NAME}</h1>
+      <div class="muted">Acesso ao sistema</div>
+      <form onsubmit="login(event)">
+        <div class="form-group"><label>E-mail ou Usuário</label><input id="loginEmail" type="text" autocomplete="username" required></div>
+        <div class="form-group"><label>Senha</label><input id="loginPass" type="password" required></div>
+        <div id="loginError" class="error"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px">Entrar</button>
+      </form>
+      <button class="btn btn-secondary" style="margin-top:12px" onclick="toggleTheme()">💡 Alternar tema</button>
+    </section>
+  </main>`;
+}
+function login(e){
+  e.preventDefault();
+  const identifier=document.getElementById("loginEmail").value.trim().toLowerCase();
+  const pass=document.getElementById("loginPass").value;
+  const u=data.users.find(x=>(x.email?.toLowerCase()===identifier || x.username?.toLowerCase()===identifier || x.name?.toLowerCase()===identifier)&&x.password===pass&&x.active!==false);
+  if(!u){document.getElementById("loginError").textContent="Usuário ou senha inválidos.";return}
+  currentUser={id:u.id,name:u.name,email:u.email,role:u.role};
+  DB.setSession(currentUser); render();
+}
+function logout(){DB.clearSession();currentUser=null;render()}
+function toggleTheme(){
+  const t=(localStorage.getItem(CONFIG.THEME_KEY)||"light")==="light"?"dark":"light";
+  localStorage.setItem(CONFIG.THEME_KEY,t);applyTheme();render();
+}
+
+/* =========================================================
+   ESTRUTURA PRINCIPAL E NAVEGAÇÃO DA APLICAÇÃO
+   ========================================================= */
+function renderApp(){
+  const role=currentUser.role;
+  const unread=data.notifications.filter(n=>(!n.userId||n.userId===currentUser.id)&&!n.read).length;
+  document.getElementById("app").innerHTML=`
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="brand">${CONFIG.APP_NAME}</div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Notificações" onclick="openNotifications()">🔔 ${unread?`<b>${unread}</b>`:""}</button>
+        <button class="icon-btn" title="Tema" onclick="toggleTheme()">💡</button>
+        <button class="icon-btn" onclick="logout()">Sair</button>
+      </div>
+    </header>
+    <div class="layout">
+      <aside id="sidebar" class="sidebar">
+        <nav class="menu">
+          <div class="menu-section">Principal</div>
+          <button class="menu-item" onclick="page('dashboard')">📊 <span class="menu-label">Dashboard</span></button>
+          <button class="menu-item" onclick="page('kanban')">🗂️ <span class="menu-label">Kanban</span></button>
+          <button class="menu-item" onclick="page('agenda')">📅 <span class="menu-label">Agenda</span></button>
+          <div class="menu-section">Serviços</div>
+          ${role==="gestor"?`<button class="menu-item" onclick="openJobModal()">➕ <span class="menu-label">Registrar Serviço</span></button>`:""}
+          <button class="menu-item" onclick="page('jobs')">🛠️ <span class="menu-label">Serviços</span></button>
+          ${role==="gestor"?`
+          <div class="menu-section">Gestão</div>
+          <button class="menu-item" onclick="page('cadastros')">📋 <span class="menu-label">Cadastros</span></button>
+          <button class="menu-item" onclick="openLogoModal()">🖼️ <span class="menu-label">Definir Logomarca</span></button>
+          <button class="menu-item" onclick="openMaterials()">📦 <span class="menu-label">Materiais</span></button>
+          <div class="menu-section">Relatórios</div>
+          <button class="menu-item" onclick="openReport('service')">📄 <span class="menu-label">Análise de Serviço</span></button>
+          <button class="menu-item" onclick="openReport('team')">📈 <span class="menu-label">Análise Equipe</span></button>
+          <button class="menu-item" onclick="openReport('productivity')">🏆 <span class="menu-label">Produtividade</span></button>
+          <div class="menu-section">Configurações</div>
+          <button class="menu-item" onclick="openSheetsConfig()">🔗 <span class="menu-label">Google Sheets</span></button>
+          <button class="menu-item" onclick="openAudit()">🛡️ <span class="menu-label">Auditoria</span></button>`:""}
+        </nav>
+      </aside>
+      <main id="content" class="content"></main>
     </div>
-    <div class="top-actions">
-      <button class="btn-top"><i class="fas fa-bell"></i></button>
-      <button class="btn-top"><i class="fas fa-lightbulb"></i></button>
-      <button class="btn-top">Sair</button>
-      <button class="btn-primary">+ Registrar Serviço</button>
-    </div>
-  </header>
+    <div id="modalRoot"></div>
+  </div>`;
+  page("dashboard");
+}
+function toggleSidebar(){
+  const s=document.getElementById("sidebar");
+  if(innerWidth<=760)s.classList.toggle("open"); else s.classList.toggle("collapsed");
+}
+function page(name){
+  if(name==="dashboard") renderDashboard();
+  if(name==="kanban") renderKanban();
+  if(name==="agenda") renderAgenda();
+  if(name==="jobs") renderJobs();
+  if(name==="cadastros") renderCadastrosPage();
+}
 
-  <div class="app-container">
-    <!-- SIDEBAR MENU -->
-    <nav class="sidebar">
-      <div class="menu-group">
-        <span class="menu-title">Principal</span>
-        <a href="#" class="menu-item active"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a href="#" class="menu-item"><i class="fas fa-columns"></i> Kanban</a>
-        <a href="#" class="menu-item"><i class="fas fa-calendar-alt"></i> Agenda</a>
-      </div>
+/* =========================================================
+   TELA DE DASHBOARD & KANBAN
+   ========================================================= */
+function renderDashboard(){
+  const jobs=data.jobs.filter(jobVisible);
+  const counts={};
+  ["Pendente","Em Andamento","Pausado","Atrasado","Análise de Gestor","Concluído"].forEach(s=>counts[s]=jobs.filter(j=>effectiveStatus(j)===s).length);
+  const pending=data.materials.filter(m=>m.status==="Pendente").length;
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Dashboard</h1><div class="muted">Visão geral da operação</div></div>${currentUser.role==="gestor"?`<button class="btn btn-accent" onclick="openJobModal()">+ Registrar Serviço</button>`:""}</div>
+  <section class="cards">
+    ${stat("Pendentes",counts["Pendente"],"🟪")}
+    ${stat("Em andamento",counts["Em Andamento"],"🟦")}
+    ${stat("Pausados",counts["Pausado"],"🟨")}
+    ${stat("Atrasados",counts["Atrasado"],"🔴")}
+    ${stat("Em análise",counts["Análise de Gestor"],"🟧")}
+    ${stat("Concluídos",counts["Concluído"],"🟢")}
+    ${stat("Peças pendentes",pending,"📦")}
+  </section>
+  <div class="dashboard-grid">
+    <section class="panel"><h3>Resumo por equipe</h3>${teamSummary()}</section>
+    <section class="panel"><h3>Notificações recentes</h3>${recentNotifications()}</section>
+  </div>`;
+}
+function stat(label,n,icon){return `<div class="stat"><div>${icon}</div><div class="n">${n}</div><div class="l">${label}</div></div>`}
+function teamSummary(){
+  if(!data.teams.length)return `<div class="muted">Nenhuma equipe cadastrada.</div>`;
+  return `<div class="table-wrap"><table><tr><th>Equipe</th><th>Serviços</th><th>Concluídos</th><th>Atrasados</th></tr>${data.teams.map(t=>{
+    const js=data.jobs.filter(j=>j.assigneeType==="team"&&j.assigneeId===t.id);
+    return `<tr><td>${escapeHtml(t.name)}</td><td>${js.length}</td><td>${js.filter(j=>effectiveStatus(j)==="Concluído").length}</td><td>${js.filter(j=>effectiveStatus(j)==="Atrasado").length}</td></tr>`
+  }).join("")}</table></div>`;
+}
+function recentNotifications(){
+  const ns=data.notifications.filter(n=>!n.userId||n.userId===currentUser.id).slice().sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,7);
+  return ns.length?ns.map(n=>`<div class="event">${escapeHtml(n.text)}<br><small>${fmtDateTime(n.at)}</small></div>`).join(""):`<div class="muted">Nenhuma notificação.</div>`;
+}
 
-      <div class="menu-group">
-        <span class="menu-title">Serviços</span>
-        <a href="#" class="menu-item"><i class="fas fa-plus-circle"></i> Registrar Serviço</a>
-        <a href="#" class="menu-item"><i class="fas fa-tools"></i> Serviços</a>
-      </div>
+function renderKanban(){
+  const jobs=data.jobs.filter(jobVisible);
+  const statuses=currentUser.role==="gestor"?["Pendente","Em Andamento","Pausado","Atrasado","Análise de Gestor","Concluído"]:["Pendente","Em Andamento","Pausado","Atrasado","Concluído"];
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Kanban de Serviços</h1><div class="muted">Acompanhamento do fluxo operacional.</div></div></div>
+  <div class="kanban">${statuses.map(s=>`
+    <section class="kanban-col ${statusClass(s)}">
+      <div class="kanban-head"><span>${s}</span><span>${jobs.filter(j=>effectiveStatus(j)===s).length}</span></div>
+      ${jobs.filter(j=>effectiveStatus(j)===s).map(jobCard).join("")||`<div class="muted">Nenhum serviço.</div>`}
+    </section>`).join("")}</div>`;
+}
+function jobCard(j){
+  const pct=calcProgress(j);
+  return `<article class="job" onclick="openJobView('${j.id}')">
+    <div class="job-title">#${escapeHtml(j.number)} — ${escapeHtml(j.name)}</div>
+    <div class="job-meta">📍 ${escapeHtml(j.location||"-")}</div>
+    <div class="job-meta">👥 ${escapeHtml(j.assigneeName||"-")}</div>
+    <span class="badge priority">${escapeHtml(j.priority||"Normal")}</span>
+    <div class="progress"><div style="width:${pct}%"></div></div>
+    <div class="job-meta">${pct}% concluído • prazo ${fmtDate(j.due)}</div>
+  </article>`;
+}
 
-      <div class="menu-group">
-        <span class="menu-title">Cadastros</span>
-        <a href="#" class="menu-item" onclick="abrirMenuConsultas()"><i class="fas fa-search"></i> Gestão de Cadastros</a>
-        <a href="#" class="menu-item"><i class="fas fa-image"></i> Definir Logomarca</a>
-        <a href="#" class="menu-item"><i class="fas fa-user-plus"></i> Cadastrar Colaborador</a>
-        <a href="#" class="menu-item"><i class="fas fa-users"></i> Cadastro de Equipe</a>
-        <a href="#" class="menu-item"><i class="fas fa-truck"></i> Cadastro de Veículo</a>
-        <a href="#" class="menu-item"><i class="fas fa-box"></i> Materiais</a>
-      </div>
-
-      <div class="menu-group">
-        <span class="menu-title">Relatórios</span>
-        <a href="#" class="menu-item"><i class="fas fa-file-alt"></i> Análise de Serviço</a>
-      </div>
-    </nav>
-
-    <!-- ÁREA CENTRAL DO DASHBOARD -->
-    <main class="content-area">
-      <div class="dashboard-header">
-        <h1>Dashboard</h1>
-        <p>Visão geral da operação</p>
-      </div>
-
-      <!-- MÉTRICAS -->
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <span class="dot" style="background: var(--accent-blue);"></span>
-          <div class="val" id="cntEmAndamento">0</div>
-          <div class="lbl">Em andamento</div>
-        </div>
-        <div class="metric-card">
-          <span class="dot" style="background: var(--accent-yellow);"></span>
-          <div class="val" id="cntPausados">0</div>
-          <div class="lbl">Pausados</div>
-        </div>
-        <div class="metric-card">
-          <span class="dot" style="background: var(--accent-red);"></span>
-          <div class="val" id="cntAtrasados">0</div>
-          <div class="lbl">Atrasados</div>
-        </div>
-        <div class="metric-card">
-          <span class="dot" style="background: var(--accent-yellow);"></span>
-          <div class="val" id="cntEmAnalise">0</div>
-          <div class="lbl">Em análise</div>
-        </div>
-        <div class="metric-card">
-          <span class="dot" style="background: var(--accent-green);"></span>
-          <div class="val" id="cntConcluidos">1</div>
-          <div class="lbl">Concluídos</div>
-        </div>
-        <div class="metric-card">
-          <span class="dot" style="background: #a855f7;"></span>
-          <div class="val" id="cntPecasPendentes">0</div>
-          <div class="lbl">Peças pendentes</div>
-        </div>
-      </div>
-
-      <!-- PAINÉIS INFERIORES -->
-      <div class="dashboard-sections">
-        <div class="panel-box">
-          <h3>Resumo por equipe</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem;" id="lblResumoEquipe">Nenhuma equipe cadastrada.</p>
-        </div>
-
-        <div class="panel-box">
-          <h3>Notificações recentes</h3>
-          <div class="notification-list" id="listaNotificacoes">
-            <div class="notification-item">
-              <div>Serviço #000001 foi concluído.</div>
-              <span class="time">24/08/2026, 10:17:01</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+function renderJobs(){
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><h1>Serviços</h1>${currentUser.role==="gestor"?`<button class="btn btn-accent" onclick="openJobModal()">+ Novo Serviço</button>`:""}</div>
+  <div class="toolbar">
+    <input id="searchJobs" placeholder="🔎 Pedido, serviço, cliente, equipe..." oninput="filterJobs()" style="max-width:330px">
+    <select id="filterStatus" onchange="filterJobs()"><option value="">Todos os status</option><option>Pendente</option><option>Em Andamento</option><option>Pausado</option><option>Atrasado</option><option>Análise de Gestor</option><option>Concluído</option></select>
+    <select id="filterPriority" onchange="filterJobs()"><option value="">Todas prioridades</option><option>Urgente</option><option>Alta</option><option>Normal</option><option>Baixa</option></select>
   </div>
+  <div id="jobTable" class="panel"></div>`;
+  filterJobs();
+}
+function filterJobs(){
+  const q=(document.getElementById("searchJobs")?.value||"").toLowerCase();
+  const st=document.getElementById("filterStatus")?.value||"";
+  const pr=document.getElementById("filterPriority")?.value||"";
+  const js=data.jobs.filter(jobVisible).filter(j=>
+    (!q||`${j.number} ${j.name} ${j.location} ${j.customerName} ${j.assigneeName}`.toLowerCase().includes(q)) &&
+    (!st||effectiveStatus(j)===st) && (!pr||j.priority===pr));
+  document.getElementById("jobTable").innerHTML=`<div class="table-wrap"><table><tr><th>Pedido</th><th>Serviço</th><th>Destino</th><th>Status</th><th>Progresso</th><th>Prazo</th></tr>
+  ${js.map(j=>`<tr onclick="openJobView('${j.id}')" style="cursor:pointer"><td>#${j.number}</td><td>${escapeHtml(j.name)}</td><td>${escapeHtml(j.assigneeName)}</td><td>${effectiveStatus(j)}</td><td>${calcProgress(j)}%</td><td>${fmtDate(j.due)}</td></tr>`).join("")||`<tr><td colspan="6">Nenhum serviço encontrado.</td></tr>`}</table></div>`;
+}
 
-  <!-- MODAL DA CENTRAL UNIFICADA DE GESTÃO DE CADASTROS -->
-  <div id="modalGestaoUnificada" class="modal-overlay" style="display: none;">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h2>🔍 Central de Consultas e Gestão</h2>
-        <button class="modal-close" onclick="fecharMenuConsultas()">&times;</button>
-      </div>
+function renderAgenda(){
+  const start=new Date(); start.setDate(1);
+  const month=start.getMonth(),year=start.getFullYear();
+  const days=new Date(year,month+1,0).getDate();
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Agenda</h1><div class="muted">${start.toLocaleDateString("pt-BR",{month:"long",year:"numeric"})}</div></div></div>
+  <div class="panel"><div class="grid3">${Array.from({length:days},(_,i)=>{
+    const day=i+1; const key=`${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    const js=data.jobs.filter(j=>jobVisible(j)&&j.start?.startsWith(key));
+    return `<div class="stat"><b>${day}</b><div style="margin-top:8px">${js.map(j=>`<div class="badge" style="margin:2px;cursor:pointer" onclick="openJobView('${j.id}')">#${j.number}</div>`).join("")||`<span class="muted">Livre</span>`}</div></div>`
+  }).join("")}</div></div>`;
+}
 
-      <div class="tabs-bar">
-        <button class="tab-btn active" id="btnTabColab" onclick="alternarAbaGestao('colaboradores')">👥 Colaboradores</button>
-        <button class="tab-btn" id="btnTabVeic" onclick="alternarAbaGestao('veiculos')">🚗 Veículos</button>
-        <button class="tab-btn" id="btnTabEqp" onclick="alternarAbaGestao('equipes')">🛡️ Equipes Avançadas</button>
-      </div>
+/* =========================================================
+   ITEM 6: MENU UNIFICADO DE CADASTROS (NA NAVEGAÇÃO INTERNA)
+   ========================================================= */
+let currentCadTab = "users";
 
-      <!-- ABA COLABORADORES -->
-      <div id="abaGestaoColaboradores">
-        <input type="text" id="filtroColaborador" class="input-gestao" placeholder="Filtrar por nome..." oninput="renderizarColaboradores()">
-        <div id="listaColaboradores" class="grid-cards"></div>
-      </div>
-
-      <!-- ABA VEÍCULOS -->
-      <div id="abaGestaoVeiculos" style="display: none;">
-        <input type="text" id="filtroVeiculo" class="input-gestao" placeholder="Filtrar por placa ou modelo..." oninput="renderizarVeiculos()">
-        <div id="listaVeiculos" class="grid-cards"></div>
-      </div>
-
-      <!-- ABA EQUIPES -->
-      <div id="abaGestaoEquipes" style="display: none;">
-        <div id="listaEquipes" class="grid-cards"></div>
-      </div>
-    </div>
+function renderCadastrosPage(){
+  if(currentUser.role!=="gestor"){ alert("Acesso restrito ao gestor."); page("dashboard"); return; }
+  document.getElementById("content").innerHTML=`
+  <div class="page-title"><div><h1>Central de Cadastros</h1><div class="muted">Gerenciamento unificado de Colaboradores, Veículos e Equipes</div></div></div>
+  <div class="nav-tabs">
+    <button class="nav-tab ${currentCadTab==='users'?'active':''}" onclick="switchCadTab('users')">Colaboradores</button>
+    <button class="nav-tab ${currentCadTab==='vehicles'?'active':''}" onclick="switchCadTab('vehicles')">Veículos</button>
+    <button class="nav-tab ${currentCadTab==='teams'?'active':''}" onclick="switchCadTab('teams')">Equipes (Avançado)</button>
   </div>
+  <div id="cadastrosTabContent"></div>`;
+  renderCadTabContent();
+}
 
-  <!-- LÓGICA JAVASCRIPT & COMUNICAÇÃO -->
-  <script>
-    const URL_SCRIPT = "SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI";
+function switchCadTab(tab){
+  currentCadTab = tab;
+  renderCadastrosPage();
+}
 
-    // TRAVA DE SEGURANÇA: Bloqueia syncs em branco antes da leitura do banco
-    let dadosCarregadosDoServidor = false;
+function renderCadTabContent(){
+  const root = document.getElementById("cadastrosTabContent");
+  if(!root) return;
+  if(currentCadTab === "users"){
+    root.innerHTML = `
+    <div class="panel">
+      <div class="toolbar">
+        <input id="cadUserSearch" placeholder="🔎 Filtrar por nome..." oninput="renderCadUsersList()" style="max-width:300px">
+        <button class="btn btn-accent" onclick="openUserModal()">+ Cadastrar Colaborador</button>
+      </div>
+      <div id="cadUsersList"></div>
+    </div>`;
+    renderCadUsersList();
+  } else if(currentCadTab === "vehicles"){
+    root.innerHTML = `
+    <div class="panel">
+      <div class="toolbar">
+        <button class="btn btn-accent" onclick="openVehicleModal()">+ Cadastrar Veículo</button>
+      </div>
+      <div id="cadVehiclesList"></div>
+    </div>`;
+    renderCadVehiclesList();
+  } else if(currentCadTab === "teams"){
+    root.innerHTML = `
+    <div class="panel">
+      <div class="toolbar">
+        <button class="btn btn-accent" onclick="openTeamModal()">+ Cadastrar Equipe</button>
+      </div>
+      <div id="cadTeamsList"></div>
+    </div>`;
+    renderCadTeamsList();
+  }
+}
 
-    // ESTADO GLOBAL COMPLETO (Conserva todos os dados do sistema)
-    let dados = {
-      colaboradores: [],
-      veiculos: [],
-      equipes: [],
-      servicos: []
-    };
+function renderCadUsersList(){
+  const filter = (document.getElementById("cadUserSearch")?.value || "").toLowerCase();
+  const list = data.users.filter(u => u.name.toLowerCase().includes(filter));
+  document.getElementById("cadUsersList").innerHTML = `
+  <div class="table-wrap"><table>
+    <tr><th>Nome</th><th>Usuário</th><th>E-mail</th><th>Função</th><th>Status</th><th>Ações</th></tr>
+    ${list.map(u => `
+      <tr>
+        <td><b>${escapeHtml(u.name)}</b></td>
+        <td>@${escapeHtml(u.username||"-")}</td>
+        <td>${escapeHtml(u.email)}</td>
+        <td>${escapeHtml(u.role)}</td>
+        <td>${u.active!==false?'<span class="badge" style="background:#d4edda;color:#155724">Ativo</span>':'<span class="badge" style="background:#f8d7da;color:#721c24">Inativo</span>'}</td>
+        <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px" onclick="openEditUserModal('${u.id}')">✏️ Editar</button></td>
+      </tr>
+    `).join("") || `<tr><td colspan="6">Nenhum colaborador encontrado.</td></tr>`}
+  </table></div>`;
+}
 
-    // --- CARREGAR DADOS DA PLANILHA ---
-    async function carregarDadosDoServidor() {
-      try {
-        const response = await fetch(URL_SCRIPT, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'load' })
-        });
-        const result = await response.json();
+function openEditUserModal(userId){
+  const u = data.users.find(x=>x.id===userId); if(!u) return;
+  openModal("Editar Colaborador", `
+  <div class="grid2">
+    <div class="form-group"><label>Nome *</label><input id="editUName" value="${escapeHtml(u.name)}"></div>
+    <div class="form-group"><label>Nome de usuário *</label><input id="editUUsername" value="${escapeHtml(u.username||"")}"></div>
+    <div class="form-group"><label>E-mail *</label><input id="editUEmail" type="email" value="${escapeHtml(u.email)}"></div>
+    <div class="form-group"><label>Nova Senha (deixe em branco para não alterar)</label><input id="editUPass" type="password"></div>
+    <div class="form-group"><label>Status</label><select id="editUActive"><option value="true" ${u.active!==false?'selected':''}>Ativo</option><option value="false" ${u.active===false?'selected':''}>Inativo</option></select></div>
+  </div>
+  <div id="editUError" class="error"></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveEditUser('${u.id}')">Salvar Alterações</button>`);
+}
 
-        if (result.ok && result.data) {
-          dados = Object.assign({}, dados, result.data);
-          dadosCarregadosDoServidor = true;
-          console.log("Banco de dados remotos carregado com sucesso.");
-          atualizarDashboardMetrics();
-        }
-      } catch (error) {
-        console.error("Erro ao carregar banco de dados remotos:", error);
-      }
-    }
+function saveEditUser(userId){
+  const u = data.users.find(x=>x.id===userId); if(!u) return;
+  const name = editUName.value.trim(), username = editUUsername.value.trim().toLowerCase(), email = editUEmail.value.trim().toLowerCase(), pass = editUPass.value, active = editUActive.value==="true";
+  if(!name || !username || !email){ editUError.textContent="Preencha os campos obrigatórios."; return; }
+  if(data.users.some(x=>x.id!==userId && x.email.toLowerCase()===email)){ editUError.textContent="E-mail já utilizado por outro usuário."; return; }
+  if(data.users.some(x=>x.id!==userId && (x.username||"").toLowerCase()===username)){ editUError.textContent="Usuário já utilizado por outro cadastro."; return; }
+  u.name = name; u.username = username; u.email = email; u.active = active;
+  if(pass) u.password = pass;
+  save(); closeModal(); renderCadTabContent(); alert("Cadastro do colaborador atualizado.");
+}
 
-    // --- SALVAR/SINCRONIZAR COM A PLANILHA ---
-    async function sincronizarComServidor() {
-      if (!dadosCarregadosDoServidor) {
-        alert("Aguarde o carregamento do banco remoto antes de salvar alterações.");
-        return;
-      }
+function renderCadVehiclesList(){
+  document.getElementById("cadVehiclesList").innerHTML = `
+  <div class="table-wrap"><table>
+    <tr><th>Placa</th><th>Modelo / Marca</th><th>Ano</th><th>KM</th><th>Status</th><th>Ações</th></tr>
+    ${data.vehicles.map(v => `
+      <tr>
+        <td><b>${escapeHtml(v.plate)}</b></td>
+        <td>${escapeHtml(v.model||"-")} / ${escapeHtml(v.brand||"-")}</td>
+        <td>${v.year||"-"}</td>
+        <td>${v.km||0} km</td>
+        <td><span class="badge">${escapeHtml(v.status||"Disponível")}</span></td>
+        <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px" onclick="openEditVehicleModal('${v.id}')">✏️ Editar</button></td>
+      </tr>
+    `).join("") || `<tr><td colspan="6">Nenhum veículo cadastrado.</td></tr>`}
+  </table></div>`;
+}
 
-      try {
-        await fetch(URL_SCRIPT, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'sync',
-            data: dados
-          })
-        });
-        console.log("Sincronizado com sucesso.");
-      } catch (error) {
-        console.error("Erro ao sincronizar dados:", error);
-      }
-    }
+function openEditVehicleModal(vId){
+  const v = data.vehicles.find(x=>x.id===vId); if(!v) return;
+  openModal("Editar Veículo", `
+  <div class="grid2">
+    <div class="form-group"><label>Placa *</label><input id="editVPlate" value="${escapeHtml(v.plate)}"></div>
+    <div class="form-group"><label>Modelo</label><input id="editVModel" value="${escapeHtml(v.model||"")}"></div>
+    <div class="form-group"><label>Marca</label><input id="editVBrand" value="${escapeHtml(v.brand||"")}"></div>
+    <div class="form-group"><label>Ano</label><input id="editVYear" type="number" value="${v.year||""}"></div>
+    <div class="form-group"><label>Quilometragem</label><input id="editVKm" type="number" value="${v.km||0}"></div>
+    <div class="form-group"><label>Status de Disponibilidade</label><select id="editVStatus"><option ${v.status==='Disponível'?'selected':''}>Disponível</option><option ${v.status==='Em serviço'?'selected':''}>Em serviço</option><option ${v.status==='Indisponível'?'selected':''}>Indisponível</option><option ${v.status==='Manutenção'?'selected':''}>Manutenção</option></select></div>
+  </div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveEditVehicle('${v.id}')">Salvar Alterações</button>`);
+}
 
-    // --- ATUALIZADOR DAS MÉTRICAS DO DASHBOARD ---
-    function atualizarDashboardMetrics() {
-      if (!dados.servicos) return;
-      document.getElementById('cntEmAndamento').innerText = dados.servicos.filter(s => s.status === 'Em andamento').length;
-      document.getElementById('cntPausados').innerText = dados.servicos.filter(s => s.status === 'Pausado').length;
-      document.getElementById('cntAtrasados').innerText = dados.servicos.filter(s => s.status === 'Atrasado').length;
-      document.getElementById('cntEmAnalise').innerText = dados.servicos.filter(s => s.status === 'Em análise').length;
-      document.getElementById('cntConcluidos').innerText = dados.servicos.filter(s => s.status === 'Concluído').length;
-    }
+function saveEditVehicle(vId){
+  const v = data.vehicles.find(x=>x.id===vId); if(!v) return;
+  if(!editVPlate.value.trim()) return alert("Informe a placa.");
+  v.plate = editVPlate.value.trim().toUpperCase(); v.model = editVModel.value; v.brand = editVBrand.value;
+  v.year = editVYear.value; v.km = Number(editVKm.value||0); v.status = editVStatus.value;
+  save(); closeModal(); renderCadTabContent(); alert("Veículo atualizado.");
+}
 
-    // --- CONTROLE DAS ABAS E MODAL DE GESTÃO ---
-    function abrirMenuConsultas() {
-      document.getElementById('modalGestaoUnificada').style.display = 'flex';
-      alternarAbaGestao('colaboradores');
-    }
+function renderCadTeamsList(){
+  document.getElementById("cadTeamsList").innerHTML = `
+  <div class="table-wrap"><table>
+    <tr><th>Nome da Equipe</th><th>Veículo Associado</th><th>Integrantes</th><th>Ações</th></tr>
+    ${data.teams.map(t => {
+      const veh = getVehicle(t.vehicleId);
+      const members = (t.members||[]).map(mId => getUser(mId)?.name).filter(Boolean).join(", ");
+      return `
+      <tr>
+        <td><b>${escapeHtml(t.name)}</b></td>
+        <td>${veh ? escapeHtml(veh.plate + " - " + veh.model) : "Nenhum"}</td>
+        <td>${escapeHtml(members || "Sem colaboradores")}</td>
+        <td><button class="btn btn-secondary" style="padding:4px 8px;font-size:12px" onclick="openEditTeamModal('${t.id}')">✏️ Gerenciar Equipe</button></td>
+      </tr>`;
+    }).join("") || `<tr><td colspan="4">Nenhuma equipe cadastrada.</td></tr>`}
+  </table></div>`;
+}
 
-    function fecharMenuConsultas() {
-      document.getElementById('modalGestaoUnificada').style.display = 'none';
-    }
+function openEditTeamModal(tId){
+  const t = data.teams.find(x=>x.id===tId); if(!t) return;
+  openModal("Gerenciador Avançado de Equipe", `
+  <div class="form-group"><label>Nome da Equipe *</label><input id="editTName" value="${escapeHtml(t.name)}"></div>
+  <div class="form-group"><label>Veículo Associado</label><select id="editTVehicle"><option value="">Nenhum</option>${data.vehicles.map(v=>`<option value="${v.id}" ${t.vehicleId===v.id?'selected':''}>${escapeHtml(v.plate)} — ${escapeHtml(v.model||"")}</option>`).join("")}</select></div>
+  <div class="form-group"><label>Manipular Integrantes (Adicionar/Remover)</label>
+    <div class="check-list">
+      ${data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u => {
+        const checked = (t.members||[]).includes(u.id) ? 'checked' : '';
+        return `<label class="check-row"><input type="checkbox" class="editTeamMember" value="${u.id}" ${checked}><span><b>${escapeHtml(u.name)}</b> — ${escapeHtml(u.email)}</span></label>`;
+      }).join("")}
+    </div>
+  </div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveEditTeam('${t.id}')">Salvar Equipe</button>`);
+}
 
-    function alternarAbaGestao(aba) {
-      document.getElementById('abaGestaoColaboradores').style.display = 'none';
-      document.getElementById('abaGestaoVeiculos').style.display = 'none';
-      document.getElementById('abaGestaoEquipes').style.display = 'none';
+function saveEditTeam(tId){
+  const t = data.teams.find(x=>x.id===tId); if(!t) return;
+  if(!editTName.value.trim()) return alert("Informe o nome da equipe.");
+  const members = [...document.querySelectorAll(".editTeamMember:checked")].map(x=>x.value);
+  t.name = editTName.value.trim(); t.vehicleId = editTVehicle.value; t.members = members;
+  save(); closeModal(); renderCadTabContent(); alert("Equipe atualizada com sucesso.");
+}
 
-      document.getElementById('btnTabColab').classList.remove('active');
-      document.getElementById('btnTabVeic').classList.remove('active');
-      document.getElementById('btnTabEqp').classList.remove('active');
+/* =========================================================
+   MODAIS DE CADASTRO SIMPLES E SERVIÇOS
+   ========================================================= */
+function openModal(title,body,footer=""){
+  document.getElementById("modalRoot").innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><section class="modal">
+    <header class="modal-head"><h2 style="margin:0;font-size:19px">${title}</h2><button class="close" onclick="closeModal()">×</button></header>
+    <div class="modal-body">${body}</div>
+    ${footer?`<footer class="modal-foot">${footer}</footer>`:""}
+  </section></div>`;
+}
+function closeModal(){document.getElementById("modalRoot").innerHTML=""}
 
-      if (aba === 'colaboradores') {
-        document.getElementById('abaGestaoColaboradores').style.display = 'block';
-        document.getElementById('btnTabColab').classList.add('active');
-        renderizarColaboradores();
-      } else if (aba === 'veiculos') {
-        document.getElementById('abaGestaoVeiculos').style.display = 'block';
-        document.getElementById('btnTabVeic').classList.add('active');
-        renderizarVeiculos();
-      } else if (aba === 'equipes') {
-        document.getElementById('abaGestaoEquipes').style.display = 'block';
-        document.getElementById('btnTabEqp').classList.add('active');
-        renderizarEquipes();
-      }
-    }
+function openLogoModal(){
+  openModal("Definir Logomarca",`
+    <div class="notice">Para ser exibida na tela de Login.</div>
+    <div class="form-group"><label>URL da logomarca</label><input id="logoUrl" placeholder="https://..."></div>
+    <div class="form-group"><label>Ou selecione uma imagem</label><input id="logoFile" type="file" accept="image/*" onchange="previewLogo(event)"></div>
+    <img id="logoPreview" class="logo-circle" style="margin:15px 0" src="${escapeHtml(data.settings.logo||localStorage.getItem(CONFIG.LOGO_KEY)||"")}">`,
+    `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveLogo()">Salvar</button>`);
+}
+function previewLogo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>document.getElementById("logoPreview").src=r.result;r.readAsDataURL(f)}
+function saveLogo(){
+  const file=document.getElementById("logoFile").files[0];
+  const url=document.getElementById("logoUrl").value.trim();
+  if(file){const r=new FileReader();r.onload=()=>{data.settings.logo=r.result;localStorage.setItem(CONFIG.LOGO_KEY,r.result);save();closeModal();render()};r.readAsDataURL(file)}
+  else {data.settings.logo=url;localStorage.setItem(CONFIG.LOGO_KEY,url);save();closeModal();render()}
+}
 
-    // --- GESTÃO DE COLABORADORES ---
-    function renderizarColaboradores() {
-      const filtro = (document.getElementById('filtroColaborador').value || '').toLowerCase();
-      const container = document.getElementById('listaColaboradores');
-      container.innerHTML = '';
+function openUserModal(){
+  openModal("Cadastrar Colaborador",`
+  <div class="grid2">
+    <div class="form-group"><label>Nome do colaborador *</label><input id="uName"></div>
+    <div class="form-group"><label>Nome de usuário *</label><input id="uUsername" autocomplete="username" placeholder="Ex.: joao.silva"></div>
+    <div class="form-group"><label>E-mail *</label><input id="uEmail" type="email" autocomplete="email"></div>
+    <div class="form-group"><label>Senha *</label><input id="uPass" type="password"></div>
+    <div class="form-group"><label>Confirme sua senha *</label><input id="uPass2" type="password"></div>
+    <div class="form-group"><label>Nível de acesso</label><select id="uRole"><option value="colaborador">Colaborador</option><option value="gestor">Gestor</option></select></div>
+  </div>
+  <div id="uError" class="error"></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveUser()">Cadastrar</button>`);
+}
+function saveUser(){
+  const name=uName.value.trim(),username=uUsername.value.trim().toLowerCase(),email=uEmail.value.trim().toLowerCase(),p=uPass.value,p2=uPass2.value,role=uRole.value;
+  if(!name||!username||!email||!p){uError.textContent="Preencha os campos obrigatórios.";return}
+  if(p!==p2){uError.textContent="As senhas não são iguais.";return}
+  if(data.users.some(u=>u.email?.toLowerCase()===email)){uError.textContent="E-mail já cadastrado.";return}
+  if(data.users.some(u=>(u.username||"").toLowerCase()===username)){uError.textContent="Nome de usuário já cadastrado.";return}
+  data.users.push({id:uid("usr"),name,username,email,password:p,role,active:true});
+  addEvent(null,"cadastro",`Usuário ${name} cadastrado.`);
+  notify(`Novo usuário cadastrado: ${name}`);
+  save(); closeModal(); if(currentCadTab==="users") renderCadTabContent(); alert("Colaborador cadastrado com sucesso.");
+}
 
-      (dados.colaboradores || []).filter(c => (c.nome || '').toLowerCase().includes(filtro)).forEach(colab => {
-        const idxReal = dados.colaboradores.findIndex(c => c.nome === colab.nome);
-        container.innerHTML += `
-          <div class="card-gestao">
-            <h4>${colab.nome}</h4>
-            <p><strong>Usuário:</strong> ${colab.usuario || '-'}</p>
-            <p><strong>E-mail:</strong> ${colab.email || '-'}</p>
-            <div class="card-actions">
-              <button class="btn-act" onclick="editarColaborador(${idxReal})">✏️ Editar</button>
-            </div>
-          </div>`;
-      });
-    }
+function openVehicleModal(){
+  openModal("Cadastro de Veículo",`
+  <div class="grid2">
+    <div class="form-group"><label>Placa *</label><input id="vPlate"></div>
+    <div class="form-group"><label>Modelo</label><input id="vModel"></div>
+    <div class="form-group"><label>Marca</label><input id="vBrand"></div>
+    <div class="form-group"><label>Ano</label><input id="vYear" type="number"></div>
+    <div class="form-group"><label>Quilometragem</label><input id="vKm" type="number"></div>
+    <div class="form-group"><label>Status</label><select id="vStatus"><option>Disponível</option><option>Em serviço</option><option>Indisponível</option><option>Manutenção</option></select></div>
+  </div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveVehicle()">Salvar</button>`);
+}
+function saveVehicle(){
+  if(!vPlate.value.trim())return alert("Informe a placa.");
+  data.vehicles.push({id:uid("veh"),plate:vPlate.value.trim().toUpperCase(),model:vModel.value,brand:vBrand.value,year:vYear.value,km:Number(vKm.value||0),status:vStatus.value,active:true});
+  save();closeModal(); if(currentCadTab==="vehicles") renderCadTabContent(); alert("Veículo cadastrado.");
+}
 
-    function editarColaborador(index) {
-      const colab = dados.colaboradores[index];
-      const novoNome = prompt("Nome do Colaborador:", colab.nome); if (novoNome === null) return;
-      const novoUsuario = prompt("Usuário de Acesso:", colab.usuario || ''); if (novoUsuario === null) return;
-      const novoEmail = prompt("E-mail:", colab.email || ''); if (novoEmail === null) return;
-      const novaSenha = prompt("Nova Senha (deixe em branco para manter a atual):");
+function openTeamModal(){
+  openModal("Cadastro de Equipe",`
+  <div class="form-group"><label>Nome da equipe *</label><input id="tName"></div>
+  <div class="form-group"><label>Veículo da equipe</label><select id="tVehicle"><option value="">Selecione</option>${data.vehicles.map(v=>`<option value="${v.id}">${escapeHtml(v.plate)} — ${escapeHtml(v.model||"")}</option>`).join("")}</select></div>
+  <div class="form-group"><label>Colaboradores da equipe</label><div class="notice">Selecione os integrantes da equipe.</div><div class="check-list">${data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u=>`<label class="check-row"><input type="checkbox" class="teamMember" value="${u.id}"><span><b>${escapeHtml(u.name)}</b>${u.username?` — @${escapeHtml(u.username)}`:""} — ${escapeHtml(u.email)}</span></label>`).join("")||`<div class="muted">Nenhum colaborador ativo encontrado.</div>`}</div></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveTeam()">Salvar</button>`);
+}
+function saveTeam(){
+  if(!tName.value.trim())return alert("Informe o nome da equipe.");
+  const members=[...document.querySelectorAll(".teamMember:checked")].map(x=>x.value);
+  data.teams.push({id:uid("team"),name:tName.value.trim(),vehicleId:tVehicle.value,members,active:true});
+  save();closeModal(); if(currentCadTab==="teams") renderCadTabContent(); alert("Equipe cadastrada.");
+}
 
-      dados.colaboradores[index].nome = novoNome.trim();
-      dados.colaboradores[index].usuario = novoUsuario.trim();
-      dados.colaboradores[index].email = novoEmail.trim();
-      if (novaSenha && novaSenha.trim()) dados.colaboradores[index].senha = novaSenha.trim();
+/* =========================================================
+   GERENCIAMENTO DE SERVIÇOS E OPERAÇÃO (ITENS 1, 2, 3, 4, 5, 7)
+   ========================================================= */
+function openJobModal(){
+  if(currentUser.role!=="gestor")return;
+  const n=String((Math.max(0,...data.jobs.map(j=>Number(j.number)||0))+1)).padStart(6,"0");
+  openModal("Registrar Serviço",`
+  <div class="notice">Pedido <b>#${n}</b> será gerado automaticamente.</div>
+  <div class="grid2">
+    <div class="form-group"><label>Nome do serviço *</label><input id="jName"></div>
+    <div class="form-group"><label>Prioridade</label><select id="jPriority"><option>Normal</option><option>Baixa</option><option>Alta</option><option>Urgente</option></select></div>
+    <div class="form-group"><label>Trabalho Para *</label><select id="jType" onchange="switchAssigneeFields()"><option value="team">Equipe</option><option value="user">Colaborador</option></select></div>
+    <div class="form-group" id="assigneeBox"></div>
+    <div class="form-group"><label>Data de início do serviço *</label><input id="jStart" type="date"></div>
+    <div class="form-group"><label>Data prevista de conclusão *</label><input id="jDue" type="date"></div>
+    <div class="form-group"><label>Local do serviço *</label><input id="jLocation"></div>
+    <div class="form-group"><label>Nome do responsável/dono do local</label><input id="jCustomer"></div>
+    <div class="form-group"><label>Contato do responsável</label><input id="jContact"></div>
+  </div>
+  <div class="form-group"><label>Inclusão de Afazeres</label><div id="tasksBox"></div><button class="btn btn-secondary" onclick="addTaskField()">+ Adicionar Afazer</button></div>
+  <div class="form-group"><label>SLA (opcional, em horas)</label><input id="jSla" type="number" min="0"></div>
+  <div class="form-group"><label>Observações</label><textarea id="jNotes"></textarea></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveJob()">Criar Serviço</button>`);
+  switchAssigneeFields();addTaskField();
+}
 
-      renderizarColaboradores();
-      sincronizarComServidor();
-    }
+function switchAssigneeFields(){
+  const type=document.getElementById("jType").value;
+  document.getElementById("assigneeBox").innerHTML=`<label>${type==="team"?"Seleção Equipe *":"Seleção Colaborador *"}</label>
+  <select id="jAssignee">${type==="team"?data.teams.map(t=>`<option value="${t.id}">${escapeHtml(t.name)}</option>`).join(""):data.users.filter(u=>u.role==="colaborador"&&u.active!==false).map(u=>`<option value="${u.id}">${escapeHtml(u.name)}</option>`).join("")}</select>`;
+}
 
-    // --- GESTÃO DE VEÍCULOS ---
-    function renderizarVeiculos() {
-      const filtro = (document.getElementById('filtroVeiculo').value || '').toLowerCase();
-      const container = document.getElementById('listaVeiculos');
-      container.innerHTML = '';
+function addTaskField(){
+  const box=document.getElementById("tasksBox"); if(!box)return;
+  const d=document.createElement("div"); d.className="grid2"; d.style.marginBottom="8px";
+  d.innerHTML=`<input class="taskInput" placeholder="Descrição do afazer"><input class="taskRequired" placeholder="Observação/requisito (opcional)">`;
+  box.appendChild(d);
+}
 
-      (dados.veiculos || []).filter(v => (v.modelo || '').toLowerCase().includes(filtro) || (v.placa || '').toLowerCase().includes(filtro)).forEach(veic => {
-        const idxReal = dados.veiculos.findIndex(v => v.placa === veic.placa);
-        container.innerHTML += `
-          <div class="card-gestao">
-            <h4>${veic.modelo}</h4>
-            <p><strong>Placa:</strong> ${veic.placa}</p>
-            <p><strong>KM:</strong> ${veic.km || 0} km</p>
-            <p><strong>Status:</strong> ${veic.disponivel !== false ? '🟢 Disponível' : '🔴 Em Uso / Manutenção'}</p>
-            <div class="card-actions">
-              <button class="btn-act" onclick="editarVeiculo(${idxReal})">✏️ Editar</button>
-            </div>
-          </div>`;
-      });
-    }
+function saveJob(){
+  const type=jType.value,aid=jAssignee.value;
+  const assignee=type==="team"?getTeam(aid):getUser(aid);
+  const tasks=[...document.querySelectorAll(".taskInput")].map((x,i)=>({
+    id:uid("task"),
+    name:x.value.trim(),
+    requirement:document.querySelectorAll(".taskRequired")[i].value.trim(),
+    done:false,
+    doneAt:null,
+    doneBy:null,
+    photos:[]
+  })).filter(x=>x.name);
+  if(!jName.value.trim()||!aid||!jStart.value||!jDue.value||!jLocation.value||!tasks.length) return alert("Preencha os campos obrigatórios e inclua pelo menos um afazer.");
+  
+  const job={
+    id:uid("job"),
+    number:String(Math.max(0,...data.jobs.map(j=>Number(j.number)||0))+1).padStart(6,"0"),
+    name:jName.value.trim(),
+    priority:jPriority.value,
+    type,assigneeType:type,assigneeId:aid,assigneeName:assignee?.name||"",
+    start:jStart.value,due:jDue.value,originalDue:jDue.value,
+    location:jLocation.value.trim(),customerName:jCustomer.value.trim(),customerContact:jContact.value.trim(),
+    slaHours:Number(jSla.value||0),notes:jNotes.value,
+    tasks,
+    status:"Pendente",
+    createdAt:iso(),createdBy:currentUser.id,
+    startedAt:null,endedAt:null,pauseHistory:[],materials:[]
+  };
+  data.jobs.push(job); addEvent(job.id,"criação",`Serviço #${job.number} criado para ${job.assigneeName}.`); notify(`Novo serviço #${job.number} atribuído a ${job.assigneeName}`); save(); closeModal(); renderKanban();
+}
 
-    function editarVeiculo(index) {
-      const veic = dados.veiculos[index];
-      const novoModelo = prompt("Modelo do Veículo:", veic.modelo); if (novoModelo === null) return;
-      const novaPlaca = prompt("Placa:", veic.placa); if (novaPlaca === null) return;
-      const novaKm = prompt("Quilometragem Atual:", veic.km || 0); if (novaKm === null) return;
-      const statusDisp = confirm("Clique em OK para manter DISPONÍVEL ou CANCELAR para INDISPONÍVEL.");
+function openJobView(id){
+  const j=data.jobs.find(x=>x.id===id); if(!j)return;
+  const pct=calcProgress(j),events=data.events.filter(e=>e.jobId===id).sort((a,b)=>new Date(a.at)-new Date(b.at)),mats=data.materials.filter(m=>m.jobId===id);
+  const canEdit=currentUser.role==="gestor";
+  
+  openModal(`#${j.number} — ${escapeHtml(j.name)}`,`
+  <div class="grid2">
+    <div><b>Status:</b> ${effectiveStatus(j)}</div><div><b>Prioridade:</b> ${escapeHtml(j.priority)}</div>
+    <div><b>Equipe/Colaborador:</b> ${escapeHtml(j.assigneeName)}</div><div><b>Local:</b> ${escapeHtml(j.location)}</div>
+    <div><b>Início previsto:</b> ${fmtDate(j.start)}</div><div><b>Conclusão prevista:</b> ${fmtDate(j.due)}</div>
+    <div><b>Responsável local:</b> ${escapeHtml(j.customerName||"-")}</div><div><b>Contato:</b> ${escapeHtml(j.customerContact||"-")}</div>
+  </div>
+  <hr>
+  <h3>Afazeres — ${pct}%</h3>
+  <div class="progress"><div style="width:${pct}%"></div></div>
+  <div class="check-list">${j.tasks.map((t)=>`
+    <div class="check-row">
+      <div class="check-head">
+        <input type="checkbox" ${t.done?"checked":""} ${(!canEdit && effectiveStatus(j)==="Concluído")?"disabled":""} onchange="toggleTask('${j.id}','${t.id}',this.checked)">
+        <div style="flex:1">
+          <b>${escapeHtml(t.name)}</b>
+          ${t.requirement?`<div class="muted">${escapeHtml(t.requirement)}</div>`:""}
+          ${t.done?`<div class="muted">Concluído em: ${fmtDateTime(t.doneAt)}</div>`:""}
+        </div>
+        <label class="btn btn-secondary" style="padding:4px 8px;font-size:12px;cursor:pointer">
+          📷 Anexar Foto <input type="file" accept="image/*" style="display:none" onchange="uploadTaskPhoto('${j.id}','${t.id}',event)">
+        </label>
+      </div>
+      ${(t.photos&&t.photos.length)?`<div class="task-photos">${t.photos.map(p=>`<img src="${p.data}" class="task-photo-img" onclick="openPhotoViewer('${p.data}')" title="Clique para ampliar">`).join("")}</div>`:""}
+    </div>`).join("")}
+  </div>
+  <hr>
+  <h3>Execução</h3>
+  <div class="toolbar">
+    <button class="btn btn-success" onclick="startOrResumeJob('${j.id}')">▶ Iniciar / Retomar</button>
+    <button class="btn btn-warning" onclick="lunchOut('${j.id}')">🍱 Saída Almoço</button>
+    <button class="btn btn-primary" onclick="lunchIn('${j.id}')">🍱 Volta Almoço</button>
+    <button class="btn btn-accent" onclick="pauseJob('${j.id}')">Ⅱ Pausar Serviço</button>
+    ${currentUser.role==="colaborador"&&effectiveStatus(j)==="Em Andamento"?`<button class="btn btn-danger" onclick="endJob('${j.id}')">■ Finalizar e Enviar para Análise</button>`:""}
+    ${canEdit&&effectiveStatus(j)==="Análise de Gestor"?`
+      <button class="btn btn-success" onclick="approveJob('${j.id}')">✓ Aprovar Conclusão</button>
+      <button class="btn btn-danger" onclick="rejectJobModal('${j.id}')">❌ Reprovar (Voltar para Pendente)</button>
+    `:""}
+    <button class="btn btn-secondary" onclick="printJobSheet('${j.id}')">🖨️ Imprimir / PDF (A4)</button>
+  </div>
+  <div class="grid2"><div><b>Primeiro Início:</b> ${fmtDateTime(j.startedAt)}</div><div><b>Última Conclusão:</b> ${fmtDateTime(j.endedAt)}</div></div>
+  <hr>
+  <h3>Solicitar peça/equipamento</h3>
+  ${currentUser.role==="colaborador"?`<div class="grid3"><input id="mDesc" placeholder="Peça/equipamento"><input id="mQty" type="number" min="1" value="1" placeholder="Quantidade"><button class="btn btn-primary" onclick="requestMaterial('${j.id}')">Solicitar</button></div>`:""}
+  <div class="table-wrap"><table><tr><th>Item</th><th>Qtd.</th><th>Status</th><th>Data</th>${canEdit?"<th>Ação</th>":""}</tr>${mats.map(m=>`<tr><td>${escapeHtml(m.description)}</td><td>${m.quantity}</td><td>${m.status}</td><td>${fmtDateTime(m.at)}</td>${canEdit?`<td><button class="btn btn-secondary" onclick="materialStatus('${m.id}','Aprovada')">Aprovar</button> <button class="btn btn-danger" onclick="materialStatus('${m.id}','Rejeitada')">Rejeitar</button></td>`:""}</tr>`).join("")||`<tr><td colspan="5">Nenhuma solicitação.</td></tr>`}</table></div>
+  <hr>
+  <h3>Histórico</h3><div class="timeline">${events.map(e=>`<div class="event"><b>${escapeHtml(e.text)}</b><br><small>${escapeHtml(e.user)} • ${fmtDateTime(e.at)}</small></div>`).join("")||`<div class="muted">Sem eventos.</div>`}</div>
+  <hr>
+  <h3>Comentários / Comunicação</h3>
+  <textarea id="commentText" placeholder="Escreva uma observação para este serviço"></textarea>
+  <button class="btn btn-secondary" style="margin-top:8px" onclick="addComment('${j.id}')">Adicionar comentário</button>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button>`);
+}
 
-      dados.veiculos[index].modelo = novoModelo.trim();
-      dados.veiculos[index].placa = novaPlaca.trim();
-      dados.veiculos[index].km = parseFloat(novaKm) || 0;
-      dados.veiculos[index].disponivel = statusDisp;
+/* Reativar afazeres e lógica de alteração */
+function toggleTask(jobId,taskId,checked){
+  const j=data.jobs.find(x=>x.id===jobId), t=j.tasks.find(x=>x.id===taskId);
+  t.done=checked; t.doneAt=checked?iso():null; t.doneBy=checked?currentUser.id:null;
+  addEvent(jobId,"afazer",`${checked?"Afazer concluído":"Afazer reaberto/reativado"}: ${t.name}`);
+  
+  if(calcProgress(j)===100 && j.status!=="Concluído"){
+    j.status="Análise de Gestor";
+    addEvent(jobId,"análise","Todos os afazeres foram concluídos. Enviado para análise do gestor.");
+    notify(`Serviço #${j.number} aguarda análise do gestor.`);
+  }
+  save(); openJobView(jobId);
+}
 
-      renderizarVeiculos();
-      sincronizarComServidor();
-    }
+/* Fotos associadas por afazer */
+function uploadTaskPhoto(jobId,taskId,e){
+  const file=e.target.files[0]; if(!file) return;
+  const j=data.jobs.find(x=>x.id===jobId), t=j.tasks.find(x=>x.id===taskId);
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    t.photos = t.photos || [];
+    t.photos.push({id:uid("img"), data:ev.target.result, at:iso(), user:currentUser.name});
+    addEvent(jobId,"foto",`Foto adicionada ao afazer: ${t.name}`);
+    save(); openJobView(jobId);
+  };
+  reader.readAsDataURL(file);
+}
 
-    // --- GESTÃO AVANÇADA DE EQUIPES ---
-    function renderizarEquipes() {
-      const container = document.getElementById('listaEquipes');
-      container.innerHTML = '';
+function openPhotoViewer(src){
+  openModal("Visualizador de Imagem", `<div style="text-align:center"><img src="${src}" style="max-width:100%;max-height:75vh;border-radius:10px"></div>`, `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button>`);
+}
 
-      (dados.equipes || []).forEach((equipe, index) => {
-        container.innerHTML += `
-          <div class="card-gestao">
-            <h4>${equipe.nome}</h4>
-            <p><strong>Membros:</strong> ${(equipe.membros || []).join(', ') || 'Nenhum participante'}</p>
-            <div class="card-actions">
-              <button class="btn-act" onclick="alterarNomeEquipe(${index})">✏️ Nome</button>
-              <button class="btn-act" onclick="adicionarMembroEquipe(${index})">➕ Add Membro</button>
-              <button class="btn-act" onclick="removerMembroEquipe(${index})">➖ Rem Membro</button>
-            </div>
-          </div>`;
-      });
-    }
+/* Botões de fluxo reutilizáveis (Início, Retomada, Almoço) */
+function startOrResumeJob(id){
+  const j=data.jobs.find(x=>x.id===id);
+  if(!j.startedAt) j.startedAt=iso();
+  j.status="Em Andamento";
+  addEvent(id,"início",`Serviço iniciado/retomado por ${currentUser.name}.`);
+  save(); openJobView(id);
+}
+function lunchOut(id){
+  const j=data.jobs.find(x=>x.id===id);
+  j.status="Pausado";
+  addEvent(id,"pausa",`Saída para almoço registrada por ${currentUser.name}.`);
+  save(); openJobView(id);
+}
+function lunchIn(id){
+  const j=data.jobs.find(x=>x.id===id);
+  j.status="Em Andamento";
+  addEvent(id,"retomada",`Retorno do almoço registrado por ${currentUser.name}.`);
+  save(); openJobView(id);
+}
+function endJob(id){
+  const j=data.jobs.find(x=>x.id===id);
+  j.status="Análise de Gestor"; j.endedAt=iso();
+  addEvent(id,"análise",`Serviço finalizado pelo colaborador e enviado para análise.`);
+  notify(`Serviço #${j.number} enviado para análise do gestor.`);
+  save(); openJobView(id);
+}
 
-    function alterarNomeEquipe(index) {
-      const novoNome = prompt("Novo nome para a equipe:", dados.equipes[index].nome);
-      if (novoNome && novoNome.trim()) {
-        dados.equipes[index].nome = novoNome.trim();
-        renderizarEquipes();
-        sincronizarComServidor();
-      }
-    }
+/* Reprovação do Gestor -> Retorna para Pendente */
+function rejectJobModal(id){
+  openModal("Reprovar Serviço", `
+  <div class="form-group"><label>Motivo da Reprovação *</label><textarea id="rejectReason" placeholder="Informe ao colaborador o que precisa ser ajustado..."></textarea></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="confirmRejectJob('${id}')">Confirmar Reprovação</button>`);
+}
+function confirmRejectJob(id){
+  const reason = document.getElementById("rejectReason").value.trim();
+  if(!reason) return alert("Informe o motivo da reprovação.");
+  const j=data.jobs.find(x=>x.id===id);
+  j.status="Pendente";
+  addEvent(id,"reprovação",`Serviço reprovado pelo gestor. Motivo: ${reason}`);
+  
+  // Notificação exclusiva ao colaborador responsável
+  const memberIds = j.assigneeType==="team"?(getTeam(j.assigneeId)?.members||[]):[j.assigneeId];
+  memberIds.forEach(mId => {
+    notify(`O serviço #${j.number} foi reprovado pelo gestor e voltou para a aba de PENDENTES. Motivo: ${reason}`, mId);
+  });
+  
+  save(); closeModal(); openJobView(id); alert("Serviço retornado para a aba de Pendentes.");
+}
 
-    function adicionarMembroEquipe(indexEquipe) {
-      const equipe = dados.equipes[indexEquipe];
-      if (!equipe.membros) equipe.membros = [];
-      const disponiveis = (dados.colaboradores || []).filter(c => !equipe.membros.includes(c.nome));
-      if (!disponiveis.length) return alert("Todos os colaboradores cadastrados já pertencem a esta equipe.");
+function pauseJob(id){
+  openModal("Pausar serviço",`<div class="form-group"><label>Motivo da pausa *</label><select id="pauseReason"><option>Aguardando peça</option><option>Aguardando cliente</option><option>Aguardando autorização</option><option>Problema técnico</option><option>Falta de equipamento</option><option>Problema com veículo</option><option>Outro</option></select></div><div class="form-group"><label>Observação</label><textarea id="pauseObs"></textarea></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-accent" onclick="confirmPause('${id}')">Pausar</button>`);
+}
+function confirmPause(id){
+  const j=data.jobs.find(x=>x.id===id), reason=pauseReason.value;
+  j.status="Pausado"; j.pauseHistory.push({at:iso(),reason,obs:pauseObs.value,user:currentUser.id});
+  addEvent(id,"pausa",`Serviço pausado. Motivo: ${reason}. ${pauseObs.value||""}`);save();closeModal();openJobView(id);
+}
+function approveJob(id){
+  const j=data.jobs.find(x=>x.id===id);j.status="Concluído";j.endedAt=j.endedAt||iso();addEvent(id,"conclusão","Serviço aprovado e concluído pelo gestor.");notify(`Serviço #${j.number} foi concluído.`);save();closeModal();renderKanban();
+}
 
-      const opcoes = disponiveis.map((c, i) => `${i + 1}. ${c.nome}`).join('\n');
-      const escolha = prompt(`Escolha o número do colaborador para incluir:\n\n${opcoes}`);
-      const idx = parseInt(escolha) - 1;
-      if (!isNaN(idx) && disponiveis[idx]) {
-        equipe.membros.push(disponiveis[idx].nome);
-        renderizarEquipes();
-        sincronizarComServidor();
-      }
-    }
+/* Impressão em PDF A4 */
+function printJobSheet(id){
+  const j=data.jobs.find(x=>x.id===id); if(!j) return;
+  const printEl = document.getElementById("printArea");
+  const logo=data.settings.logo||localStorage.getItem(CONFIG.LOGO_KEY)||"";
+  
+  printEl.innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px">
+    <div>
+      <h1 style="margin:0;font-size:20pt">${CONFIG.APP_NAME}</h1>
+      <h3 style="margin:5px 0 0 0">ORDEM DE SERVIÇO DE EXECUÇÃO — #${j.number}</h3>
+    </div>
+    ${logo?`<img src="${logo}" style="height:60px">`:''}
+  </div>
+  <table style="margin-bottom:15px">
+    <tr><td><b>Serviço:</b> ${escapeHtml(j.name)}</td><td><b>Prioridade:</b> ${escapeHtml(j.priority)}</td></tr>
+    <tr><td><b>Responsável/Equipe:</b> ${escapeHtml(j.assigneeName)}</td><td><b>Status Atual:</b> ${effectiveStatus(j)}</td></tr>
+    <tr><td><b>Local:</b> ${escapeHtml(j.location)}</td><td><b>Previsão Conclusão:</b> ${fmtDate(j.due)}</td></tr>
+    <tr><td><b>Cliente/Contato:</b> ${escapeHtml(j.customerName||"-")}</td><td><b>Telefone:</b> ${escapeHtml(j.customerContact||"-")}</td></tr>
+  </table>
+  <h3 style="margin-bottom:5px">Lista de Afazeres / Checklist</h3>
+  <table style="margin-bottom:15px">
+    <thead><tr><th>Status</th><th>Descrição do Afazer</th><th>Requisito / Observação</th></tr></thead>
+    <tbody>
+      ${j.tasks.map(t=>`<tr><td style="width:70px;text-anchor:center">${t.done?'[ X ]':'[  ]'}</td><td>${escapeHtml(t.name)}</td><td>${escapeHtml(t.requirement||"-")}</td></tr>`).join("")}
+    </tbody>
+  </table>
+  ${j.notes?`<div style="margin-bottom:15px"><b>Observações Gerais:</b><br>${escapeHtml(j.notes)}</div>`:''}
+  <br><br><br>
+  <div style="display:flex;justify-content:space-around;text-align:center;margin-top:40px">
+    <div style="border-top:1px solid #000;width:40%">Assinatura do Colaborador</div>
+    <div style="border-top:1px solid #000;width:40%">Assinatura do Cliente / Gestor</div>
+  </div>`;
+  
+  printEl.classList.remove("hidden");
+  window.print();
+  printEl.classList.add("hidden");
+}
 
-    function removerMembroEquipe(indexEquipe) {
-      const equipe = dados.equipes[indexEquipe];
-      if (!equipe.membros || !equipe.membros.length) return;
-      const opcoes = equipe.membros.map((m, i) => `${i + 1}. ${m}`).join('\n');
-      const escolha = prompt(`Escolha o número do membro que deseja remover:\n\n${opcoes}`);
-      const idx = parseInt(escolha) - 1;
-      if (!isNaN(idx) && equipe.membros[idx]) {
-        equipe.membros.splice(idx, 1);
-        renderizarEquipes();
-        sincronizarComServidor();
-      }
-    }
+/* =========================================================
+   SOLICITAÇÕES, COMENTÁRIOS E RELATÓRIOS
+   ========================================================= */
+function requestMaterial(jobId){
+  const description=mDesc.value.trim(),quantity=Number(mQty.value||0);
+  if(!description||quantity<=0)return alert("Informe item e quantidade.");
+  const m={id:uid("mat"),jobId,description,quantity,status:"Pendente",requestedBy:currentUser.id,at:iso()};
+  data.materials.push(m);addEvent(jobId,"material",`Solicitação: ${description} — quantidade ${quantity}.`);notify(`Nova solicitação de material no serviço #${data.jobs.find(j=>j.id===jobId).number}`);save();openJobView(jobId);
+}
+function materialStatus(id,status){
+  const m=data.materials.find(x=>x.id===id);m.status=status;addEvent(m.jobId,"material",`Solicitação "${m.description}" marcada como ${status}.`);save();openJobView(m.jobId);
+}
+function addComment(jobId){
+  const text=commentText.value.trim();if(!text)return;
+  addEvent(jobId,"comentário",`${currentUser.name}: ${text}`);openJobView(jobId);
+}
+function openNotifications(){
+  const ns=data.notifications.filter(n=>!n.userId||n.userId===currentUser.id).sort((a,b)=>new Date(b.at)-new Date(a.at));
+  ns.forEach(n=>n.read=true);save();
+  openModal("Notificações",ns.map(n=>`<div class="event">${escapeHtml(n.text)}<br><small>${fmtDateTime(n.at)}</small></div>`).join("")||`<div class="muted">Nenhuma notificação.</div>`);
+}
+function openMaterials(){
+  openModal("Materiais / Solicitações",`<div class="table-wrap"><table><tr><th>Pedido</th><th>Item</th><th>Qtd.</th><th>Status</th><th>Data</th></tr>${data.materials.map(m=>{const j=data.jobs.find(x=>x.id===m.jobId);return `<tr><td>#${j?.number||"-"}</td><td>${escapeHtml(m.description)}</td><td>${m.quantity}</td><td>${m.status}</td><td>${fmtDateTime(m.at)}</td></tr>`}).join("")||`<tr><td colspan="5">Nenhuma solicitação.</td></tr>`}</table></div>`);
+}
+function openSheetsConfig(){
+  openModal("Integração Google Sheets",`
+  <div class="notice">URL configurada para persistência e sincronização de dados via WebApp Google Apps Script.</div>
+  <div class="form-group"><label>API / Endpoint</label><input id="sheetsApi" value="${escapeHtml(data.settings.sheetsApi||CONFIG.API_URL)}"></div>`,
+  `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveSheetsConfig()">Salvar</button>`);
+}
+function saveSheetsConfig(){data.settings.sheetsApi=sheetsApi.value.trim();save();closeModal();alert("Configuração salva.")}
+function openAudit(){
+  openModal("Auditoria do Sistema",`<div class="table-wrap"><table><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Pedido</th></tr>${data.events.slice().sort((a,b)=>new Date(b.at)-new Date(a.at)).map(e=>`<tr><td>${fmtDateTime(e.at)}</td><td>${escapeHtml(e.user)}</td><td>${escapeHtml(e.text)}</td><td>${e.jobId||"-"}</td></tr>`).join("")||`<tr><td colspan="4">Sem registros.</td></tr>`}</table></div>`);
+}
 
-    // Inicialização ao abrir o site
-    window.onload = () => {
-      carregarDadosDoServidor();
-    };
-  </script>
+function openReport(type){
+  if(type==="service"){
+    openModal("Análise de Serviço",`
+      <div class="form-group"><label>Seleção do serviço</label><select id="reportJob"><option value="">Selecione</option>${data.jobs.map(j=>`<option value="${j.id}">#${j.number} — ${escapeHtml(j.name)}</option>`).join("")}</select></div>
+      <div id="reportResult"></div>`,
+      `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button><button class="btn btn-primary" onclick="showServiceReport()">Gerar</button>`);
+  }else if(type==="team"){
+    openModal("Análise Equipe",`
+      <div class="grid3"><div class="form-group"><label>Equipe</label><select id="rTeam"><option value="">Todas</option>${data.teams.map(t=>`<option value="${t.id}">${escapeHtml(t.name)}</option>`).join("")}</select></div><div class="form-group"><label>Data inicial</label><input id="rStart" type="date"></div><div class="form-group"><label>Data final</label><input id="rEnd" type="date"></div></div><div id="teamReport"></div>`,
+      `<button class="btn btn-secondary" onclick="closeModal()">Fechar</button><button class="btn btn-primary" onclick="showTeamReport()">Gerar</button>`);
+  }else{
+    openModal("Produtividade",`<div class="table-wrap"><table><tr><th>Colaborador</th><th>Serviços</th><th>Concluídos</th><th>Tempo registrado</th></tr>${data.users.filter(u=>u.role==="colaborador").map(u=>{const js=data.jobs.filter(j=>j.assigneeType==="user"&&j.assigneeId===u.id||j.assigneeType==="team"&&getTeam(j.assigneeId)?.members.includes(u.id));return `<tr><td>${escapeHtml(u.name)}</td><td>${js.length}</td><td>${js.filter(j=>j.status==="Concluído").length}</td><td>${durationTotal(js)}</td></tr>`}).join("")}</table></div>`);
+  }
+}
+function duration(j){
+  if(!j.startedAt||!j.endedAt)return 0;
+  return Math.max(0,new Date(j.endedAt)-new Date(j.startedAt));
+}
+function durationText(ms){
+  const min=Math.floor(ms/60000),d=Math.floor(min/1440),h=Math.floor((min%1440)/60),m=min%60;
+  return `${d}d ${h}h ${m}min`;
+}
+function durationTotal(js){return durationText(js.reduce((a,j)=>a+duration(j),0))}
+function showServiceReport(){
+  const j=data.jobs.find(x=>x.id===reportJob.value);if(!j)return;
+  reportResult.innerHTML=`<div class="panel">
+  <h3>#${j.number} — ${escapeHtml(j.name)}</h3>
+  <div class="grid2"><div>Responsável: <b>${escapeHtml(j.assigneeName)}</b></div><div>Status: <b>${effectiveStatus(j)}</b></div><div>Período previsto: <b>${fmtDate(j.start)} → ${fmtDate(j.due)}</b></div><div>Tempo real: <b>${durationText(duration(j))}</b></div><div>Dentro do prazo: <b>${j.endedAt?((new Date(j.endedAt).toISOString().slice(0,10)<=j.due)?"Sim":"Não"):"Não finalizado"}</b></div><div>Solicitações: <b>${data.materials.filter(m=>m.jobId===j.id).length}</b></div></div>
+  <h4>Afazeres</h4>${j.tasks.map(t=>`<div class="event">${escapeHtml(t.name)} — ${t.done?"Concluído":"Pendente"} ${t.done?`<small>• ${fmtDateTime(t.doneAt)}</small>`:""}</div>`).join("")}
+  </div>`;
+}
+function showTeamReport(){
+  const team=rTeam.value, start=rStart.value, end=rEnd.value;
+  const js=data.jobs.filter(j=>(!team||j.assigneeId===team)&&(j.assigneeType==="team")&&(!start||j.start>=start)&&(!end||j.start<=end));
+  teamReport.innerHTML=`<div class="panel"><div class="cards"><div class="stat"><div class="n">${js.length}</div><div class="l">Serviços</div></div><div class="stat"><div class="n">${js.filter(j=>j.status==="Concluído").length}</div><div class="l">Concluídos</div></div><div class="stat"><div class="n">${js.filter(j=>effectiveStatus(j)==="Atrasado").length}</div><div class="l">Atrasados</div></div></div><div class="table-wrap"><table><tr><th>Pedido</th><th>Serviço</th><th>Status</th><th>Tempo</th></tr>${js.map(j=>`<tr><td>#${j.number}</td><td>${escapeHtml(j.name)}</td><td>${effectiveStatus(j)}</td><td>${durationText(duration(j))}</td></tr>`).join("")}</table></div></div>`;
+}
+
+window.addEventListener("storage",()=>{data=DB.read();render()});
+
+(async function boot(){
+  applyTheme();
+  await loadRemoteData();
+  currentUser=DB.session();
+  render();
+})();
+</script>
 </body>
 </html>
