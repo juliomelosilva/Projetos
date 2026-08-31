@@ -36,7 +36,7 @@ JANELA_ABERTA = True
 # FUNÇÕES DE INTERAÇÃO NA TELA
 # ==================================================
 
-def clicar_imagem(nome, timeout=10, confidence=0.8):
+def clicar_imagem(nome, timeout=1, confidence=0.8):
     inicio = time.time()
     while time.time() - inicio < timeout:
         if not JANELA_ABERTA:
