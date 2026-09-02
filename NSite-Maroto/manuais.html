@@ -64,6 +64,9 @@
         .btn-copy { background: var(--accent-light); border: none; color: var(--accent); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
         .btn-copy:hover { background: var(--accent); color: #ffffff; }
 
+        .btn-calc { background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
+        .btn-calc:hover { background: var(--accent-hover); }
+
         .table-container { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--card-shadow); overflow: hidden; margin-top: 1.5rem; }
         .table-header-tools { padding: 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
         .search-box { position: relative; flex: 1; max-width: 320px; }
@@ -124,8 +127,13 @@
             </div>
         </header>
 
-        <div class="section-title">
-            <i class="fa-solid fa-key" style="color: var(--accent)"></i> Senhas Rápidas
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <i class="fa-solid fa-key" style="color: var(--accent)"></i> Senhas Rápidas
+            </div>
+            <button class="btn-calc" onclick="calcSenhas(); showToast('Senhas atualizadas!');">
+                <i class="fa-solid fa-arrows-rotate"></i> Atualizar Senhas
+            </button>
         </div>
         <div class="passwords-grid">
             <div class="pass-card">

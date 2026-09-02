@@ -68,7 +68,7 @@
         .ez-card h3 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .ez-input-group { display: flex; align-items: center; gap: 0.5rem; }
         .ez-input-group input { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-main); padding: 0.5rem 0.75rem; border-radius: 8px; outline: none; font-size: 0.9rem; width: 140px; }
-        .btn-calc { background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: var(--transition); }
+        .btn-calc { background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
         .btn-calc:hover { background: var(--accent-hover); }
         .ez-result { font-weight: 600; font-size: 0.95rem; color: var(--accent); }
 
@@ -132,8 +132,13 @@
             </div>
         </header>
 
-        <div class="section-title">
-            <i class="fa-solid fa-key" style="color: var(--accent)"></i> Senhas Rápidas
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <i class="fa-solid fa-key" style="color: var(--accent)"></i> Senhas Rápidas
+            </div>
+            <button class="btn-calc" onclick="calcSenhas(); showToast('Senhas atualizadas!');">
+                <i class="fa-solid fa-arrows-rotate"></i> Atualizar Senhas
+            </button>
         </div>
         <div class="passwords-grid">
             <div class="pass-card">
@@ -179,6 +184,7 @@
                 <button class="btn-copy" onclick="copyText('pass6')"><i class="fa-regular fa-copy"></i></button>
             </div>
         </div>
+
         <div class="table-container">
             <div class="table-header-tools">
                 <div class="section-title" style="margin: 0;">
