@@ -64,15 +64,7 @@
         .btn-copy { background: var(--accent-light); border: none; color: var(--accent); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
         .btn-copy:hover { background: var(--accent); color: #ffffff; }
 
-        .ez-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 2.5rem; box-shadow: var(--card-shadow); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-        .ez-card h3 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .ez-input-group { display: flex; align-items: center; gap: 0.5rem; }
-        .ez-input-group input { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-main); padding: 0.5rem 0.75rem; border-radius: 8px; outline: none; font-size: 0.9rem; width: 140px; }
-        .btn-calc { background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: var(--transition); }
-        .btn-calc:hover { background: var(--accent-hover); }
-        .ez-result { font-weight: 600; font-size: 0.95rem; color: var(--accent); }
-
-        .table-container { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--card-shadow); overflow: hidden; }
+        .table-container { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--card-shadow); overflow: hidden; margin-top: 1.5rem; }
         .table-header-tools { padding: 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
         .search-box { position: relative; flex: 1; max-width: 320px; }
         .search-box input { width: 100%; padding: 0.6rem 1rem 0.6rem 2.4rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-main); outline: none; font-size: 0.875rem; }
@@ -180,15 +172,6 @@
             </div>
         </div>
 
-        <div class="ez-card">
-            <h3><i class="fa-solid fa-calculator" style="color: var(--accent)"></i> Senha EzTech</h3>
-            <div class="ez-input-group">
-                <input type="number" id="ezNumber" placeholder="Digite o número">
-                <button class="btn-calc" onclick="calcularCosseno()">Calcular</button>
-            </div>
-            <div class="ez-result" id="ezResultado"></div>
-        </div>
-
         <div class="table-container">
             <div class="table-header-tools">
                 <div class="section-title" style="margin: 0;">
@@ -209,36 +192,180 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><strong>Configuração Mapeamento Lince</strong></td>
-                        <td><span class="badge-version">1.0.0</span></td>
-                        <td>10/03/2023</td>
-                        <td><a href="https://www.dropbox.com/s/sbd1u0smdqgho6o/Configuracao_Mapeamento_Lince.docx?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Passo a Passo Iniciar Concentrador com Windows</strong></td>
-                        <td><span class="badge-version">1.0.0</span></td>
-                        <td>10/03/2023</td>
-                        <td><a href="https://www.dropbox.com/s/32msmbfsp3d1u9f/Passo_a_Passo_Iniciar_Concentrador_com_Windows.docx?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Procedimento de Instalação do Concentrador</strong></td>
-                        <td><span class="badge-version">1.0.0</span></td>
-                        <td>10/03/2023</td>
-                        <td><a href="https://www.dropbox.com/s/72ptlyst2st2aif/Procedimento_de_Instalacao_do_Concentrador.docx?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Como Identificar Falha de Conexão TEF no PDV</strong></td>
-                        <td><span class="badge-version">1.0.0</span></td>
-                        <td>10/03/2023</td>
-                        <td><a href="https://www.dropbox.com/s/3rjt9u1st14th0g/Como_Identificar_Falha_de_Conexao_TEF_no_PDV.docx?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Manual de Instalação e Mapeamento da Impressora de Cheque Bematech DP20</strong></td>
-                        <td><span class="badge-version">1.0.0</span></td>
-                        <td>10/03/2023</td>
-                        <td><a href="https://www.dropbox.com/s/4k1stky05vxt4lh/Manual_Bematech_DP20.docx?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
-                    </tr>
+    <tr>
+        <td><strong>Troca de Bicos</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/f9hiph2l2ugogkm/TROCA%20DE%20BICOS.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Reimpressão de cupons meses anteriores</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/0ok76hb46oypdqq/REIMPRESS%C3%83O%20DE%20CUPOM%20MESES%20ANTERIORES.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Recriar banco do PDV</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>19/06/2023</td>
+        <td><a href="https://www.dropbox.com/s/n1fh64gvp4vw4lb/RECRIAR%20BANCO%20DO%20PDV.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Reconfigurando GPOS</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/w01huy790uo8ok0/RECONFIGURANDO%20GPOS.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Manual GPOS-Destaxa</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/9ivf5ab9nwz9xjq/Manual%20GPOS-Destaxa.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Manual Vinculação SAT</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>28/10/2023</td>
+        <td><a href="https://www.dropbox.com/scl/fi/1to5ywsebv9sbgqoeedlb/VINCULA-O-S-T-Revenda.doc?rlkey=4r0z7r72fnzevoywkdvgtxmdc&dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Manual Vinculação SAT-MFE</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>28/10/2023</td>
+        <td><a href="https://www.dropbox.com/scl/fi/k14jc5mrzlrt0gt3rc54m/VINCULA-O-S-T-MFE-Revenda.doc?rlkey=ubn9d1eyg9un7qcnuux2malw8&dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Manual configuração GPOS700_REDE</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/cu9at8md0sua6n2/MANUAL%20CONFIGURA%C3%87%C3%83O%20GPOS700_REDE.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Instalação Multiplus Tef Express</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>28/10/2023</td>
+        <td><a href="https://www.dropbox.com/scl/fi/q77650z92i7kyx4z948ku/Manual-de-Instalacao-TEF-Express.pdf?rlkey=1yvodefqmpcmqr2ua44dy0hsb&dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Procedimento de Liberação para Reinstalação Tef Express</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>28/10/2023</td>
+        <td><a href="https://www.dropbox.com/scl/fi/8jn2jkr6j5gxf0c4bw2xf/Guia-r-pido-Limpeza-de-Hist-rico.pdf?rlkey=l6wgri9j4g2ljs7wroauebdne&dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Instalação Sitef+Gsurf</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/pt765dxr54y9gtm/Instala%C3%A7%C3%A3o%20Sitef%2BGsurf.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Devolução NF-e Novo Boi</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>16/01/2024</td>
+        <td><a href="https://drive.google.com/file/d/1FREthyKkPGMFELbs8JpX1csuyVppso5-/view?usp=drive_link" target="_blank" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Instalação PIX SHIPAY</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/0yx5j85lg6h9n1o/Instala%C3%A7%C3%A3o%20PIX%20SHIPAY.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Configuração + Testes Fidelidade Marka</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>05/07/2024</td>
+        <td><a href="https://drive.google.com/file/d/17SCAY_hY-9vaFif7SLguiDO6JsmAegrV/view?usp=drive_link" target="_blank" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Instalação do Posto do 0</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/tupks5k0f5kjsnw/Instala%C3%A7%C3%A3o%20do%20Posto%20do%200.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Instalação PDV & Concentrador do 0</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/7tw01km5z9yk2bk/INSTALA%C3%87%C3%83O%20DE%20PDV%26CONCENTRADOR%20DO%200.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Importar Nf-e Manifesto</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/mwk69d8o2cfodjo/Importar%20Nf-e%20Manifesto.txt?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Importação de XML</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/omb6vevw06w80rl/IMPORTA%C3%87%C3%83O%20DE%20XML.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Habilitar equipamento TWC na automação Horustec</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/2cl95m934g87r15/HABILITAR%20EQUIPAMENTO%20TWC%20NA%20AUTOMA%C3%87%C3%83O%20HORUSTEC.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Forçando duplicidade para encontrar chave de Nfc-e</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/jkoseucgbfjazr5/FOR%C3%87ANDO%20DUPLICIDADE%20PARA%20ENCONTRAR%20CHAVE%20DE%20NFC.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Duplicidade NFC-E - GPOS</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>29/05/2023</td>
+        <td><a href="https://www.dropbox.com/s/tn2mbvmr1lqhobb/DUPLICIDADE%20NFC-e%20-%20GPOS.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Devolução NF-e - Cupom</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/3a43cwnbuafxih1/Devolu%C3%A7%C3%A3o%20-%20Cupom.txt?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Devolução Nf-e - Avulsa</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/bnqudmvjlif29bm/Devolu%C3%A7%C3%A3o%20-%20Avulsa.txt?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Desabilitar recurso de energia do windows</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/czlbs6n5blfyjas/DESABILITAR%20RECURSO%20DE%20ENERGIA%20DO%20USB%20WINDOWS.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Configuração Epson TM-T20 Sair mais Itens no cupom</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/5wb494v9nx5g309/CONFIGURA%C3%87%C3%83O%20EPSON%20TM-20.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Como pegar os XML's da pasta LivePDV</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/wt1osmaesjzlfhf/Como%20pegar%20os%20XML%27s%20da%20pasta%20LivePDV.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Ajuste de Turno</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>10/03/2023</td>
+        <td><a href="https://www.dropbox.com/s/pxygels990h7een/AJUSTE%20DE%20TURNO.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Troca de Moeda</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>08/05/2023</td>
+        <td><a href="https://www.dropbox.com/s/ptce3e94iwmn4np/Troca%20de%20Moeda.pdf?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
+    <tr>
+        <td><strong>Troca de Preço automação cesna</strong></td>
+        <td><span class="badge-version">1.0.0</span></td>
+        <td>13/07/2023</td>
+        <td><a href="https://www.dropbox.com/s/hy0d2vwq4u7521l/Troca%20de%20pre%C3%A7o%20direto%20na%20automa%C3%A7%C3%A3o%20-%20Cesna.txt?dl=1" class="btn-download"><i class="fa-solid fa-download"></i> Baixar</a></td>
+    </tr>
                 </tbody>
             </table>
         </div>
@@ -277,17 +404,6 @@
             document.getElementById('pass4').innerText = "secnas256";
             document.getElementById('pass5').innerText = "Live202505";
             document.getElementById('pass6').innerText = "elgin.growth / Elgin123";
-        }
-
-        function calcularCosseno() {
-            const numero = parseFloat(document.getElementById("ezNumber").value);
-            if (isNaN(numero)) {
-                document.getElementById("ezResultado").innerText = "Digite um número válido!";
-                return;
-            }
-            const cosseno = Math.cos(numero * Math.PI / 180);
-            const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
-            document.getElementById("ezResultado").innerText = `Senha EzTech: ${resultadoFormatado}`;
         }
 
         function copyText(elementId) {
