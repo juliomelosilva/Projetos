@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Versões - Site Maroto</title>
+    <link rel="shortcut icon" href="icone.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-image: linear-gradient(to bottom, rgb(84, 31, 231), white);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header h1 {
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #e0e0e0;
+            margin-top: 0;
+        }
+
+        nav {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+        nav > a {
+            color: black;
+            padding: 8px 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            margin: 2px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        nav > a:hover {
+            background-color: rgba(240, 119, 5, 0.801);
+            color: white;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        #senhas-box {
+            flex: 0 0 320px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(240, 119, 5, 0.801);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .senha-card {
+            border: 2px solid rgba(240, 119, 5, 0.801);
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            text-align: center;
+            background-color: #fafafa;
+        }
+
+        .senha-card b {
+            color: #0000fe;
+            display: block;
+            font-size: 14px;
+        }
+
+        .senha-card span {
+            color: #000000;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .ez-box {
+            border: 2px solid #0000fe;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .ez-box #senhaez {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0000fe;
+        }
+
+        .ez-box input {
+            width: 80%;
+            padding: 5px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        .botao {
+            background-color: white; 
+            border: 2px solid #0000fe;
+            color: #000000;
+            border-radius: 12px;
+            padding: 8px 16px;
+            text-align: center; 
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+            transition-duration: 0.4s;
+        }
+
+        .botao:hover {
+            background-color: #1F6AAB;
+            color: white;
+        }
+
+        #container {
+            flex: 1;
+            min-width: 600px;
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            background-color: white;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 2px solid rgba(240, 119, 5, 0.575);
+            padding: 10px;
+            text-align: center;
+        }
+
+        thead tr th {
+            position: sticky;
+            top: 0;
+            background-color: blue;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .img {
+            height: 23px;
+            width: 23px;
+        }
+
+        td a {
+            text-decoration: none;
+            color: black;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+            color: rgba(240, 119, 5, 0.801);
+        }
+    </style>
+    <script>
+        function calcularCosseno() {
+            const numero = parseFloat(document.getElementById("numero").value);
+            if (isNaN(numero)) {
+                document.getElementById("resultado").innerText = "Digite um número!";
+                return;
+            }
+            const cosseno = Math.cos(numero * Math.PI / 180);
+            const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
+            document.getElementById("resultado").innerText = `Senha: ${resultadoFormatado}`;
+        }
+
+        function calc() {
+            var d = new Date();
+            var hora = d.getHours();
+            var ano = d.getFullYear();
+            var dia = d.getDate();
+            var mes = d.getMonth() + 1;
+            var anoRetaguarda = d.getFullYear() % 100;
+            
+            var config = ((ano - 75) + hora + dia + mes);
+            var retaguarda = dia + mes + anoRetaguarda;
+            var cbc = ((ano - mes) - dia - hora);
+            
+            if (mes <= 9) {
+                mes = "0" + mes.toString();
+            }
+            
+            document.getElementById('retaguarda').innerHTML = retaguarda;
+            document.getElementById('config').innerHTML = config;
+            document.getElementById('cbc').innerHTML = cbc;
+            document.getElementById('getcard').innerHTML = "secnas256";
+            document.getElementById('gsurf').innerHTML = "Live202505";
+            document.getElementById('elgins').innerHTML = "Elgin123";
+            document.getElementById('elginu').innerHTML = "elgin.growth";
+        }
+    </script>
+</head>
+<body onload="calc()">
+    <header>
+        <h1>Site Maroto</h1>
+        <p>Facilitando Plantões</p>
+    </header>
+    <nav>
+        <a href="versoes.html">Versões</a>
+        <a href="versoesmobile.html">Versões Mobile</a>
+        <a href="pastas.html">Pastas de Instalação</a>
+        <a href="tef-pos.html">Tef + POS</a>
+        <a href="impressoras.html">Arquivos de Impressoras</a>
+        <a href="kits.html">Kit's Instalações</a>
+        <a href="manuais.html">Manuais</a>
+        <a href="diversos.html">Diversos</a>
+        <a href="automacao-bombas.html">Automação + Bombas</a>
+        <a href="pops.html">Pop's</a>
+    </nav>
+
+    <div class="content-wrapper">
+        <div id="senhas-box">
+            <div class="senha-card">
+                <b>Senha do Retaguarda:</b>
+                <span id="retaguarda"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha do Config PDV/Concentrador:</b>
+                <span id="config"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha do CBC 2k9:</b>
+                <span id="cbc"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha da Getcard:</b>
+                <span id="getcard"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha do Gsurf:</b>
+                <span id="gsurf"></span>
+            </div>
+            <div class="senha-card">
+                <b>Usuário Elgin: <span id="elginu"></span></b>
+                <b style="margin-top: 4px;">Senha do Gsurf-Elgin:</b>
+                <span id="elgins"></span>
+            </div>
+
+            <button class="botao" onclick="calc()">Atualizar Senhas</button>
+
+            <div class="ez-box">
+                <div id="senhaez">Senha EzTech</div>
+                <label for="numero">Digite o Número:</label><br>
+                <input type="number" id="numero" step="any"><br>
+                <button class="botao" onclick="calcularCosseno()">Calcular</button>
+                <p id="resultado" style="font-weight: bold; margin-bottom: 0;"></p>
+            </div>
+        </div>
+
+        <div id="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Baixar</th>
+                        <th>Descrição</th>
+                        <th>Versão</th>
+                        <th>Data Lançamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="#"><img class="img" src="download.png" alt="Download"></a></td>
+                        <td>Instalador Sistema Base</td>
+                        <td>1.0.0</td>
+                        <td>01/01/2025</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

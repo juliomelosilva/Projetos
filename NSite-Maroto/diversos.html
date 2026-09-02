@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diversos</title>
+    <link rel="shortcut icon" href="icone.ico" type="image/x-icon">
+    <style>
+        body{
+            height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-image: linear-gradient(to bottom, rgb(84, 31, 231), white);
+            background-repeat: no-repeat;
+        }
+
+        table{
+            border-collapse: collapse;
+            margin: auto;
+            background-color: white;
+            width: 850px;
+            height: 375px;
+        }
+        main thead tr th{
+            position: sticky;
+            background-color: blue;
+            color: white;
+        }
+        
+        th, td{
+            border: 2px solid rgba(240, 119, 5, 0.575);
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: lightgray;
+        }
+
+        #container{
+            position: relative;
+            top: -458px;
+            left: 160px;
+            height: 0px;
+        }
+
+        .img{
+            height: 23px;
+            width: 23px;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover{
+            text-decoration: underline;
+            color: rgba(240, 119, 5, 0.801);
+        }
+
+        nav{
+            padding: 10px;
+
+        }
+        
+        nav > a{
+            color: black;
+            padding: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition-duration: .5s;
+        }
+        .center {
+            position: relative;
+            top: 0px;
+            left: 207px;
+            width: 224px;
+          }
+          .botao {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+      }
+      
+      .botao1 {
+        background-color: white; 
+        border: 2px solid #0000fe;
+        font-family:verdana;
+        color: #000000;
+        border-radius: 12px;
+        padding: 15px 32px;
+        text-align: center; 
+      }
+      .botao1:hover {
+        background-color: #1F6AAB;
+        color: rgb(7, 4, 4);
+      }
+      
+      #retaguarda{
+        font-weight: bolder;
+      }
+      
+      #config{
+        font-weight: bolder;
+      }
+      
+      #cbc{
+        font-weight: bolder;
+      }
+      #getcard{
+        font-weight: bolder;
+      }
+      #gsurf{
+        font-weight: bolder;
+      }
+      #elgins,#elginu{
+        font-weight: bolder;
+      }
+      
+      .botao{
+        font-weight: bolder;
+      }
+      
+       div {
+                  margin: 2px;
+              }
+        
+              .first {
+                  width: 650px;
+                  display: inline-block;
+              }
+        
+        
+              .third {
+                    width: 40%;
+                    display: inline-table;
+                    flex-direction: column;
+              }
+        
+              @media screen and (max-width: 500px) {
+        
+                  .first,
+                  .second,
+                  .third {
+                      width: 70%;
+                  }
+              }
+              #senhas{
+                position: relative;
+                top: 60px;
+                left: -470px;
+            }
+            #senhaez{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -495px;
+                padding: 0px; 
+            }
+            input{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -475px;
+                padding: 0px; 
+            }
+            label{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -480px;
+                padding: 0px; 
+
+            }
+            #bsenha{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -480px;
+                padding: 0px; 
+                
+            }
+            #resultado{
+                box-sizing: border-box;
+                position: relative;
+                top: 0px;
+                left: -495px;
+                padding: 0px; 
+
+            }
+
+        </style>
+
+            <div id="senhaez">Senha EzTech</div>
+            <label for="numero">Digite o Número</label>
+            <input type="number" id="numero" step="any">
+            <button id="bsenha" onclick="calcularCosseno()">Calcular</button>
+            <p id="resultado"></p>
+        
+            <script>
+                function calcularCosseno() {
+                    // Obter o valor do input e calcular o cosseno
+                    const numero = parseFloat(document.getElementById("numero").value);
+                    const cosseno = Math.cos(numero * Math.PI / 180); // Convertendo para radianos
+                    
+                    // Formatar o resultado com apenas três casas decimais após a vírgula
+                    const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
+                    
+                    // Exibir o resultado no parágrafo
+                    document.getElementById("resultado").innerText = `Senha: ${resultadoFormatado}`;
+                }
+            </script>
+<script>
+    function calc(){
+        var d = new Date();
+        var hora = d.getHours();
+        var ano = d.getFullYear();
+        var dia = d.getDate();
+        var minuto = d.getMinutes();
+        var mes = d.getMonth() + 1;
+        var anoRetaguarda = d.getFullYear() % 100
+		
+		
+        
+        var config = ((ano - 75) + hora + dia + mes);
+        var retaguarda = dia + mes + anoRetaguarda;
+        
+        var cbc = ((ano - mes) - dia - hora)
+        
+        if (mes <= 9){
+        mes = "0" + mes.toString()
+        }
+        
+        var gsurf = ("Live" + ano.toString() + mes.toString())
+        
+        document.getElementById('retaguarda').innerHTML=retaguarda;
+        document.getElementById('config').innerHTML=config;
+        document.getElementById('cbc').innerHTML=cbc;
+        document.getElementById('getcard').innerHTML="secnas256";
+        document.getElementById('gsurf').innerHTML= "Live202505";
+        document.getElementById('elgins').innerHTML= "Elgin123";
+        document.getElementById('elginu').innerHTML= "elgin.growth";
+        }
+</script>
+</head>
+<body onload="calc()">
+    <header>
+        <h1>Site Maroto</h1>
+        <p>Facilitando Plantões</p>
+    </header>
+    <nav>
+        <a href="versoes.html">Versões</a>
+        <a href="versoesmobile.html">Versões Mobile</a>
+        <a href="pastas.html">Pastas de Instalação</a>
+        <a href="tef-pos.html">Tef + POS</a>
+        <a href="impressoras.html">Arquivos de Impressoras</a>
+        <a href="kits.html">Kit's Instalações</a>
+        <a href="manuais.html">Manuais</a>
+        <a href="diversos.html">Diversos</a>
+        <a href="automacao-bombas.html">Automação + Bombas</a>
+        <a href="pops.html">Pop's</a>
+    </nav>
+    <main>
+        <div id="senhas">
+        <div class = "first">
+            <div class = "secon">
+            <div class = "third" style="border-width:2px; border-style:solid; border-color:rgba(240, 119, 5, 0.801); padding: 1em;  border-radius: 15px; text-align:center;"><span style="color:#0000fe; font-family:raleway; font-size:103%"><b>Senha do Retaguarda:              </b></span><span id="retaguarda" style="color:#000000; font-family:raleway; font-size:103%"></span></div><br> 
+            <div class = "third" style="border-width:2px; border-style:solid; border-color:rgba(240, 119, 5, 0.801); padding: 1em;  border-radius: 15px; text-align:center;"><span style="color:#0000fe; font-family:raleway; font-size:103%"><b>Senha do Config PDV/Concentrador:          </b></span><span id="config" style="color:#000000; font-family:raleway; font-size:103%"></span></div><br> 
+            <div class = "third" style="border-width:2px; border-style:solid; border-color:rgba(240, 119, 5, 0.801); padding: 1em;  border-radius: 15px; text-align:center;"><span style="color:#0000fe; font-family:raleway; font-size:103%"><b>Senha do CBC 2k9:                 </b></span><span id="cbc" style="color:#000000; font-family:raleway; font-size:103%"></span></div><br> 
+            <div class = "third" style="border-width:2px; border-style:solid; border-color:rgba(240, 119, 5, 0.801); padding: 1em;  border-radius: 15px; text-align:center;"><span style="color:#0000fe; font-family:raleway; font-size:103%"><b>Senha da Getcard:       </b></span><span id="getcard" style="color:#000000; font-family:raleway; font-size:103%"></span></div><br> 
+            <div class = "third" style="border-width:2px; border-style:solid; border-color:rgba(240, 119, 5, 0.801); padding: 1em;  border-radius: 15px; text-align:center;"><span style="color:#0000fe; font-family:raleway; font-size:103%"><b>Senha do Gsurf:                   </b></span><span id="gsurf" style="color:#000000; font-family:raleway; font-size:103%"></span></div><br>
+            <div class = "third" style="border-width:2px; border-style:solid; border-color:rgba(240, 119, 5, 0.801); padding: 1em;  border-radius: 15px; text-align:center;"><span style="color:#0000fe; font-family:raleway; font-size:103%"><b>Usuário Elgin: <span id="elginu" style=" color: #000000; font-family:raleway; font-size:103%"></span></b><p><b>Senha do Gsurf-Elgin:                  </b></p></span><span id="elgins" style="color:#000000; font-family:raleway; font-size:103%"></span></div><br> 
+            <div class="center">
+            <button class ="botao botao1" onClick="calc()"> Atualizar Senhas </button>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div id="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Baixar</th>
+                        <th>Descrição</th>
+                        <th>Versão</th>
+                        <th>Data Lançamento</th>
+    
+                    </tr>
+                </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/4wyxsw2b2ze77dw/configurar_veeder_root.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Configurar Veeder Root</td>
+                    <td>1.0.0</td>
+                    <td>28/07/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/0pdzu8z8qwgygw4s7nupl/Configura-o-Boleto-Online.zip?rlkey=h1cr61a7h8b3l7nthycqy1abf&st=qbvjfno9&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Configurar Boleto Online</td>
+                    <td>1.0.0</td>
+                    <td>11/06/2024</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/0v4x32dz6aj73trzznk4l/Atualiza-o-Bandeiras-Sitef-Local-MultiBandeiras.mp4?rlkey=p71p85va1l03xeefr93ppqfwe&st=rf5pr4fw&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Config. MultiBandeiras Sitef Local</td>
+                    <td>1.0.0</td>
+                    <td>16/08/2024</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/6zuek27g2mazmbytri4nc/Movimento-Congelado.zip?rlkey=1in9k0l2ptfibqalb0k0rfft6&st=g6rkz7h8&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Gerar Movimento Congelado</td>
+                    <td>1.0.0</td>
+                    <td>20/06/2024</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/jhusfv7c5ghz6oodsuplh/certified00006981.pfx?rlkey=1h4pqjuf8p2aycrrsi5d7q0ao&st=6qkzxb3w&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Certificado Horus 24/04/2026</td>
+                    <td>2.0.0</td>
+                    <td>23/03/2026</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/eorjwzlpf6a6n7gnxemef/Concept-2633.crt?rlkey=obgnum80nuilalpeywcbc4z46&st=7eot5sgp&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Certificado Concept Company</td>
+                    <td>2.0.0</td>
+                    <td>23/03/2026</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/29on6drw271gtb52gxqob/CapturarXML.exe?rlkey=dpyf21k2c140e39xjsn47g4u4&st=om96387i&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Capturar XML NFCe</td>
+                    <td>1.0.0</td>
+                    <td>13/11/2025</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/t8vi8y35qpmk8iscsksba/Procurar-XMLs.exe?rlkey=cvy5bfsslbrb8e0mp9k7vgwya&st=4ovgoddu&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Procurar XML NFCe (Analise)</td>
+                    <td>1.0.0</td>
+                    <td>13/11/2025</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/kluw5usi4bg22xw/Capturar%20XML%20SAT%20MFE.bat?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Capturar XML SAT MFE</td>
+                    <td>1.0.0</td>
+                    <td>14/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/cnwgy79uqdtx158j775y2/LiveImportadorXML-Version-2.0.9.86..jar?rlkey=3pafrb1elzm3m4349cbpno1et&st=j2zpnozh&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Live Importador</td>
+                    <td>2.0.9.86</td>
+                    <td>25/02/2026</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/zp4wl2dat5st9fds3ets8/LiveImportadorXML-2.0.4.10.jar?rlkey=srjvsq5i2dou8xrz0q0py3det&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Live Importador</td>
+                    <td>2.0.4.10</td>
+                    <td>26/02/2024</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/mndonlyjz0w5uon/TESTE%20DE%20PINPAD.EXe?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Teste de Pin-pad</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/tyqgpn6trd3o79fnianq5/CorretorLMC_PGLT.exe?rlkey=jj37vo9ckq2rrl6ygjetihy75&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Correção LMC (Perdas/Ganhos Litro)</td>
+                    <td>1.0.0</td>
+                    <td>06/11/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/enmsif156xoq9xrh4hhxj/CorretorLMC_PGPT.exe?rlkey=9nmr1rkzntyy1mzh0he04wcy6&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Correção LMC (Perdas/Ganhos Porcentagem)</td>
+                    <td>1.0.0</td>
+                    <td>06/11/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/60k60wmbf9m96lw/script_IDPDV0.txt?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Script - ID PDV 0</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/8xjxr0jnhc6mzl5/Script%20REATIVAR%20ABASTECIMENTO.txt?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Script - Reativar Abastecimento</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/z13hy2tuchd52bcy1etks/Abrir-Concentrador-Inicializar.bat?rlkey=y6kdfpdibo4xydt1rzrngce4v&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Abrir Concentrador - Pasta Inicializar</td>
+                    <td>1.0.0</td>
+                    <td>06/10/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/aurqnpienk8qq0t/Reiniciar%20Concentrador.EXE?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Reiniciar Concentrador</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/pqu3ipaikqm7nbxdw5uw8/LiveNFe.zip?rlkey=2714gtehy5mu8ihr1mijffbpr&st=bdi0w3ao&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Agente NF-e (A3)</td>
+                    <td>2.0.0</td>
+                    <td>18/08/2025</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/zqrg1g59x4009fv6zh0e4/Capicom.rar?rlkey=76316ixvhq2aa6vrm8z2mepav&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Capicom (A3)</td>
+                    <td>1.0.0</td>
+                    <td>28/10/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/v5b0v7j4cdphwna/libcidbio.dll?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>dll - libcdibio</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/az1hpoedeozm6ca/Emulador%20Concentrador.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Emulador Concentrador</td>
+                    <td>1.0.0</td>
+                    <td>09/06/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/axf34y3mody0ygqgodcz8/MFE_Ativacao.zip?rlkey=wagp9nflrx6isso90p6udp3aj&st=r546gd4h&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Ativador MF-e Tanca</td>
+                    <td>1.0.0</td>
+                    <td>29/05/2024</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/623vtq01xl31mq7/Elgin%20Tools%201.1.12.exe?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Elgin Tools MF-e</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/z73thspv7qo6mos/Analise%20de%20XML%20-%20MODELO.xlsx?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Planilha Modelo - Analise de XML</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/x8up6scf9ui49t1/Analise%20de%20Abastecimentos%20MODELO.xlsx?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Planilha Modelo - Analise de Abastecimento</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/zz52powek0bzn95/AlterarPagamento.exe?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Alterar Formas de Pagamento XML</td>
+                    <td>1.0.0</td>
+                    <td>10/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/6d1qetcfvont9el/Unificador%20Sped.rar?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Unificador Sped</td>
+                    <td>1.0.0</td>
+                    <td>16/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/pawqqra71htji7k/NetTracker%20v1.5.exe?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Encontrar IP Horus (NetTracker)</td>
+                    <td>1.0.0</td>
+                    <td>16/03/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/scl/fi/korl2k54dho5binlwtgyh/AnyDesk.exe?rlkey=kwp79kyvl19m3jr9s7yvcg6c2&dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>AnyDesk</td>
+                    <td>8.0.4</td>
+                    <td>28/10/2023</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.dropbox.com/s/1d2cb1f88dkuro5/teamviewer-15-40-9.exe?dl=1">
+                        <img class="img" src="download.png" alt="">
+                    </a></td>
+                    <td>Team Viewer</td>
+                    <td>15.0.0</td>
+                    <td>12/06/2023</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

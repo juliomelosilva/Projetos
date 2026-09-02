@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuais - Site Maroto</title>
+    <link rel="shortcut icon" href="icone.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-image: linear-gradient(to bottom, rgb(84, 31, 231), white);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header h1 {
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #e0e0e0;
+            margin-top: 0;
+        }
+
+        nav {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+        nav > a {
+            color: black;
+            padding: 8px 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            margin: 2px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        nav > a:hover {
+            background-color: rgba(240, 119, 5, 0.801);
+            color: white;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        #senhas-box {
+            flex: 0 0 320px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(240, 119, 5, 0.801);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .senha-card {
+            border: 2px solid rgba(240, 119, 5, 0.801);
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            text-align: center;
+            background-color: #fafafa;
+        }
+
+        .senha-card b {
+            color: #0000fe;
+            display: block;
+            font-size: 14px;
+        }
+
+        .senha-card span {
+            color: #000000;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .ez-box {
+            border: 2px solid #0000fe;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .ez-box #senhaez {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0000fe;
+        }
+
+        .ez-box input {
+            width: 80%;
+            padding: 5px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        .botao {
+            background-color: white; 
+            border: 2px solid #0000fe;
+            color: #000000;
+            border-radius: 12px;
+            padding: 8px 16px;
+            text-align: center; 
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+            transition-duration: 0.4s;
+        }
+
+        .botao:hover {
+            background-color: #1F6AAB;
+            color: white;
+        }
+
+        #container {
+            flex: 1;
+            min-width: 600px;
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            background-color: white;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 2px solid rgba(240, 119, 5, 0.575);
+            padding: 10px;
+            text-align: center;
+        }
+
+        thead tr th {
+            position: sticky;
+            top: 0;
+            background-color: blue;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .img {
+            height: 23px;
+            width: 23px;
+        }
+
+        td a {
+            text-decoration: none;
+            color: black;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+            color: rgba(240, 119, 5, 0.801);
+        }
+    </style>
+    <script>
+        function calcularCosseno() {
+            const numero = parseFloat(document.getElementById("numero").value);
+            if (isNaN(numero)) {
+                document.getElementById("resultado").innerText = "Digite um número!";
+                return;
+            }
+            const cosseno = Math.cos(numero * Math.PI / 180);
+            const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
+            document.getElementById("resultado").innerText = `Senha: ${resultadoFormatado}`;
+        }
+
+        function calc() {
+            var d = new Date();
+            var hora = d.getHours();
+            var ano = d.getFullYear();
+            var dia = d.getDate();
+            var mes = d.getMonth() + 1;
+            var anoRetaguarda = d.getFullYear() % 100;
+            
+            var config = ((ano - 75) + hora + dia + mes);
+            var retaguarda = dia + mes + anoRetaguarda;
+            var cbc = ((ano - mes) - dia - hora);
+            
+            if (mes <= 9) {
+                mes = "0" + mes.toString();
+            }
+            
+            document.getElementById('retaguarda').innerHTML = retaguarda;
+            document.getElementById('config').innerHTML = config;
+            document.getElementById('cbc').innerHTML = cbc;
+            document.getElementById('getcard').innerHTML = "secnas256";
+            document.getElementById('gsurf').innerHTML = "Live202505";
+            document.getElementById('elgins').innerHTML = "Elgin123";
+            document.getElementById('elginu').innerHTML = "elgin.growth";
+        }
+    </script>
+</head>
+<body onload="calc()">
+    <header>
+        <h1>Site Maroto</h1>
+        <p>Facilitando Plantões</p>
+    </header>
+    <nav>
+        <a href="versoes.html">Versões</a>
+        <a href="versoesmobile.html">Versões Mobile</a>
+        <a href="pastas.html">Pastas de Instalação</a>
+        <a href="tef-pos.html">Tef + POS</a>
+        <a href="impressoras.html">Arquivos de Impressoras</a>
+        <a href="kits.html">Kit's Instalações</a>
+        <a href="manuais.html">Manuais</a>
+        <a href="diversos.html">Diversos</a>
+        <a href="automacao-bombas.html">Automação + Bombas</a>
+        <a href="pops.html">Pop's</a>
+    </nav>
+
+    <div class="content-wrapper">
+        <div id="senhas-box">
+            <div class="senha-card">
+                <b>Senha do Retaguarda:</b>
+                <span id="retaguarda"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha do Config PDV/Concentrador:</b>
+                <span id="config"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha do CBC 2k9:</b>
+                <span id="cbc"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha da Getcard:</b>
+                <span id="getcard"></span>
+            </div>
+            <div class="senha-card">
+                <b>Senha do Gsurf:</b>
+                <span id="gsurf"></span>
+            </div>
+            <div class="senha-card">
+                <b>Usuário Elgin: <span id="elginu"></span></b>
+                <b style="margin-top: 4px;">Senha do Gsurf-Elgin:</b>
+                <span id="elgins"></span>
+            </div>
+
+            <button class="botao" onclick="calc()">Atualizar Senhas</button>
+
+            <div class="ez-box">
+                <div id="senhaez">Senha EzTech</div>
+                <label for="numero">Digite o Número:</label><br>
+                <input type="number" id="numero" step="any"><br>
+                <button class="botao" onclick="calcularCosseno()">Calcular</button>
+                <p id="resultado" style="font-weight: bold; margin-bottom: 0;"></p>
+            </div>
+        </div>
+
+        <div id="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Baixar</th>
+                        <th>Descrição</th>
+                        <th>Versão</th>
+                        <th>Data Lançamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/f9hiph2l2ugogkm/TROCA%20DE%20BICOS.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Troca de Bicos</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/0ok76hb46oypdqq/REIMPRESS%C3%83O%20DE%20CUPOM%20MESES%20ANTERIORES.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Reimpressão de cupons meses anteriores</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/n1fh64gvp4vw4lb/RECRIAR%20BANCO%20DO%20PDV.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Recriar banco do PDV</td>
+                        <td>1.0.0</td>
+                        <td>19/06/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/w01huy790uo8ok0/RECONFIGURANDO%20GPOS.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Reconfigurando GPOS</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/9ivf5ab9nwz9xjq/Manual%20GPOS-Destaxa.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Manual GPOS-Destaxa</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/scl/fi/1to5ywsebv9sbgqoeedlb/VINCULA-O-S-T-Revenda.doc?rlkey=4r0z7r72fnzevoywkdvgtxmdc&dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Manual Vinculação SAT</td>
+                        <td>1.0.0</td>
+                        <td>28/10/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/scl/fi/k14jc5mrzlrt0gt3rc54m/VINCULA-O-S-T-MFE-Revenda.doc?rlkey=ubn9d1eyg9un7qcnuux2malw8&dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Manual Vinculação SAT-MFE</td>
+                        <td>1.0.0</td>
+                        <td>28/10/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/cu9at8md0sua6n2/MANUAL%20CONFIGURA%C3%87%C3%83O%20GPOS700_REDE.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Manual configuração GPOS700_REDE</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/scl/fi/q77650z92i7kyx4z948ku/Manual-de-Instalacao-TEF-Express.pdf?rlkey=1yvodefqmpcmqr2ua44dy0hsb&dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Instalação Multiplus Tef Express</td>
+                        <td>1.0.0</td>
+                        <td>28/10/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/scl/fi/8jn2jkr6j5gxf0c4bw2xf/Guia-r-pido-Limpeza-de-Hist-rico.pdf?rlkey=l6wgri9j4g2ljs7wroauebdne&dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Procedimento de Liberação para Reinstalação Tef Express</td>
+                        <td>1.0.0</td>
+                        <td>28/10/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/pt765dxr54y9gtm/Instala%C3%A7%C3%A3o%20Sitef%2BGsurf.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Instalação Sitef+Gsurf</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://drive.google.com/file/d/1FREthyKkPGMFELbs8JpX1csuyVppso5-/view?usp=drive_link" target="_blank"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Devolução NF-e Novo Boi</td>
+                        <td>1.0.0</td>
+                        <td>16/01/2024</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/0yx5j85lg6h9n1o/Instala%C3%A7%C3%A3o%20PIX%20SHIPAY.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Instalação PIX SHIPAY</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://drive.google.com/file/d/17SCAY_hY-9vaFif7SLguiDO6JsmAegrV/view?usp=drive_link" target="_blank"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Configuração + Testes Fidelidade Marka</td>
+                        <td>1.0.0</td>
+                        <td>05/07/2024</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/tupks5k0f5kjsnw/Instala%C3%A7%C3%A3o%20do%20Posto%20do%200.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Instalação do Posto do 0</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/7tw01km5z9yk2bk/INSTALA%C3%87%C3%83O%20DE%20PDV%26CONCENTRADOR%20DO%200.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Instalação PDV & Concentrador do 0</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/mwk69d8o2cfodjo/Importar%20Nf-e%20Manifesto.txt?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Importar Nf-e Manifesto</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/omb6vevw06w80rl/IMPORTA%C3%87%C3%83O%20DE%20XML.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Importação de XML</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/2cl95m934g87r15/HABILITAR%20EQUIPAMENTO%20TWC%20NA%20AUTOMA%C3%87%C3%83O%20HORUSTEC.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Habilitar equipamento TWC na automação Horustec</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/jkoseucgbfjazr5/FOR%C3%87ANDO%20DUPLICIDADE%20PARA%20ENCONTRAR%20CHAVE%20DE%20NFC.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Forçando duplicidade para encontrar chave de Nfc-e</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/tn2mbvmr1lqhobb/DUPLICIDADE%20NFC-e%20-%20GPOS.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Duplicidade NFC-E - GPOS</td>
+                        <td>1.0.0</td>
+                        <td>29/05/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/3a43cwnbuafxih1/Devolu%C3%A7%C3%A3o%20-%20Cupom.txt?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Devolução NF-e - Cupom</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/bnqudmvjlif29bm/Devolu%C3%A7%C3%A3o%20-%20Avulsa.txt?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Devolução Nf-e - Avulsa</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/czlbs6n5blfyjas/DESABILITAR%20RECURSO%20DE%20ENERGIA%20DO%20USB%20WINDOWS.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Desabilitar recurso de energia do windows</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/5wb494v9nx5g309/CONFIGURA%C3%87%C3%83O%20EPSON%20TM-20.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Configuração Epson TM-T20 Sair mais Itens no cupom</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/wt1osmaesjzlfhf/Como%20pegar%20os%20XML%27s%20da%20pasta%20LivePDV.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Como pegar os XML's da pasta LivePDV</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/pxygels990h7een/AJUSTE%20DE%20TURNO.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Ajuste de Turno</td>
+                        <td>1.0.0</td>
+                        <td>10/03/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/ptce3e94iwmn4np/Troca%20de%20Moeda.pdf?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Troca de Moeda</td>
+                        <td>1.0.0</td>
+                        <td>08/05/2023</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.dropbox.com/s/hy0d2vwq4u7521l/Troca%20de%20pre%C3%A7o%20direto%20na%20automa%C3%A7%C3%A3o%20-%20Cesna.txt?dl=1"><img class="img" src="download.png" alt=""></a></td>
+                        <td>Troca de Preço automação cesna</td>
+                        <td>1.0.0</td>
+                        <td>13/07/2023</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
