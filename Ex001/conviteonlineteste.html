@@ -471,7 +471,7 @@
         // =========================================================================
         
         // Seu número de WhatsApp (com DDI e DDD, apenas números)
-        const WHATSAPP_NUMBER = "5582999676423"; 
+        const WHATSAPP_NUMBER = "5582988279937"; 
 
         // IDs e URLs da Planilha para Leitura
         const SPREADSHEET_ID = '1iJjjLvX1H7tgYGFIy5EH9XcHBQ0TDAsWWHx2TpGaagw';
@@ -479,6 +479,10 @@
 
         // URL DE ESCRITA
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU5Py8307_X3aX-zpuIgHXIqIVfqd01v13L8Qc5mTjiNWPTNtiYaiOiOpn2Tl2e6Jgtg/exec";
+
+        // Digite abaixo o nome EXATO do presente da planilha que deve ficar SEMPRE disponível.
+        // Exemplo: const ALWAYS_AVAILABLE_GIFT_NAME = "Jogo de Panelas";
+        const ALWAYS_AVAILABLE_GIFT_NAME = "Outros";
 
         // Lista de presentes dinâmica
         let giftList = [];
@@ -513,7 +517,9 @@
                     const availabilityText = row.c[1] ? row.c[1].v : "Sim";
 
                     if (giftName) {
-                        const isAvailable = String(availabilityText).trim().toLowerCase() !== "não";
+                        const isAlwaysAvailable = giftName.toString().trim().toLowerCase() === ALWAYS_AVAILABLE_GIFT_NAME.toString().trim().toLowerCase();
+                        const isAvailable = isAlwaysAvailable || String(availabilityText).trim().toLowerCase() !== "não";
+                        
                         giftList.push({
                             id: `item_${index + 1}`,
                             name: giftName,
@@ -802,7 +808,8 @@
                     const availabilityText = row.c[1] ? row.c[1].v : "Sim";
                     
                     if (giftName && giftName.toString().trim().toLowerCase() === guestData.selectedGift.name.toString().trim().toLowerCase()) {
-                        if (String(availabilityText).trim().toLowerCase() === "não") {
+                        const isAlwaysAvailable = giftName.toString().trim().toLowerCase() === ALWAYS_AVAILABLE_GIFT_NAME.toString().trim().toLowerCase();
+                        if (!isAlwaysAvailable && String(availabilityText).trim().toLowerCase() === "não") {
                             stillAvailable = false;
                         }
                         break;
