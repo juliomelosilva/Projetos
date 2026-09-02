@@ -264,10 +264,10 @@
             const currentTheme = document.body.getAttribute('data-theme');
             if (currentTheme === 'dark') {
                 document.body.removeAttribute('data-theme');
-                themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> <span>Tema</span>';
+                themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i> <span>Tema</span>';
             } else {
                 document.body.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i> <span>Tema</span>';
+                themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> <span>Tema</span>';
             }
         });
 
