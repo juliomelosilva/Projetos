@@ -56,7 +56,7 @@
     /* Dashboard Layout */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
       max-width: 1200px;
       margin: 0 auto 20px;
@@ -260,6 +260,10 @@
     <div class="dash-card">
       <span>📈 Comissões</span>
       <strong id="dashComissao">R$ 0.00</strong>
+    </div>
+    <div class="dash-card">
+      <span>🎯 Dívidas a Finalizar</span>
+      <strong id="dashUltimaParcela" style="color: var(--accent-purple);">R$ 0.00</strong>
     </div>
     <div class="dash-card">
       <span>📊 Saldo Líquido</span>
@@ -562,7 +566,9 @@
       });
 
       const totalDividas = totalCartao + totalExterna;
-      const saldoLíquido = (dados.salario + totalComissao) - totalDividas;
+      
+      // Saldo Líquido sem incluir o total de comissões
+      const saldoLíquido = dados.salario - totalDividas;
 
       // Atualiza Colunas
       document.getElementById('totalCartao').textContent = totalCartao.toFixed(2);
@@ -580,6 +586,7 @@
       document.getElementById('dashCartao').textContent = `R$ ${totalCartao.toFixed(2)}`;
       document.getElementById('dashExterna').textContent = `R$ ${totalExterna.toFixed(2)}`;
       document.getElementById('dashComissao').textContent = `R$ ${totalComissao.toFixed(2)}`;
+      document.getElementById('dashUltimaParcela').textContent = `R$ ${totalUltima.toFixed(2)}`;
       
       const dashSaldo = document.getElementById('dashSaldo');
       dashSaldo.textContent = `R$ ${saldoLíquido.toFixed(2)}`;
