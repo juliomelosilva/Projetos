@@ -263,75 +263,89 @@
 
     <div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Copiado com sucesso!</span></div>
 
-    <script>
-        const themeBtn = document.getElementById('themeToggleBtn');
-        themeBtn.addEventListener('click', () => {
-            const currentTheme = document.body.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                document.body.removeAttribute('data-theme');
-                themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i> <span>Tema</span>';
-            } else {
-                document.body.setAttribute('data-theme', 'dark');
-                themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> <span>Tema</span>';
-            }
+        <script>
+    const themeBtn = document.getElementById('themeToggleBtn');
+
+    // Função para aplicar o tema e atualizar o ícone/texto do botão
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> <span>Tema</span>';
+        } else {
+            document.body.removeAttribute('data-theme');
+            themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i> <span>Tema</span>';
+        }
+    }
+
+    // Carrega o tema salvo no localStorage ao abrir qualquer página
+    const savedTheme = localStorage.getItem('siteTheme') || 'light';
+    applyTheme(savedTheme);
+
+    // Alterna e salva o tema ao clicar no botão
+    themeBtn.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        applyTheme(newTheme);
+        localStorage.setItem('siteTheme', newTheme); // Salva a escolha do usuário
+    });
+
+    function calcSenhas() {
+        const d = new Date();
+        const hora = d.getHours();
+        const ano = d.getFullYear();
+        const dia = d.getDate();
+        const mes = d.getMonth() + 1;
+        const anoRetaguarda = ano % 100;
+        
+        const config = ((ano - 75) + hora + dia + mes);
+        const retaguarda = dia + mes + anoRetaguarda;
+        const cbc = ((ano - mes) - dia - hora);
+        
+        document.getElementById('pass1').innerText = retaguarda;
+        document.getElementById('pass2').innerText = config;
+        document.getElementById('pass3').innerText = cbc;
+        document.getElementById('pass4').innerText = "secnas256";
+        document.getElementById('pass5').innerText = "Live202505";
+        document.getElementById('pass6').innerText = "elgin.growth / Elgin123";
+    }
+
+    function calcularCosseno() {
+        const numero = parseFloat(document.getElementById("ezNumber").value);
+        if (isNaN(numero)) {
+            document.getElementById("ezResultado").innerText = "Digite um número válido!";
+            return;
+        }
+        const cosseno = Math.cos(numero * Math.PI / 180);
+        const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
+        document.getElementById("ezResultado").innerText = `Senha EzTech: ${resultadoFormatado}`;
+    }
+
+    function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        if (text && text !== '--') {
+            navigator.clipboard.writeText(text);
+            showToast("Copiado para a área de transferência!");
+        }
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        toast.style.display = 'flex';
+        setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    function filterTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#downloadsTable tbody tr');
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(input) ? '' : 'none';
         });
+    }
 
-        function calcSenhas() {
-            const d = new Date();
-            const hora = d.getHours();
-            const ano = d.getFullYear();
-            const dia = d.getDate();
-            const mes = d.getMonth() + 1;
-            const anoRetaguarda = ano % 100;
-            
-            const config = ((ano - 75) + hora + dia + mes);
-            const retaguarda = dia + mes + anoRetaguarda;
-            const cbc = ((ano - mes) - dia - hora);
-            
-            document.getElementById('pass1').innerText = retaguarda;
-            document.getElementById('pass2').innerText = config;
-            document.getElementById('pass3').innerText = cbc;
-            document.getElementById('pass4').innerText = "secnas256";
-            document.getElementById('pass5').innerText = "Live202505";
-            document.getElementById('pass6').innerText = "elgin.growth / Elgin123";
-        }
-
-        function calcularCosseno() {
-            const numero = parseFloat(document.getElementById("ezNumber").value);
-            if (isNaN(numero)) {
-                document.getElementById("ezResultado").innerText = "Digite um número válido!";
-                return;
-            }
-            const cosseno = Math.cos(numero * Math.PI / 180);
-            const resultadoFormatado = Math.abs(cosseno).toFixed(3).slice(-3);
-            document.getElementById("ezResultado").innerText = `Senha EzTech: ${resultadoFormatado}`;
-        }
-
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            if (text && text !== '--') {
-                navigator.clipboard.writeText(text);
-                showToast("Copiado para a área de transferência!");
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            toast.style.display = 'flex';
-            setTimeout(() => { toast.style.display = 'none'; }, 2500);
-        }
-
-        function filterTable() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#downloadsTable tbody tr');
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(input) ? '' : 'none';
-            });
-        }
-
-        window.onload = calcSenhas;
-    </script>
+    window.onload = calcSenhas;
+        </script>
 </body>
 </html>
