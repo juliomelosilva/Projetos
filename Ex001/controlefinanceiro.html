@@ -240,7 +240,7 @@
 
   <div class="header">
     <h1>Controle Financeiro</h1>
-    <span class="sync-status" id="syncStatus">☁️ Google Sheets: Aguardando...</span>
+    <span class="sync-status" id="syncStatus">☁️ Google Sheets: Carregando dados...</span>
   </div>
 
   <!-- Dashboard -->
@@ -335,8 +335,7 @@
   </div>
 
   <script>
-    // URL do seu Script do Google Sheets
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg5KG0Yl_tpRNTwcTtVkcAydtkuUNV_hBpIGTv3oVMtHvGObrzF9wTJIftNGnH3WGI/exec"; 
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxS2SByAxnN9aNHUqd1Ve5B6jX589Evycru6bK86hQ_6oO2HzeKroBcL146WZ8kyqeG/exec"; 
 
     const fsKey = 'financeiro-arquivo-v3';
     let dados = JSON.parse(localStorage.getItem(fsKey)) || {
@@ -348,28 +347,48 @@
       sincronizarGoogleSheets();
     }
 
+    // Puxar os dados do Google Sheets na inicialização
+    function carregarDoGoogleSheets() {
+      if (!GOOGLE_SCRIPT_URL) return;
+
+      const statusEl = document.getElementById('syncStatus');
+      statusEl.textContent = "⏳ Buscando dados do Google Sheets...";
+
+      fetch(GOOGLE_SCRIPT_URL)
+        .then(response => response.json())
+        .then(res => {
+          if (res && res.status === 'success' && res.dados) {
+            dados = res.dados;
+            localStorage.setItem(fsKey, JSON.stringify(dados));
+            renderizar();
+            statusEl.textContent = "☁️ Google Sheets: Sincronizado";
+          } else {
+            statusEl.textContent = "☁️ Google Sheets: Pronto";
+          }
+        })
+        .catch(err => {
+          console.warn("Erro ao carregar do Sheets:", err);
+          statusEl.textContent = "⚠️ Usando dados locais";
+        });
+    }
+
     function sincronizarGoogleSheets() {
       if (!GOOGLE_SCRIPT_URL) return;
       
       const statusEl = document.getElementById('syncStatus');
       statusEl.textContent = "⏳ Google Sheets: Salvando...";
 
-      let listaGeral = [];
-      ['cartao', 'externa', 'comissao'].forEach(tipo => {
-        dados[tipo].forEach(item => {
-          listaGeral.push({ ...item, tipo: tipo });
-        });
-      });
-
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'sync', itens: listaGeral })
-      }).then(() => {
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'sync', dados: dados })
+      })
+      .then(res => res.json())
+      .then(() => {
         statusEl.textContent = "☁️ Google Sheets: Sincronizado";
-      }).catch(() => {
-        statusEl.textContent = "⚠️ Erro na Sincronização";
+      })
+      .catch(() => {
+        statusEl.textContent = "⚠️ Erro ao Salvar no Sheets";
       });
     }
 
@@ -390,7 +409,6 @@
 
       if (!desc || isNaN(val)) return;
 
-      // Se totalInput for 0/vazio, é uma conta FIXA e por padrão oculta da última parcela
       const eFixa = (totalInput === 0);
 
       dados[tipo].push({ 
@@ -399,7 +417,7 @@
         atual: eFixa ? 1 : 1, 
         total: eFixa ? 0 : totalInput, 
         porcentagem: perc, 
-        ocultarUltima: eFixa, // Se for conta fixa, automaticamente oculta da última parcela
+        ocultarUltima: eFixa,
         dataCompra: dataCompra,
         dataVenda: dataVenda
       });
@@ -479,16 +497,15 @@
     }
 
     function renderizar() {
-      document.getElementById('salario').value = dados.salario;
+      document.getElementById('salario').value = dados.salario || 0;
 
       let totalCartao = 0, totalExterna = 0, totalComissao = 0, totalUltima = 0;
       let htmlCartao = '', htmlExterna = '', htmlComissao = '', htmlUltima = '';
 
       // Cartão
-      dados.cartao.forEach((item, i) => {
+      (dados.cartao || []).forEach((item, i) => {
         totalCartao += item.valor;
         
-        // Regra da Última Parcela
         const eUltima = (item.total > 0 && item.atual === item.total);
         if (eUltima && !item.ocultarUltima) {
           htmlUltima += `<div>• [Cartão] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
@@ -516,7 +533,7 @@
       });
 
       // Externas
-      dados.externa.forEach((item, i) => {
+      (dados.externa || []).forEach((item, i) => {
         totalExterna += item.valor;
         
         const eUltima = (item.total > 0 && item.atual === item.total);
@@ -546,7 +563,7 @@
       });
 
       // Comissões
-      dados.comissao.forEach((item, i) => {
+      (dados.comissao || []).forEach((item, i) => {
         let valCom = item.valor * (item.porcentagem / 100);
         totalComissao += valCom;
         
@@ -566,9 +583,7 @@
       });
 
       const totalDividas = totalCartao + totalExterna;
-      
-      // Saldo Líquido sem incluir o total de comissões
-      const saldoLíquido = dados.salario - totalDividas;
+      const saldoLíquido = (dados.salario || 0) - totalDividas;
 
       // Atualiza Colunas
       document.getElementById('totalCartao').textContent = totalCartao.toFixed(2);
@@ -582,7 +597,7 @@
       document.getElementById('totalUltimaParcela').textContent = totalUltima.toFixed(2);
 
       // Atualiza Dashboard
-      document.getElementById('dashSalario').textContent = `R$ ${dados.salario.toFixed(2)}`;
+      document.getElementById('dashSalario').textContent = `R$ ${(dados.salario || 0).toFixed(2)}`;
       document.getElementById('dashCartao').textContent = `R$ ${totalCartao.toFixed(2)}`;
       document.getElementById('dashExterna').textContent = `R$ ${totalExterna.toFixed(2)}`;
       document.getElementById('dashComissao').textContent = `R$ ${totalComissao.toFixed(2)}`;
@@ -594,6 +609,7 @@
     }
 
     renderizar();
+    carregarDoGoogleSheets();
   </script>
 </body>
 </html>
