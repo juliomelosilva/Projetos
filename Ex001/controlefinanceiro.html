@@ -81,7 +81,6 @@
       font-size: 1.3rem;
     }
 
-    /* Form Config Global */
     .salario-container {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -96,7 +95,6 @@
       gap: 10px;
     }
 
-    /* Responsividade dos Inputs */
     .totais {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -132,7 +130,6 @@
       margin-bottom: 12px;
     }
 
-    /* Totalmente Responsivo para Telas Pequenas */
     .linha-inputs-flex {
       display: flex;
       flex-wrap: wrap;
@@ -140,7 +137,7 @@
     }
 
     .linha-inputs-flex input {
-      flex: 1 1 100%; /* Ocupa 100% no mobile */
+      flex: 1 1 100%;
       background: #0f172a;
       border: 1px solid var(--card-border);
       color: var(--text-main);
@@ -151,24 +148,23 @@
 
     @media (min-width: 480px) {
       .linha-inputs-flex input.half { flex: 1 1 calc(50% - 4px); }
-      .linha-inputs-flex input.third { flex: 1 1 calc(33.33% - 6px); }
     }
 
     button {
-      padding: 10px 14px;
+      padding: 8px 12px;
       border: none;
       background-color: #2563eb;
       color: white;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     button:hover { opacity: 0.9; }
 
-    .btn-pagar { background-color: #059669; margin-right: 4px; }
-    .btn-editar { background-color: #d97706; margin-right: 4px; }
+    .btn-pagar { background-color: #059669; }
+    .btn-editar { background-color: #d97706; }
     .btn-deletar { background-color: #dc2626; }
 
     .ver-detalhes-btn {
@@ -205,11 +201,26 @@
       }
     }
 
+    .item-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
     .item-detalhes-sub {
       font-size: 11px;
       color: var(--text-muted);
       display: block;
       margin-top: 2px;
+    }
+
+    .badge-fixa {
+      background: #334155;
+      color: #38bdf8;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
     }
 
     .ultima-parcela {
@@ -229,9 +240,10 @@
 
   <div class="header">
     <h1>Controle Financeiro</h1>
-    <span class="sync-status" id="syncStatus">☁️ Google Sheets: Sincronizado</span>
+    <span class="sync-status" id="syncStatus">☁️ Google Sheets: Aguardando...</span>
   </div>
 
+  <!-- Dashboard -->
   <div class="dashboard-grid">
     <div class="dash-card">
       <span>💰 Salário Total</span>
@@ -256,19 +268,20 @@
   </div>
 
   <div class="salario-container">
-    <label for="salario"><strong>Definir Salário Mensal:</strong></label>
+    <label for="salario"><strong>Salário Mensal:</strong></label>
     <input type="number" id="salario" onchange="gravarSalario()" placeholder="R$ 0,00" style="background:#0f172a; border:1px solid var(--card-border); color:#fff; padding:8px; border-radius:8px;" />
   </div>
 
   <div class="totais">
     
+    <!-- Dívidas Cartão -->
     <div class="coluna" id="dividasCartao">
       <h3><span>Dívidas Cartão</span> <span>R$ <span id="totalCartao">0.00</span></span></h3>
       <div class="form-group">
         <div class="linha-inputs-flex">
-          <input type="text" placeholder="Descrição" id="descricaoCartao" />
+          <input type="text" placeholder="Descrição (ex: Netflix, Fatura...)" id="descricaoCartao" />
           <input type="number" placeholder="Valor (R$)" id="valorCartao" class="half" step="0.01" />
-          <input type="number" placeholder="Total Parc. (Ex: 5)" id="parcelaTotalCartao" class="half" />
+          <input type="number" placeholder="Total Parc. (Vazio = Fixa)" id="parcelaTotalCartao" class="half" />
           <input type="date" id="dataCompraCartao" title="Data da Compra" />
         </div>
       </div>
@@ -277,13 +290,14 @@
       <div class="detalhes" id="detalhesCartao"></div>
     </div>
 
+    <!-- Dívidas Externas -->
     <div class="coluna" id="dividasExternas">
       <h3><span>Dívidas Externas</span> <span>R$ <span id="totalExterna">0.00</span></span></h3>
       <div class="form-group">
         <div class="linha-inputs-flex">
-          <input type="text" placeholder="Descrição" id="descricaoExterna" />
+          <input type="text" placeholder="Descrição (ex: Luz, Aluguel...)" id="descricaoExterna" />
           <input type="number" placeholder="Valor (R$)" id="valorExterna" class="half" step="0.01" />
-          <input type="number" placeholder="Total Parc. (Ex: 5)" id="parcelaTotalExterna" class="half" />
+          <input type="number" placeholder="Total Parc. (Vazio = Fixa)" id="parcelaTotalExterna" class="half" />
           <input type="date" id="dataCompraExterna" title="Data da Compra" />
         </div>
       </div>
@@ -292,6 +306,7 @@
       <div class="detalhes" id="detalhesExterna"></div>
     </div>
 
+    <!-- Comissões -->
     <div class="coluna" id="comissoes">
       <h3><span>Comissões</span> <span>R$ <span id="totalComissao">0.00</span></span></h3>
       <div class="form-group">
@@ -312,13 +327,14 @@
   <div class="ultima-parcela">
     <h4 style="margin: 0 0 8px 0; color: var(--accent-purple);">Dívidas na Última Parcela</h4>
     <div id="listaUltimaParcela"></div>
+    <p style="margin: 8px 0 0 0; font-weight: 600;">Total da Última Parcela: R$ <span id="totalUltimaParcela">0.00</span></p>
   </div>
 
   <script>
-    // Cole aqui a URL do seu Google Apps Script (Requisito 4)
+    // URL do seu Script do Google Sheets
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg5KG0Yl_tpRNTwcTtVkcAydtkuUNV_hBpIGTv3oVMtHvGObrzF9wTJIftNGnH3WGI/exec"; 
 
-    const fsKey = 'financeiro-arquivo-v2';
+    const fsKey = 'financeiro-arquivo-v3';
     let dados = JSON.parse(localStorage.getItem(fsKey)) || {
       cartao: [], externa: [], comissao: [], salario: 0
     };
@@ -328,14 +344,12 @@
       sincronizarGoogleSheets();
     }
 
-    // Requisito 4: Envia atualização ao incluir ou remover da planilha
     function sincronizarGoogleSheets() {
       if (!GOOGLE_SCRIPT_URL) return;
       
       const statusEl = document.getElementById('syncStatus');
       statusEl.textContent = "⏳ Google Sheets: Salvando...";
 
-      // Junta todos os itens em uma lista única categorizada
       let listaGeral = [];
       ['cartao', 'externa', 'comissao'].forEach(tipo => {
         dados[tipo].forEach(item => {
@@ -361,11 +375,10 @@
       renderizar();
     }
 
-    // Requisito 6: Ao inserir 5, o sistema automaticamente seta como 1/5
     function adicionarItem(tipo) {
       const desc = document.getElementById('descricao' + capitalize(tipo)).value;
       const val = parseFloat(document.getElementById('valor' + capitalize(tipo)).value);
-      const totalInput = parseInt(document.getElementById('parcelaTotal' + capitalize(tipo))?.value) || 1;
+      const totalInput = parseInt(document.getElementById('parcelaTotal' + capitalize(tipo))?.value) || 0;
       const perc = tipo === 'comissao' ? parseFloat(document.getElementById('porcentagemComissao').value) || 0 : 100;
       
       const dataCompra = (tipo === 'cartao' || tipo === 'externa') ? document.getElementById('dataCompra' + capitalize(tipo)).value : null;
@@ -373,12 +386,16 @@
 
       if (!desc || isNaN(val)) return;
 
+      // Se totalInput for 0/vazio, é uma conta FIXA e por padrão oculta da última parcela
+      const eFixa = (totalInput === 0);
+
       dados[tipo].push({ 
         descricao: desc, 
         valor: val, 
-        atual: 1, // Seta 1 como parcela inicial por padrão
-        total: totalInput, 
+        atual: eFixa ? 1 : 1, 
+        total: eFixa ? 0 : totalInput, 
         porcentagem: perc, 
+        ocultarUltima: eFixa, // Se for conta fixa, automaticamente oculta da última parcela
         dataCompra: dataCompra,
         dataVenda: dataVenda
       });
@@ -397,10 +414,11 @@
       renderizar();
     }
 
-    // Requisito 7: Ao pagar, ele incrementa a parcela (ex: de 1/5 para 2/5)
     function pagarParcela(tipo, index) {
       const item = dados[tipo][index];
-      if (item.atual < item.total) {
+      if (item.total === 0) {
+        alert('Conta fixa paga com sucesso para o ciclo atual!');
+      } else if (item.atual < item.total) {
         item.atual += 1;
       } else {
         alert('Esta dívida já está na última parcela ou quitada!');
@@ -409,7 +427,12 @@
       renderizar();
     }
 
-    // Requisito 5: Ao clicar em alterar, pergunta se quer alterar PREÇO ou PARCELA
+    function toggleOcultarUltima(tipo, index) {
+      dados[tipo][index].ocultarUltima = !dados[tipo][index].ocultarUltima;
+      salvarDados();
+      renderizar();
+    }
+
     function editarItem(tipo, index) {
       const item = dados[tipo][index];
       
@@ -423,6 +446,10 @@
           const nValor = prompt('Novo Valor (R$):', item.valor);
           if (nValor !== null && !isNaN(parseFloat(nValor))) item.valor = parseFloat(nValor);
         } else if (opcao === '2') {
+          if (item.total === 0) {
+            alert('Contas fixas não possuem parcelas numéricas.');
+            return;
+          }
           const nParcela = prompt(`Nova Parcela Atual (Total é ${item.total}):`, item.atual);
           if (nParcela !== null && !isNaN(parseInt(nParcela))) item.atual = parseInt(nParcela);
         }
@@ -450,21 +477,31 @@
     function renderizar() {
       document.getElementById('salario').value = dados.salario;
 
-      let totalCartao = 0, totalExterna = 0, totalComissao = 0;
+      let totalCartao = 0, totalExterna = 0, totalComissao = 0, totalUltima = 0;
       let htmlCartao = '', htmlExterna = '', htmlComissao = '', htmlUltima = '';
 
       // Cartão
       dados.cartao.forEach((item, i) => {
         totalCartao += item.valor;
-        if (item.atual === item.total) htmlUltima += `<div>• [Cartão] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
         
+        // Regra da Última Parcela
+        const eUltima = (item.total > 0 && item.atual === item.total);
+        if (eUltima && !item.ocultarUltima) {
+          htmlUltima += `<div>• [Cartão] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
+          totalUltima += item.valor;
+        }
+
         const dt = item.dataCompra ? `<span class="item-detalhes-sub">Data Compra: ${formatarData(item.dataCompra)}</span>` : '';
+        const txtParc = item.total === 0 ? '<span class="badge-fixa">Conta Fixa</span>' : `(${item.atual}/${item.total})`;
+
         htmlCartao += `
           <div class='item'>
-            <div>
-              <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)} 
-              <br><small>Parcela: (${item.atual}/${item.total})</small>
-              ${dt}
+            <div class="item-left">
+              <input type="checkbox" title="Ocultar da Última Parcela" ${item.ocultarUltima ? 'checked' : ''} onchange="toggleOcultarUltima('cartao', ${i})">
+              <div>
+                <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)} ${txtParc}
+                ${dt}
+              </div>
             </div>
             <div>
               <button class="btn-pagar" title="Pagar parcela (+1)" onclick="pagarParcela('cartao', ${i})">✓ Pagar</button>
@@ -477,15 +514,24 @@
       // Externas
       dados.externa.forEach((item, i) => {
         totalExterna += item.valor;
-        if (item.atual === item.total) htmlUltima += `<div>• [Externa] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
         
+        const eUltima = (item.total > 0 && item.atual === item.total);
+        if (eUltima && !item.ocultarUltima) {
+          htmlUltima += `<div>• [Externa] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
+          totalUltima += item.valor;
+        }
+
         const dt = item.dataCompra ? `<span class="item-detalhes-sub">Data Compra: ${formatarData(item.dataCompra)}</span>` : '';
+        const txtParc = item.total === 0 ? '<span class="badge-fixa">Conta Fixa</span>' : `(${item.atual}/${item.total})`;
+
         htmlExterna += `
           <div class='item'>
-            <div>
-              <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)} 
-              <br><small>Parcela: (${item.atual}/${item.total})</small>
-              ${dt}
+            <div class="item-left">
+              <input type="checkbox" title="Ocultar da Última Parcela" ${item.ocultarUltima ? 'checked' : ''} onchange="toggleOcultarUltima('externa', ${i})">
+              <div>
+                <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)} ${txtParc}
+                ${dt}
+              </div>
             </div>
             <div>
               <button class="btn-pagar" title="Pagar parcela (+1)" onclick="pagarParcela('externa', ${i})">✓ Pagar</button>
@@ -526,9 +572,10 @@
       document.getElementById('detalhesCartao').innerHTML = htmlCartao;
       document.getElementById('detalhesExterna').innerHTML = htmlExterna;
       document.getElementById('detalhesComissao').innerHTML = htmlComissao;
-      document.getElementById('listaUltimaParcela').innerHTML = htmlUltima || '<small style="color:var(--text-muted)">Nenhuma dívida na última parcela.</small>';
+      document.getElementById('listaUltimaParcela').innerHTML = htmlUltima || '<small style="color:var(--text-muted)">Nenhuma dívida prestes a finalizar.</small>';
+      document.getElementById('totalUltimaParcela').textContent = totalUltima.toFixed(2);
 
-      // Atualiza Dashboard (Requisito 2)
+      // Atualiza Dashboard
       document.getElementById('dashSalario').textContent = `R$ ${dados.salario.toFixed(2)}`;
       document.getElementById('dashCartao').textContent = `R$ ${totalCartao.toFixed(2)}`;
       document.getElementById('dashExterna').textContent = `R$ ${totalExterna.toFixed(2)}`;
