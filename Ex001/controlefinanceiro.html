@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle Financeiro Integrado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-orange: #fb923c;
+      --accent-green: #4ade80;
+      --accent-red: #f87171;
+      --accent-purple: #c084fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all 0.2s ease-in-out;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 16px;
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 1.6rem;
+      margin: 0 0 8px 0;
+    }
+
+    .sync-status {
+      font-size: 12px;
+      color: var(--accent-green);
+      display: inline-block;
+      padding: 4px 8px;
+      background: rgba(74, 222, 128, 0.1);
+      border-radius: 20px;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      max-width: 1200px;
+      margin: 0 auto 20px;
+    }
+
+    .dash-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .dash-card span {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .dash-card strong {
+      font-size: 1.3rem;
+    }
+
+    /* Form Config Global */
+    .salario-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Responsividade dos Inputs */
+    .totais {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto 20px;
+    }
+
+    .coluna {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .coluna h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #dividasCartao h3 { color: var(--accent-blue); }
+    #dividasExternas h3 { color: var(--accent-orange); }
+    #comissoes h3 { color: var(--accent-green); }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* Totalmente Responsivo para Telas Pequenas */
+    .linha-inputs-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .linha-inputs-flex input {
+      flex: 1 1 100%; /* Ocupa 100% no mobile */
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    @media (min-width: 480px) {
+      .linha-inputs-flex input.half { flex: 1 1 calc(50% - 4px); }
+      .linha-inputs-flex input.third { flex: 1 1 calc(33.33% - 6px); }
+    }
+
+    button {
+      padding: 10px 14px;
+      border: none;
+      background-color: #2563eb;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    .btn-pagar { background-color: #059669; margin-right: 4px; }
+    .btn-editar { background-color: #d97706; margin-right: 4px; }
+    .btn-deletar { background-color: #dc2626; }
+
+    .ver-detalhes-btn {
+      background-color: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .detalhes {
+      margin-top: 12px;
+      display: none;
+      border-top: 1px solid var(--card-border);
+      padding-top: 12px;
+    }
+
+    .item {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    @media (min-width: 400px) {
+      .item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .item-detalhes-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .ultima-parcela {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    .total-verde { color: var(--accent-green) !important; }
+    .total-vermelho { color: var(--accent-red) !important; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Controle Financeiro</h1>
+    <span class="sync-status" id="syncStatus">☁️ Google Sheets: Sincronizado</span>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="dash-card">
+      <span>💰 Salário Total</span>
+      <strong id="dashSalario">R$ 0.00</strong>
+    </div>
+    <div class="dash-card">
+      <span>💳 Total Cartão</span>
+      <strong id="dashCartao">R$ 0.00</strong>
+    </div>
+    <div class="dash-card">
+      <span>📄 Dívidas Externas</span>
+      <strong id="dashExterna">R$ 0.00</strong>
+    </div>
+    <div class="dash-card">
+      <span>📈 Comissões</span>
+      <strong id="dashComissao">R$ 0.00</strong>
+    </div>
+    <div class="dash-card">
+      <span>📊 Saldo Líquido</span>
+      <strong id="dashSaldo">R$ 0.00</strong>
+    </div>
+  </div>
+
+  <div class="salario-container">
+    <label for="salario"><strong>Definir Salário Mensal:</strong></label>
+    <input type="number" id="salario" onchange="gravarSalario()" placeholder="R$ 0,00" style="background:#0f172a; border:1px solid var(--card-border); color:#fff; padding:8px; border-radius:8px;" />
+  </div>
+
+  <div class="totais">
+    
+    <div class="coluna" id="dividasCartao">
+      <h3><span>Dívidas Cartão</span> <span>R$ <span id="totalCartao">0.00</span></span></h3>
+      <div class="form-group">
+        <div class="linha-inputs-flex">
+          <input type="text" placeholder="Descrição" id="descricaoCartao" />
+          <input type="number" placeholder="Valor (R$)" id="valorCartao" class="half" step="0.01" />
+          <input type="number" placeholder="Total Parc. (Ex: 5)" id="parcelaTotalCartao" class="half" />
+          <input type="date" id="dataCompraCartao" title="Data da Compra" />
+        </div>
+      </div>
+      <button onclick="adicionarItem('cartao')">Adicionar</button>
+      <button class="ver-detalhes-btn" onclick="toggleDetalhes('cartao')">Ver detalhes ▼</button>
+      <div class="detalhes" id="detalhesCartao"></div>
+    </div>
+
+    <div class="coluna" id="dividasExternas">
+      <h3><span>Dívidas Externas</span> <span>R$ <span id="totalExterna">0.00</span></span></h3>
+      <div class="form-group">
+        <div class="linha-inputs-flex">
+          <input type="text" placeholder="Descrição" id="descricaoExterna" />
+          <input type="number" placeholder="Valor (R$)" id="valorExterna" class="half" step="0.01" />
+          <input type="number" placeholder="Total Parc. (Ex: 5)" id="parcelaTotalExterna" class="half" />
+          <input type="date" id="dataCompraExterna" title="Data da Compra" />
+        </div>
+      </div>
+      <button onclick="adicionarItem('externa')">Adicionar</button>
+      <button class="ver-detalhes-btn" onclick="toggleDetalhes('externa')">Ver detalhes ▼</button>
+      <div class="detalhes" id="detalhesExterna"></div>
+    </div>
+
+    <div class="coluna" id="comissoes">
+      <h3><span>Comissões</span> <span>R$ <span id="totalComissao">0.00</span></span></h3>
+      <div class="form-group">
+        <div class="linha-inputs-flex">
+          <input type="text" placeholder="Descrição" id="descricaoComissao" />
+          <input type="number" placeholder="Valor (R$)" id="valorComissao" class="half" step="0.01" />
+          <input type="number" placeholder="% Comiss." id="porcentagemComissao" class="half" />
+          <input type="date" id="dataVendaComissao" title="Data da Venda" />
+        </div>
+      </div>
+      <button onclick="adicionarItem('comissao')">Adicionar</button>
+      <button class="ver-detalhes-btn" onclick="toggleDetalhes('comissao')">Ver detalhes ▼</button>
+      <div class="detalhes" id="detalhesComissao"></div>
+    </div>
+
+  </div>
+
+  <div class="ultima-parcela">
+    <h4 style="margin: 0 0 8px 0; color: var(--accent-purple);">Dívidas na Última Parcela</h4>
+    <div id="listaUltimaParcela"></div>
+  </div>
+
+  <script>
+    // Cole aqui a URL do seu Google Apps Script (Requisito 4)
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg5KG0Yl_tpRNTwcTtVkcAydtkuUNV_hBpIGTv3oVMtHvGObrzF9wTJIftNGnH3WGI/exec"; 
+
+    const fsKey = 'financeiro-arquivo-v2';
+    let dados = JSON.parse(localStorage.getItem(fsKey)) || {
+      cartao: [], externa: [], comissao: [], salario: 0
+    };
+
+    function salvarDados() {
+      localStorage.setItem(fsKey, JSON.stringify(dados));
+      sincronizarGoogleSheets();
+    }
+
+    // Requisito 4: Envia atualização ao incluir ou remover da planilha
+    function sincronizarGoogleSheets() {
+      if (!GOOGLE_SCRIPT_URL) return;
+      
+      const statusEl = document.getElementById('syncStatus');
+      statusEl.textContent = "⏳ Google Sheets: Salvando...";
+
+      // Junta todos os itens em uma lista única categorizada
+      let listaGeral = [];
+      ['cartao', 'externa', 'comissao'].forEach(tipo => {
+        dados[tipo].forEach(item => {
+          listaGeral.push({ ...item, tipo: tipo });
+        });
+      });
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'sync', itens: listaGeral })
+      }).then(() => {
+        statusEl.textContent = "☁️ Google Sheets: Sincronizado";
+      }).catch(() => {
+        statusEl.textContent = "⚠️ Erro na Sincronização";
+      });
+    }
+
+    function gravarSalario() {
+      dados.salario = parseFloat(document.getElementById('salario').value) || 0;
+      salvarDados();
+      renderizar();
+    }
+
+    // Requisito 6: Ao inserir 5, o sistema automaticamente seta como 1/5
+    function adicionarItem(tipo) {
+      const desc = document.getElementById('descricao' + capitalize(tipo)).value;
+      const val = parseFloat(document.getElementById('valor' + capitalize(tipo)).value);
+      const totalInput = parseInt(document.getElementById('parcelaTotal' + capitalize(tipo))?.value) || 1;
+      const perc = tipo === 'comissao' ? parseFloat(document.getElementById('porcentagemComissao').value) || 0 : 100;
+      
+      const dataCompra = (tipo === 'cartao' || tipo === 'externa') ? document.getElementById('dataCompra' + capitalize(tipo)).value : null;
+      const dataVenda = tipo === 'comissao' ? document.getElementById('dataVendaComissao').value : null;
+
+      if (!desc || isNaN(val)) return;
+
+      dados[tipo].push({ 
+        descricao: desc, 
+        valor: val, 
+        atual: 1, // Seta 1 como parcela inicial por padrão
+        total: totalInput, 
+        porcentagem: perc, 
+        dataCompra: dataCompra,
+        dataVenda: dataVenda
+      });
+
+      salvarDados();
+      renderizar();
+
+      document.getElementById('descricao' + capitalize(tipo)).value = '';
+      document.getElementById('valor' + capitalize(tipo)).value = '';
+      if(document.getElementById('parcelaTotal' + capitalize(tipo))) document.getElementById('parcelaTotal' + capitalize(tipo)).value = '';
+    }
+
+    function deletarItem(tipo, index) {
+      dados[tipo].splice(index, 1);
+      salvarDados();
+      renderizar();
+    }
+
+    // Requisito 7: Ao pagar, ele incrementa a parcela (ex: de 1/5 para 2/5)
+    function pagarParcela(tipo, index) {
+      const item = dados[tipo][index];
+      if (item.atual < item.total) {
+        item.atual += 1;
+      } else {
+        alert('Esta dívida já está na última parcela ou quitada!');
+      }
+      salvarDados();
+      renderizar();
+    }
+
+    // Requisito 5: Ao clicar em alterar, pergunta se quer alterar PREÇO ou PARCELA
+    function editarItem(tipo, index) {
+      const item = dados[tipo][index];
+      
+      if (tipo === 'comissao') {
+        const nValor = prompt('Novo valor para a comissão:', item.valor);
+        if (nValor !== null && !isNaN(parseFloat(nValor))) item.valor = parseFloat(nValor);
+      } else {
+        const opcao = prompt('O que deseja alterar?\n1 - Alterar Preço (Valor)\n2 - Alterar Parcela Atual');
+        
+        if (opcao === '1') {
+          const nValor = prompt('Novo Valor (R$):', item.valor);
+          if (nValor !== null && !isNaN(parseFloat(nValor))) item.valor = parseFloat(nValor);
+        } else if (opcao === '2') {
+          const nParcela = prompt(`Nova Parcela Atual (Total é ${item.total}):`, item.atual);
+          if (nParcela !== null && !isNaN(parseInt(nParcela))) item.atual = parseInt(nParcela);
+        }
+      }
+
+      salvarDados();
+      renderizar();
+    }
+
+    function toggleDetalhes(tipo) {
+      const div = document.getElementById('detalhes' + capitalize(tipo));
+      div.style.display = div.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function formatarData(dStr) {
+      if (!dStr) return '';
+      const [a, m, d] = dStr.split('-');
+      return `${d}/${m}/${a}`;
+    }
+
+    function renderizar() {
+      document.getElementById('salario').value = dados.salario;
+
+      let totalCartao = 0, totalExterna = 0, totalComissao = 0;
+      let htmlCartao = '', htmlExterna = '', htmlComissao = '', htmlUltima = '';
+
+      // Cartão
+      dados.cartao.forEach((item, i) => {
+        totalCartao += item.valor;
+        if (item.atual === item.total) htmlUltima += `<div>• [Cartão] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
+        
+        const dt = item.dataCompra ? `<span class="item-detalhes-sub">Data Compra: ${formatarData(item.dataCompra)}</span>` : '';
+        htmlCartao += `
+          <div class='item'>
+            <div>
+              <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)} 
+              <br><small>Parcela: (${item.atual}/${item.total})</small>
+              ${dt}
+            </div>
+            <div>
+              <button class="btn-pagar" title="Pagar parcela (+1)" onclick="pagarParcela('cartao', ${i})">✓ Pagar</button>
+              <button class="btn-editar" onclick="editarItem('cartao', ${i})">✏️</button>
+              <button class="btn-deletar" onclick="deletarItem('cartao', ${i})">❌</button>
+            </div>
+          </div>`;
+      });
+
+      // Externas
+      dados.externa.forEach((item, i) => {
+        totalExterna += item.valor;
+        if (item.atual === item.total) htmlUltima += `<div>• [Externa] ${item.descricao} - R$ ${item.valor.toFixed(2)}</div>`;
+        
+        const dt = item.dataCompra ? `<span class="item-detalhes-sub">Data Compra: ${formatarData(item.dataCompra)}</span>` : '';
+        htmlExterna += `
+          <div class='item'>
+            <div>
+              <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)} 
+              <br><small>Parcela: (${item.atual}/${item.total})</small>
+              ${dt}
+            </div>
+            <div>
+              <button class="btn-pagar" title="Pagar parcela (+1)" onclick="pagarParcela('externa', ${i})">✓ Pagar</button>
+              <button class="btn-editar" onclick="editarItem('externa', ${i})">✏️</button>
+              <button class="btn-deletar" onclick="deletarItem('externa', ${i})">❌</button>
+            </div>
+          </div>`;
+      });
+
+      // Comissões
+      dados.comissao.forEach((item, i) => {
+        let valCom = item.valor * (item.porcentagem / 100);
+        totalComissao += valCom;
+        
+        const dt = item.dataVenda ? `<span class="item-detalhes-sub">Data Venda: ${formatarData(item.dataVenda)}</span>` : '';
+        htmlComissao += `
+          <div class='item'>
+            <div>
+              <strong>${item.descricao}</strong> - R$ ${item.valor.toFixed(2)}
+              <br><small>(${item.porcentagem}% = R$ ${valCom.toFixed(2)})</small>
+              ${dt}
+            </div>
+            <div>
+              <button class="btn-editar" onclick="editarItem('comissao', ${i})">✏️</button>
+              <button class="btn-deletar" onclick="deletarItem('comissao', ${i})">❌</button>
+            </div>
+          </div>`;
+      });
+
+      const totalDividas = totalCartao + totalExterna;
+      const saldoLíquido = (dados.salario + totalComissao) - totalDividas;
+
+      // Atualiza Colunas
+      document.getElementById('totalCartao').textContent = totalCartao.toFixed(2);
+      document.getElementById('totalExterna').textContent = totalExterna.toFixed(2);
+      document.getElementById('totalComissao').textContent = totalComissao.toFixed(2);
+      
+      document.getElementById('detalhesCartao').innerHTML = htmlCartao;
+      document.getElementById('detalhesExterna').innerHTML = htmlExterna;
+      document.getElementById('detalhesComissao').innerHTML = htmlComissao;
+      document.getElementById('listaUltimaParcela').innerHTML = htmlUltima || '<small style="color:var(--text-muted)">Nenhuma dívida na última parcela.</small>';
+
+      // Atualiza Dashboard (Requisito 2)
+      document.getElementById('dashSalario').textContent = `R$ ${dados.salario.toFixed(2)}`;
+      document.getElementById('dashCartao').textContent = `R$ ${totalCartao.toFixed(2)}`;
+      document.getElementById('dashExterna').textContent = `R$ ${totalExterna.toFixed(2)}`;
+      document.getElementById('dashComissao').textContent = `R$ ${totalComissao.toFixed(2)}`;
+      
+      const dashSaldo = document.getElementById('dashSaldo');
+      dashSaldo.textContent = `R$ ${saldoLíquido.toFixed(2)}`;
+      dashSaldo.className = saldoLíquido >= 0 ? 'total-verde' : 'total-vermelho';
+    }
+
+    renderizar();
+  </script>
+</body>
+</html>
