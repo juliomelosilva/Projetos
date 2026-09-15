@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifinha Bayminha - Dofus Touch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0f171c url('https://i.imgur.com/8QG9Z6X.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 20, 26, 0.85);
+            z-index: 1;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Caveat', cursive;
+            font-size: 4.5rem;
+            color: #ffdd44;
+            text-shadow: 3px 3px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 0px 5px 20px rgba(255, 215, 0, 0.7);
+            margin-bottom: 20px;
+            text-align: center;
+            transform: rotate(-1.5deg);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr 300px;
+            gap: 20px;
+            width: 100%;
+            align-items: start;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(28, 42, 51, 0.95) 0%, rgba(15, 23, 28, 0.95) 100%);
+            border: 3px solid #6b8896;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8), inset 0 0 15px rgba(0,0,0,0.5);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffcc00;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 3px #000;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3c525f;
+            padding-bottom: 5px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .award-banner {
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid #e2b13c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            object-fit: cover;
+        }
+
+        .wheel-center-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Ponteiro Indicador Superior */
+        .pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 32px solid #ff2222;
+            z-index: 10;
+            filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.9));
+        }
+
+        canvas#wheel {
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            box-shadow: 0 0 35px rgba(0,0,0,0.95), 0 0 15px rgba(255,204,0,0.3);
+            border: 7px solid #e2b13c;
+        }
+
+        /* Centro decorativo estilo Dofus */
+        .center-cap {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, #2a3e4c 0%, #15222b 100%);
+            border: 4px solid #e2b13c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px #000, 0 0 20px rgba(0,0,0,0.8);
+            z-index: 5;
+        }
+
+        .center-cap img {
+            width: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        }
+
+        .spin-btn {
+            background: linear-gradient(180deg, #ffd700 0%, #ff8800 100%);
+            border: 2px solid #fff;
+            border-radius: 8px;
+            color: #1a0f00;
+            font-size: 1.5rem;
+            font-weight: 900;
+            padding: 15px 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 6px 0 #994400, 0 10px 20px rgba(0,0,0,0.6);
+            transition: all 0.1s ease;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .spin-btn:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #994400;
+        }
+
+        .spin-btn:disabled {
+            background: #444;
+            color: #888;
+            border-color: #666;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .history-list {
+            width: 100%;
+            max-height: 440px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            padding-right: 5px;
+        }
+
+        .history-list::-webkit-scrollbar { width: 6px; }
+        .history-list::-webkit-scrollbar-thumb { background: #e2b13c; border-radius: 3px; }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #3c525f;
+            border-left: 4px solid #ffcc00;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .history-item .drawn-number {
+            background: #ffcc00;
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 900;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #a0c4d6;
+            min-height: 25px;
+            text-align: center;
+        }
+
+        @media (max-width: 1100px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .wheel-wrapper, canvas#wheel { width: 360px; height: 360px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="main-container">
+        <h1 class="header-title">Rifinha Bayminha</h1>
+
+        <div class="content-grid">
+            <div class="panel">
+                <div class="panel-title">Premiação</div>
+                <img src="premiacao.jpg" alt="Premiação Rifinha" class="award-banner">
+            </div>
+
+            <div class="panel wheel-center-container">
+                <div class="wheel-wrapper">
+                    <div class="pointer"></div>
+                    <canvas id="wheel" width="800" height="800"></canvas>
+                    <div class="center-cap">
+                        <span style="font-weight:900; color:#ffcc00; font-size:1.2rem;">DOFUS</span>
+                    </div>
+                </div>
+                <button id="spinBtn" class="spin-btn" onclick="startSpin()">Girar</button>
+                <div id="statusMsg" class="status-msg">Clique para girar a roleta!</div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Números Sorteados</div>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const historyList = document.getElementById('historyList');
+
+        const totalNumbers = 100;
+        const drawnNumbers = new Set();
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel() {
+            const numSlices = totalNumbers;
+            const sliceAngle = (2 * Math.PI) / numSlices;
+            const radius = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(radius, radius);
+            ctx.rotate(currentRotation);
+
+            for (let i = 1; i <= numSlices; i++) {
+                const angle = (i - 1) * sliceAngle;
+                
+                // Desenho das fatias
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, angle, angle + sliceAngle);
+                ctx.closePath();
+
+                if (drawnNumbers.has(i)) {
+                    ctx.fillStyle = '#1c1c1c'; // Número já sorteado
+                } else {
+                    ctx.fillStyle = (i % 2 === 0) ? '#1a2832' : '#283b48';
+                }
+                ctx.fill();
+                ctx.strokeStyle = '#0d1419';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+
+                // Desenho dos Números na roleta
+                ctx.save();
+                ctx.rotate(angle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+
+                if (drawnNumbers.has(i)) {
+                    ctx.fillStyle = '#555555';
+                    ctx.font = "bold 10px Montserrat";
+                } else {
+                    ctx.fillStyle = '#ffcc00';
+                    ctx.font = "900 12px Montserrat";
+                }
+
+                // Renderiza o número na borda externa de cada fatia
+                ctx.fillText(i, radius - 12, 0);
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        function startSpin() {
+            if (isSpinning) return;
+
+            if (drawnNumbers.size >= totalNumbers) {
+                statusMsg.textContent = "Todos os números já foram sorteados!";
+                spinBtn.disabled = true;
+                return;
+            }
+
+            // Seleciona número ainda não sorteado
+            let selectedNum;
+            do {
+                selectedNum = Math.floor(Math.random() * totalNumbers) + 1;
+            } while (drawnNumbers.has(selectedNum));
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            statusMsg.textContent = "Girando...";
+
+            const duration = 6000; // Tempo reduzido para exatos 6 segundos
+            const startTime = performance.now();
+            
+            const sliceAngle = (2 * Math.PI) / totalNumbers;
+            
+            // Posição para alinhar o número com o ponteiro superior (270 graus / 1.5 PI)
+            const targetAngleSlice = (selectedNum - 0.5) * sliceAngle;
+            const targetEndAngle = (1.5 * Math.PI) - targetAngleSlice;
+            
+            const extraRounds = 18 * (2 * Math.PI); // Giro rápido nas primeiras voltas
+            const startRotation = currentRotation;
+            const currentMod = startRotation % (2 * Math.PI);
+            const totalChange = (targetEndAngle - currentMod) + extraRounds;
+
+            function animate(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Curva de desaceleração (Ease-Out Quintic):
+                // Mantém alta velocidade no início e desacelera fortemente no final (suspense)
+                const easeOutQuint = 1 - Math.pow(1 - progress, 5);
+
+                currentRotation = startRotation + (totalChange * easeOutQuint);
+                drawWheel();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    drawnNumbers.add(selectedNum);
+                    drawWheel();
+                    
+                    // Registra histórico na coluna direita
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.innerHTML = `<span>${drawnNumbers.size}º Sorteado</span><span class="drawn-number">#${selectedNum}</span>`;
+                    historyList.appendChild(item);
+
+                    statusMsg.innerHTML = `Número sorteado: <strong style="color:#ffcc00; font-size:1.4rem;">${selectedNum}</strong>!`;
+                    isSpinning = false;
+
+                    if (drawnNumbers.size < totalNumbers) {
+                        spinBtn.disabled = false;
+                    } else {
+                        statusMsg.textContent = "Sorteio concluído! Todos os números saíram.";
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Renderização inicial da roleta
+        drawWheel();
+    </script>
+</body>
+</html>
