@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rifinha Bayminha - Dofus Touch</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -11,25 +11,28 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: #0f171c url('https://i.imgur.com/8QG9Z6X.jpg') no-repeat center center fixed;
+            background: #0d1519 url('fundo.jpg') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
+            overflow-x: hidden;
         }
 
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 20, 26, 0.85);
+            background: radial-gradient(circle, rgba(16, 27, 34, 0.78) 0%, rgba(8, 14, 18, 0.92) 100%);
             z-index: 1;
+            pointer-events: none;
         }
 
         .main-container {
@@ -42,19 +45,35 @@
             align-items: center;
         }
 
-        .header-title {
-            font-family: 'Caveat', cursive;
-            font-size: 4.5rem;
-            color: #ffdd44;
-            text-shadow: 3px 3px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 0px 5px 20px rgba(255, 215, 0, 0.7);
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 20px;
             text-align: center;
+        }
+
+        .header-title {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(3rem, 7vw, 5.2rem);
+            color: #ffdd44;
+            text-shadow: 3px 3px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 0px 5px 20px rgba(255, 215, 0, 0.7);
+            line-height: 1;
             transform: rotate(-1.5deg);
+        }
+
+        .header-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            color: #ffffff;
+            text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 0px 0px 10px rgba(255, 255, 255, 0.8);
+            margin-top: 5px;
+            letter-spacing: 2px;
         }
 
         .content-grid {
             display: grid;
-            grid-template-columns: 340px 1fr 300px;
+            grid-template-columns: 320px 1fr 300px;
             gap: 20px;
             width: 100%;
             align-items: start;
@@ -65,10 +84,11 @@
             border: 3px solid #6b8896;
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.8), inset 0 0 15px rgba(0,0,0,0.5);
-            padding: 20px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         .panel-title {
@@ -86,10 +106,33 @@
 
         .award-banner {
             width: 100%;
+            max-width: 100%;
+            height: auto;
             border-radius: 8px;
             border: 2px solid #e2b13c;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            object-fit: cover;
+            object-fit: contain;
+        }
+
+        .award-description {
+            margin-top: 15px;
+            width: 100%;
+            font-size: 0.95rem;
+            color: #d1e2ec;
+            line-height: 1.5;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #3c525f;
+        }
+
+        .award-description p {
+            margin-bottom: 8px;
+        }
+
+        .award-description p:last-child {
+            margin-bottom: 0;
         }
 
         .wheel-center-container {
@@ -101,15 +144,14 @@
 
         .wheel-wrapper {
             position: relative;
-            width: 500px;
-            height: 500px;
+            width: min(85vw, 540px);
+            height: min(85vw, 540px);
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Ponteiro Indicador Superior */
         .pointer {
             position: absolute;
             top: -12px;
@@ -117,39 +159,39 @@
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-top: 32px solid #ff2222;
+            border-left: min(3.5vw, 20px) solid transparent;
+            border-right: min(3.5vw, 20px) solid transparent;
+            border-top: min(6vw, 36px) solid #ff2222;
             z-index: 10;
-            filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.9));
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.9));
         }
 
         canvas#wheel {
-            width: 500px;
-            height: 500px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             box-shadow: 0 0 35px rgba(0,0,0,0.95), 0 0 15px rgba(255,204,0,0.3);
-            border: 7px solid #e2b13c;
+            border: 6px solid #e2b13c;
         }
 
-        /* Centro decorativo estilo Dofus */
         .center-cap {
             position: absolute;
-            width: 90px;
-            height: 90px;
+            width: 18%;
+            height: 18%;
             background: radial-gradient(circle, #2a3e4c 0%, #15222b 100%);
-            border: 4px solid #e2b13c;
+            border: 3px solid #e2b13c;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 0 10px #000, 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 10px #000, 0 0 15px rgba(0,0,0,0.8);
             z-index: 5;
         }
 
-        .center-cap img {
-            width: 50px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        .center-cap span {
+            font-weight: 900;
+            color: #ffcc00;
+            font-size: min(3.2vw, 1.2rem);
         }
 
         .spin-btn {
@@ -157,13 +199,14 @@
             border: 2px solid #fff;
             border-radius: 8px;
             color: #1a0f00;
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
             font-weight: 900;
-            padding: 15px 50px;
+            padding: 14px 45px;
             cursor: pointer;
             text-transform: uppercase;
             box-shadow: 0 6px 0 #994400, 0 10px 20px rgba(0,0,0,0.6);
             transition: all 0.1s ease;
+            width: min(100%, 280px);
         }
 
         .spin-btn:hover:not(:disabled) {
@@ -186,12 +229,12 @@
 
         .history-list {
             width: 100%;
-            max-height: 440px;
+            max-height: 420px;
             overflow-y: auto;
             display: flex;
             flex-direction: column-reverse;
             gap: 8px;
-            padding-right: 5px;
+            padding-right: 4px;
         }
 
         .history-list::-webkit-scrollbar { width: 6px; }
@@ -207,6 +250,7 @@
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
+            font-size: 0.95rem;
         }
 
         .history-item .drawn-number {
@@ -219,15 +263,32 @@
 
         .status-msg {
             margin-top: 15px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #a0c4d6;
             min-height: 25px;
             text-align: center;
         }
 
         @media (max-width: 1100px) {
-            .content-grid { grid-template-columns: 1fr; }
-            .wheel-wrapper, canvas#wheel { width: 360px; height: 360px; }
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .panel {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .history-list {
+                max-height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .panel { padding: 12px; }
+            .spin-btn { width: 100%; }
         }
     </style>
 </head>
@@ -236,20 +297,31 @@
     <div class="overlay"></div>
 
     <div class="main-container">
-        <h1 class="header-title">Rifinha Bayminha</h1>
+        <div class="header-container">
+            <h1 class="header-title">Rifinha Bayminha</h1>
+            <div class="header-subtitle">2ª EDIÇÃO</div>
+        </div>
 
         <div class="content-grid">
             <div class="panel">
                 <div class="panel-title">Premiação</div>
                 <img src="premiacao.jpg" alt="Premiação Rifinha" class="award-banner">
+                
+                <div class="award-description">
+                    <p>🥇 <strong>1º Lugar:</strong> 10MK no servidor Blair ou 120,00 Reais no PIX</p>
+                    <p>🥈 <strong>2º Lugar:</strong> UM BELO TOFUROR UPADO COM 90PP ou o valor em kamas convertido em reais</p>
+                    <p>🥉 <strong>3º Lugar:</strong> UM MERO NOMOON UPADO NO MAXIMO ou o valor em kamas convertido em reais</p>
+                    <p>📌 <em>Agradeço a todos a vocês que participarem dessa rifa colaborativa, e quem não puder participar ou não querer, você esta em todo o direito seu e eu entendo!</em></p>
+                    <p><em>Agradeço desde já a todos que vão poder participar da segunda edição.</em></p>
+                </div>
             </div>
 
             <div class="panel wheel-center-container">
                 <div class="wheel-wrapper">
                     <div class="pointer"></div>
-                    <canvas id="wheel" width="800" height="800"></canvas>
+                    <canvas id="wheel" width="1200" height="1200"></canvas>
                     <div class="center-cap">
-                        <span style="font-weight:900; color:#ffcc00; font-size:1.2rem;">DOFUS</span>
+                        <span>DOFUS</span>
                     </div>
                 </div>
                 <button id="spinBtn" class="spin-btn" onclick="startSpin()">Girar</button>
@@ -271,13 +343,15 @@
         const historyList = document.getElementById('historyList');
 
         const totalNumbers = 100;
-        const drawnNumbers = new Set();
-        let currentRotation = 0;
+        let totalSpinsCount = 0;
+        
+        const sliceAngle = (2 * Math.PI) / totalNumbers;
+        let currentRotation = (1.5 * Math.PI) - (0.5 * sliceAngle); 
+        
         let isSpinning = false;
 
         function drawWheel() {
             const numSlices = totalNumbers;
-            const sliceAngle = (2 * Math.PI) / numSlices;
             const radius = canvas.width / 2;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -288,37 +362,30 @@
             for (let i = 1; i <= numSlices; i++) {
                 const angle = (i - 1) * sliceAngle;
                 
-                // Desenho das fatias
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
                 ctx.arc(0, 0, radius, angle, angle + sliceAngle);
                 ctx.closePath();
 
-                if (drawnNumbers.has(i)) {
-                    ctx.fillStyle = '#1c1c1c'; // Número já sorteado
-                } else {
-                    ctx.fillStyle = (i % 2 === 0) ? '#1a2832' : '#283b48';
-                }
+                ctx.fillStyle = (i % 2 === 0) ? '#1a2832' : '#283b48';
                 ctx.fill();
                 ctx.strokeStyle = '#0d1419';
-                ctx.lineWidth = 0.8;
+                ctx.lineWidth = 1.2;
                 ctx.stroke();
 
-                // Desenho dos Números na roleta
                 ctx.save();
                 ctx.rotate(angle + sliceAngle / 2);
                 ctx.textAlign = "right";
                 ctx.textBaseline = "middle";
 
-                if (drawnNumbers.has(i)) {
-                    ctx.fillStyle = '#555555';
-                    ctx.font = "bold 10px Montserrat";
-                } else {
-                    ctx.fillStyle = '#ffcc00';
-                    ctx.font = "900 12px Montserrat";
-                }
+                ctx.fillStyle = '#ffcc00';
+                ctx.font = "900 32px Montserrat";
 
-                // Renderiza o número na borda externa de cada fatia
+                ctx.shadowColor = "#000000";
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+
                 ctx.fillText(i, radius - 12, 0);
                 ctx.restore();
             }
@@ -326,77 +393,79 @@
             ctx.restore();
         }
 
+        // Sorteio totalmente aleatório de 1 a 100 (permite repetições)
+        function getRandomNumber() {
+            return Math.floor(Math.random() * totalNumbers) + 1;
+        }
+
         function startSpin() {
             if (isSpinning) return;
 
-            if (drawnNumbers.size >= totalNumbers) {
-                statusMsg.textContent = "Todos os números já foram sorteados!";
-                spinBtn.disabled = true;
-                return;
-            }
+            const selectedNum = getRandomNumber();
+            totalSpinsCount++;
 
-            // Seleciona número ainda não sorteado
-            let selectedNum;
-            do {
-                selectedNum = Math.floor(Math.random() * totalNumbers) + 1;
-            } while (drawnNumbers.has(selectedNum));
+            // Cálculo do tempo: 1º Giro = 6000ms (6s). Giros seguintes ganham +1500ms (+1.5s)
+            const duration = 6000 + (totalSpinsCount - 1) * 1500;
 
             isSpinning = true;
             spinBtn.disabled = true;
-            statusMsg.textContent = "Girando...";
+            statusMsg.textContent = `Girando (${(duration / 1000).toFixed(1)}s)...`;
 
-            const duration = 6000; // Tempo reduzido para exatos 6 segundos
             const startTime = performance.now();
             
-            const sliceAngle = (2 * Math.PI) / totalNumbers;
-            
-            // Posição para alinhar o número com o ponteiro superior (270 graus / 1.5 PI)
             const targetAngleSlice = (selectedNum - 0.5) * sliceAngle;
             const targetEndAngle = (1.5 * Math.PI) - targetAngleSlice;
             
-            const extraRounds = 18 * (2 * Math.PI); // Giro rápido nas primeiras voltas
-            const startRotation = currentRotation;
+            // Ajusta a quantidade de voltas completas proporcionalmente ao tempo do giro
+            const roundsMultiplier = Math.floor(duration / 350);
+            const extraRounds = roundsMultiplier * (2 * Math.PI); 
+            const startRotation = currentRotation; 
+            
             const currentMod = startRotation % (2 * Math.PI);
-            const totalChange = (targetEndAngle - currentMod) + extraRounds;
+            let angleDifference = targetEndAngle - currentMod;
+            
+            while (angleDifference < 0) {
+                angleDifference += (2 * Math.PI);
+            }
+            
+            const totalChange = angleDifference + extraRounds;
 
             function animate(now) {
                 const elapsed = now - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                // Curva de desaceleração (Ease-Out Quintic):
-                // Mantém alta velocidade no início e desacelera fortemente no final (suspense)
-                const easeOutQuint = 1 - Math.pow(1 - progress, 5);
+                // Animação de frenagem com efeito de travamento súbito/inesperado no final
+                let easing;
+                if (progress < 0.7) {
+                    easing = (progress / 0.7) * 0.75;
+                } else {
+                    const subProgress = (progress - 0.7) / 0.3;
+                    const brakeFactor = 1 - Math.pow(1 - subProgress, 4);
+                    easing = 0.75 + (brakeFactor * 0.25);
+                }
 
-                currentRotation = startRotation + (totalChange * easeOutQuint);
+                currentRotation = startRotation + (totalChange * easing);
                 drawWheel();
 
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    drawnNumbers.add(selectedNum);
                     drawWheel();
                     
-                    // Registra histórico na coluna direita
                     const item = document.createElement('div');
                     item.className = 'history-item';
-                    item.innerHTML = `<span>${drawnNumbers.size}º Sorteado</span><span class="drawn-number">#${selectedNum}</span>`;
+                    item.innerHTML = `<span>${totalSpinsCount}º Giro</span><span class="drawn-number">#${selectedNum}</span>`;
                     historyList.appendChild(item);
 
                     statusMsg.innerHTML = `Número sorteado: <strong style="color:#ffcc00; font-size:1.4rem;">${selectedNum}</strong>!`;
                     isSpinning = false;
-
-                    if (drawnNumbers.size < totalNumbers) {
-                        spinBtn.disabled = false;
-                    } else {
-                        statusMsg.textContent = "Sorteio concluído! Todos os números saíram.";
-                    }
+                    spinBtn.disabled = false;
                 }
             }
 
             requestAnimationFrame(animate);
         }
 
-        // Renderização inicial da roleta
         drawWheel();
     </script>
 </body>
