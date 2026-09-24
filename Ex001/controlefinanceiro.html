@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Controle Financeiro Integrado</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="shortcut icon" href="iconefinanc.ico" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -53,7 +53,6 @@
       border-radius: 20px;
     }
 
-    /* Dashboard Layout */
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -79,6 +78,79 @@
 
     .dash-card strong {
       font-size: 1.3rem;
+    }
+
+    .chart-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto 20px;
+    }
+
+    @media (min-width: 850px) {
+      .chart-section {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .chart-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 16px;
+      position: relative;
+      height: 380px;
+    }
+
+    .resumo-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 20px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .resumo-card h3 {
+      margin: 0 0 4px 0;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    .resumo-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .resumo-cartao {
+      background: rgba(56, 189, 248, 0.1);
+      border-left: 4px solid var(--accent-blue);
+      color: #e0f2fe;
+    }
+
+    .resumo-externa {
+      background: rgba(251, 146, 60, 0.1);
+      border-left: 4px solid var(--accent-orange);
+      color: #ffedd5;
+    }
+
+    .resumo-comissao {
+      background: rgba(74, 222, 128, 0.1);
+      border-left: 4px solid var(--accent-green);
+      color: #dcfce7;
+    }
+
+    .resumo-comissao.baixo {
+      background: rgba(248, 113, 113, 0.1);
+      border-left: 4px solid var(--accent-red);
+      color: #fee2e2;
     }
 
     .salario-container {
@@ -271,6 +343,25 @@
     </div>
   </div>
 
+  <div class="chart-section">
+    <div class="chart-container">
+      <canvas id="graficoDashboard"></canvas>
+    </div>
+
+    <div class="resumo-card">
+      <h3>📌 Resumo Mensal</h3>
+      <div class="resumo-item resumo-cartao" id="resumoCartao">
+        Dívidas Cartão está ocupando <strong>0%</strong> do seu total de dívidas, cuidado!
+      </div>
+      <div class="resumo-item resumo-externa" id="resumoExterna">
+        Dívidas Externas está muito elevada em <strong>0%</strong>, maneire os gastos!
+      </div>
+      <div class="resumo-item resumo-comissao" id="resumoComissao">
+        Carregando comissões...
+      </div>
+    </div>
+  </div>
+
   <div class="salario-container">
     <label for="salario"><strong>Salário Mensal:</strong></label>
     <input type="number" id="salario" onchange="gravarSalario()" placeholder="R$ 0,00" style="background:#0f172a; border:1px solid var(--card-border); color:#fff; padding:8px; border-radius:8px;" />
@@ -342,12 +433,90 @@
       cartao: [], externa: [], comissao: [], salario: 0
     };
 
+    let meuGrafico = null;
+
+    // Plugin customizado para calcular fonte dinamicamente e conter o texto dentro de cada bolha
+    const bubbleLabelsPlugin = {
+      id: 'bubbleLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          
+          meta.data.forEach((element, index) => {
+            const pt = dataset.data[index];
+            if (!pt || !element) return;
+
+            const pixelX = element.x;
+            const pixelY = element.y;
+            const radius = element.options.radius || pt.r;
+
+            if (radius <= 0) return;
+
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#ffffff';
+
+            const maxAllowedWidth = radius * 1.7; // Margem de segurança (~85% do diâmetro)
+
+            if (pt.temPorcentagem) {
+              const linha1 = `${pt.porcentagem.toFixed(1)}%`;
+              const linha2 = `R$ ${pt.valor.toFixed(2)}`;
+
+              // Ajusta tamanho da fonte dinamicamente para a Linha 1 (%)
+              let font1 = Math.max(10, Math.min(radius / 2.2, 16));
+              ctx.font = `700 ${font1}px Inter, sans-serif`;
+              while (ctx.measureText(linha1).width > maxAllowedWidth && font1 > 8) {
+                font1 -= 0.5;
+                ctx.font = `700 ${font1}px Inter, sans-serif`;
+              }
+
+              // Ajusta tamanho da fonte dinamicamente para a Linha 2 (R$)
+              let font2 = Math.max(8, Math.min(radius / 3.2, 12));
+              ctx.font = `500 ${font2}px Inter, sans-serif`;
+              while (ctx.measureText(linha2).width > maxAllowedWidth && font2 > 7) {
+                font2 -= 0.5;
+                ctx.font = `500 ${font2}px Inter, sans-serif`;
+              }
+
+              if (radius > 24) {
+                ctx.font = `700 ${font1}px Inter, sans-serif`;
+                ctx.fillText(linha1, pixelX, pixelY - font1 / 1.8);
+
+                ctx.font = `500 ${font2}px Inter, sans-serif`;
+                ctx.fillText(linha2, pixelX, pixelY + font2 / 1.1);
+              } else {
+                ctx.font = `700 ${font1}px Inter, sans-serif`;
+                ctx.fillText(linha1, pixelX, pixelY);
+              }
+
+            } else {
+              // Bolha de Comissões (Apenas Valor R$)
+              const textoComissao = `R$ ${pt.valor.toFixed(2)}`;
+              let fontComissao = Math.max(9, Math.min(radius / 2.2, 15));
+              
+              ctx.font = `600 ${fontComissao}px Inter, sans-serif`;
+              while (ctx.measureText(textoComissao).width > maxAllowedWidth && fontComissao > 7) {
+                fontComissao -= 0.5;
+                ctx.font = `600 ${fontComissao}px Inter, sans-serif`;
+              }
+
+              ctx.fillText(textoComissao, pixelX, pixelY);
+            }
+
+            ctx.restore();
+          });
+        });
+      }
+    };
+
     function salvarDados() {
       localStorage.setItem(fsKey, JSON.stringify(dados));
       sincronizarGoogleSheets();
     }
 
-    // Puxar os dados do Google Sheets na inicialização
     function carregarDoGoogleSheets() {
       if (!GOOGLE_SCRIPT_URL) return;
 
@@ -496,6 +665,128 @@
       return `${d}/${m}/${a}`;
     }
 
+    function atualizarGraficoEResumo(salario, totalCartao, totalExterna, totalComissao) {
+      const ctx = document.getElementById('graficoDashboard').getContext('2d');
+      const totalDividas = totalCartao + totalExterna;
+
+      // Porcentagens estritamente proporcionais entre Cartão e Externa (Soma = 100%)
+      let pctCartao = 0;
+      let pctExterna = 0;
+
+      if (totalDividas > 0) {
+        pctCartao = (totalCartao / totalDividas) * 100;
+        pctExterna = (totalExterna / totalDividas) * 100;
+      }
+
+      // Atualiza o Resumo Lateral dinamicamente
+      document.getElementById('resumoCartao').innerHTML = 
+        `Dívidas Cartão está ocupando <strong>${pctCartao.toFixed(1)}%</strong> do seu total de dívidas, cuidado!`;
+
+      document.getElementById('resumoExterna').innerHTML = 
+        `Dívidas Externas está muito elevada em <strong>${pctExterna.toFixed(1)}%</strong>, maneire os gastos!`;
+
+      const elComissao = document.getElementById('resumoComissao');
+      if (totalComissao > 50) {
+        elComissao.className = 'resumo-item resumo-comissao';
+        elComissao.innerHTML = 
+          `Oba! Este mês você conseguiu <strong>R$ ${totalComissao.toFixed(2)}</strong> de comissões, Parabéns!`;
+      } else {
+        elComissao.className = 'resumo-item resumo-comissao baixo';
+        elComissao.innerHTML = 
+          `Cara, nada de vendas? Vamos, melhora e vai vender!`;
+      }
+
+      // --- CÁLCULO DE RAIO PROPORCIONAL E LIMITADO (MIN: 30px, MAX: 85px) ---
+      const MIN_RADIUS = 30;
+      const MAX_RADIUS = 85;
+
+      // Dívidas: Proporcional à % do total de dívidas
+      const calcularRaioDivida = (pct, valor) => {
+        if (valor <= 0) return MIN_RADIUS;
+        // Escala direta de 0 a 100% mapeada para [MIN_RADIUS, MAX_RADIUS]
+        const raio = MIN_RADIUS + (pct / 100) * (MAX_RADIUS - MIN_RADIUS);
+        return Math.min(Math.max(raio, MIN_RADIUS), MAX_RADIUS);
+      };
+
+      // Comissões: Proporcional ao valor ganho de comissão em relação ao Salário (ou escala própria se Salário = 0)
+      const calcularRaioComissao = (valor) => {
+        if (valor <= 0) return MIN_RADIUS;
+        
+        let proporcao = 0;
+        if (salario > 0) {
+          // % que a comissão representa do salário base
+          proporcao = Math.min((valor / salario) * 100, 100);
+        } else {
+          // Escala suavizada caso não haja salário configurado
+          proporcao = Math.min(valor / 10, 100);
+        }
+
+        const raio = MIN_RADIUS + (proporcao / 100) * (MAX_RADIUS - MIN_RADIUS);
+        return Math.min(Math.max(raio, MIN_RADIUS), MAX_RADIUS);
+      };
+
+      const dataPoints = [
+        { x: 32, y: 50, r: calcularRaioDivida(pctCartao, totalCartao), valor: totalCartao, porcentagem: pctCartao, rotulo: 'Dívidas Cartão', temPorcentagem: true },
+        { x: 68, y: 50, r: calcularRaioDivida(pctExterna, totalExterna), valor: totalExterna, porcentagem: pctExterna, rotulo: 'Dívidas Externas', temPorcentagem: true },
+        { x: 50, y: 22, r: calcularRaioComissao(totalComissao), valor: totalComissao, porcentagem: 0, rotulo: 'Comissões', temPorcentagem: false }
+      ];
+
+      if (meuGrafico) {
+        meuGrafico.data.datasets[0].data = dataPoints;
+        meuGrafico.update();
+      } else {
+        meuGrafico = new Chart(ctx, {
+          type: 'bubble',
+          data: {
+            datasets: [{
+              label: 'Divisão Financeira',
+              data: dataPoints,
+              backgroundColor: [
+                'rgba(56, 189, 248, 0.55)',  // Cartão
+                'rgba(251, 146, 60, 0.55)',  // Externas
+                'rgba(74, 222, 128, 0.55)'   // Comissões
+              ],
+              borderColor: [
+                'rgba(56, 189, 248, 0.9)',
+                'rgba(251, 146, 60, 0.9)',
+                'rgba(74, 222, 128, 0.9)'
+              ],
+              borderWidth: 2
+            }]
+          },
+          plugins: [bubbleLabelsPlugin],
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Proporção de Dívidas (% entre Cartão/Externa) e Comissões',
+                color: '#f8fafc',
+                font: { family: 'Inter', size: 14, weight: '600' }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const raw = context.raw;
+                    if (raw.temPorcentagem) {
+                      return ` ${raw.rotulo}: ${raw.porcentagem.toFixed(1)}% (R$ ${raw.valor.toFixed(2)})`;
+                    }
+                    return ` ${raw.rotulo}: R$ ${raw.valor.toFixed(2)}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: { min: 0, max: 100, display: false },
+              y: { min: 0, max: 100, display: false }
+            }
+          }
+        });
+      }
+    }
+
     function renderizar() {
       document.getElementById('salario').value = dados.salario || 0;
 
@@ -606,6 +897,9 @@
       const dashSaldo = document.getElementById('dashSaldo');
       dashSaldo.textContent = `R$ ${saldoLíquido.toFixed(2)}`;
       dashSaldo.className = saldoLíquido >= 0 ? 'total-verde' : 'total-vermelho';
+
+      // Atualiza Gráfico de Bolhas e Resumo Lateral
+      atualizarGraficoEResumo(dados.salario || 0, totalCartao, totalExterna, totalComissao);
     }
 
     renderizar();
