@@ -686,7 +686,7 @@
         `Dívidas Externas está muito elevada em <strong>${pctExterna.toFixed(1)}%</strong>, manere os gastos!`;
 
       const elComissao = document.getElementById('resumoComissao');
-      if (totalComissao > 50) {
+      if (totalComissao > 1) {
         elComissao.className = 'resumo-item resumo-comissao';
         elComissao.innerHTML = 
           `Oba! Este mês você conseguiu <strong>R$ ${totalComissao.toFixed(2)}</strong> de comissões, Parabéns!`;
